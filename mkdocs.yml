@@ -1,0 +1,58 @@
+site_name: "UD5. Transferencia, sincronización y migración de datos"
+
+theme:
+  name: material
+  locale: es
+
+  features:
+    - navigation.expand
+    - content.code.copy
+    - content.code.annotate
+
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Cambiar a modo oscuro
+
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Cambiar a modo claro
+
+markdown_extensions:
+
+  - admonition
+  - attr_list
+  - md_in_html
+
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+
+  - pymdownx.superfences
+
+  - pymdownx.inlinehilite
+
+  - pymdownx.tabbed:
+      alternate_style: true
+
+  # Fórmulas del cálculo del tiempo de transferencia (documento 1)
+  - pymdownx.arithmatex:
+      generic: true
+
+  - toc:
+      permalink: true
+
+extra_javascript:
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Semana 1:
+      - Fundamentos de la migración de datos: "01-fundamentos-migracion-datos.md"
+      - Amazon S3 como destino de datos: "02-amazon-s3-destino-datos.md"
+      - AWS DataSync: "03-aws-datasync.md"
+      - AWS Transfer Family: "04-aws-transfer-family.md"
+      - Transferencia fuera de línea: "05-transferencia-fuera-de-linea.md"
+      - Seguridad, monitorización y auditoría: "07-seguridad-monitorizacion-auditoria.md"
