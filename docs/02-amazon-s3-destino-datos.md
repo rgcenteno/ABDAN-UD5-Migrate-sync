@@ -1,12 +1,5 @@
 # UD5 · 2. Amazon S3 como destino de datos
 
-> **Módulo:** 5162 · Administración de bases de datos y almacenamiento en la nube
-> **Unidad didáctica:** UD5 · Transferencia, sincronización y migración de datos
-> **Temporalización:** semana 1 · sesión 2
-> **Resultados de aprendizaje:** RA5 (criterios c, f, g, h) · RA6 (criterios e, f)
-
----
-
 ## 1. Introducción
 
 Amazon S3 es el destino más habitual de cualquier transferencia de datos a AWS. Su capacidad prácticamente ilimitada, su durabilidad (diseñada para el 99,999999999 %) y su integración con el resto de servicios lo convierten en la «zona de aterrizaje» natural de los datos migrados. Desde S3, los datos pueden archivarse, analizarse o cargarse en otros sistemas.
@@ -36,14 +29,14 @@ La figura muestra las dos vías por las que un servidor local puede cargar datos
 
 Antes de transferir datos conviene configurar el *bucket* con criterios de seguridad y de coste:
 
-| Configuración | Recomendación | Motivo |
-|---|---|---|
-| Región | La más próxima a los usuarios y compatible con la normativa. | Latencia, coste y residencia de los datos. |
-| Bloqueo de acceso público | Activado (valor por defecto). | Evita exposiciones accidentales. |
-| Cifrado por defecto | SSE-S3 (activo por defecto) o SSE-KMS si se requiere control de claves. | Cifrado en reposo de todos los objetos. |
-| Control de versiones | Activado si se va a sincronizar con borrado. | Permite recuperar objetos sobrescritos o eliminados por error. |
-| Regla de ciclo de vida | Abortar cargas multiparte incompletas tras 7 días. | Las partes huérfanas ocupan espacio y se facturan. |
-| Clase de almacenamiento | Elegida según el uso posterior de los datos. | Los datos de archivo pueden cargarse directamente en clases más económicas. |
+| Configuración             | Recomendación                                                           | Motivo                                                                      |
+| ------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Región                    | La más próxima a los usuarios y compatible con la normativa.            | Latencia, coste y residencia de los datos.                                  |
+| Bloqueo de acceso público | Activado (valor por defecto).                                           | Evita exposiciones accidentales.                                            |
+| Cifrado por defecto       | SSE-S3 (activo por defecto) o SSE-KMS si se requiere control de claves. | Cifrado en reposo de todos los objetos.                                     |
+| Control de versiones      | Activado si se va a sincronizar con borrado.                            | Permite recuperar objetos sobrescritos o eliminados por error.              |
+| Regla de ciclo de vida    | Abortar cargas multiparte incompletas tras 7 días.                      | Las partes huérfanas ocupan espacio y se facturan.                          |
+| Clase de almacenamiento   | Elegida según el uso posterior de los datos.                            | Los datos de archivo pueden cargarse directamente en clases más económicas. |
 
 ```bash
 # Crear el bucket y activar el control de versiones
@@ -58,10 +51,10 @@ aws s3api put-bucket-versioning --bucket ud5-destino-<iniciales> \
 
 ### 4.1. Comandos de alto nivel
 
-| Comando | Función |
-|---|---|
-| `aws s3 cp` | Copia ficheros u objetos. Con `--recursive`, copia directorios completos. |
-| `aws s3 mv` | Mueve ficheros u objetos (copia y borra el origen). |
+| Comando       | Función                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------ |
+| `aws s3 cp`   | Copia ficheros u objetos. Con `--recursive`, copia directorios completos.                        |
+| `aws s3 mv`   | Mueve ficheros u objetos (copia y borra el origen).                                              |
 | `aws s3 sync` | Sincroniza un directorio con un prefijo de S3, o viceversa, copiando solo lo nuevo o modificado. |
 
 ### 4.2. Sincronización unidireccional con `aws s3 sync`
@@ -107,12 +100,12 @@ Esta solución es válida para volúmenes moderados. Para millones de ficheros, 
 
 La **carga multiparte** (*multipart upload*) divide un fichero grande en partes que se transfieren en paralelo y se ensamblan en S3 al final. Aporta tres ventajas: mayor rendimiento, reintento individual de las partes fallidas y posibilidad de pausar y reanudar.
 
-| Parámetro | Valor |
-|---|---|
-| Tamaño máximo en una sola operación PUT | 5 GB |
-| Tamaño de cada parte | De 5 MiB a 5 GiB (la última puede ser menor) |
-| Número máximo de partes | 10 000 |
-| Tamaño máximo de un objeto | 50 TB (ampliado desde 5 TB en diciembre de 2025) |
+| Parámetro                               | Valor                                            |
+| --------------------------------------- | ------------------------------------------------ |
+| Tamaño máximo en una sola operación PUT | 5 GB                                             |
+| Tamaño de cada parte                    | De 5 MiB a 5 GiB (la última puede ser menor)     |
+| Número máximo de partes                 | 10 000                                           |
+| Tamaño máximo de un objeto              | 50 TB (ampliado desde 5 TB en diciembre de 2025) |
 
 La AWS CLI aplica la carga multiparte **automáticamente** a partir de 8 MB. Su comportamiento puede ajustarse:
 

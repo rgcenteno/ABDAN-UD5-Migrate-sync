@@ -1,12 +1,5 @@
 # UD5 · 7. Seguridad, monitorización y auditoría de las transferencias
 
-> **Módulo:** 5162 · Administración de bases de datos y almacenamiento en la nube
-> **Unidad didáctica:** UD5 · Transferencia, sincronización y migración de datos
-> **Temporalización:** semana 1 · sesiones 7 y 8 (contenido transversal, que se retoma en la semana 2 con AWS DMS)
-> **Resultados de aprendizaje:** RA5 (criterios c, e, h) · RA6 (criterios b, c, d, g)
-
----
-
 ## 1. Introducción
 
 Una transferencia de datos es uno de los momentos de mayor exposición de la información: los datos salen de su entorno habitual, atraviesan redes y llegan a sistemas nuevos. Por eso, la seguridad y la supervisión no son un añadido final, sino parte del diseño desde el principio.
@@ -30,12 +23,12 @@ Este documento reúne, de forma transversal a todos los servicios de la unidad, 
 
 La arquitectura aplica **defensa en profundidad**, con controles en cuatro capas:
 
-| Capa | Control | Elemento de la figura |
-|---|---|---|
-| Red | Conectividad privada y sin exposición a Internet. | VPN o Direct Connect y *endpoint* de interfaz. |
-| Identidad | Permisos mínimos para cada servicio. | Rol IAM. |
-| Datos | Cifrado en tránsito y en reposo. | TLS y SSE-KMS. |
-| Supervisión | Métricas, eventos y registro de la actividad. | CloudWatch, EventBridge y CloudTrail. |
+| Capa        | Control                                           | Elemento de la figura                          |
+| ----------- | ------------------------------------------------- | ---------------------------------------------- |
+| Red         | Conectividad privada y sin exposición a Internet. | VPN o Direct Connect y *endpoint* de interfaz. |
+| Identidad   | Permisos mínimos para cada servicio.              | Rol IAM.                                       |
+| Datos       | Cifrado en tránsito y en reposo.                  | TLS y SSE-KMS.                                 |
+| Supervisión | Métricas, eventos y registro de la actividad.     | CloudWatch, EventBridge y CloudTrail.          |
 
 ---
 
@@ -43,11 +36,11 @@ La arquitectura aplica **defensa en profundidad**, con controles en cuatro capas
 
 ### 3.1. En tránsito
 
-| Servicio | Mecanismo |
-|---|---|
-| AWS CLI y Amazon S3 | HTTPS (TLS). |
-| AWS DataSync | TLS entre el agente y el servicio. |
-| AWS Transfer Family | SSH (SFTP), TLS (FTPS) o firma y cifrado de mensajes (AS2). FTP no cifra. |
+| Servicio             | Mecanismo                                                                  |
+| -------------------- | -------------------------------------------------------------------------- |
+| AWS CLI y Amazon S3  | HTTPS (TLS).                                                               |
+| AWS DataSync         | TLS entre el agente y el servicio.                                         |
+| AWS Transfer Family  | SSH (SFTP), TLS (FTPS) o firma y cifrado de mensajes (AS2). FTP no cifra.  |
 | Conexión entre redes | IPsec en la VPN; Direct Connect puede reforzarse con VPN o cifrado MACsec. |
 
 Para **impedir cualquier acceso sin cifrar** a un *bucket*, se añade una política que deniega las peticiones que no usan TLS:
@@ -98,13 +91,13 @@ El principio de **mínimo privilegio** implica que cada servicio y cada usuario 
 
 ## 5. Conectividad privada
 
-| Mecanismo | Descripción | Uso en la unidad |
-|---|---|---|
-| **VPN de sitio a sitio** | Túnel IPsec cifrado a través de Internet entre la red local y la VPC. | Conexión del centro de datos con AWS. |
-| **AWS Direct Connect** | Conexión física dedicada entre la red local y AWS, con ancho de banda y latencia predecibles. | Migraciones grandes y flujos híbridos permanentes. |
-| ***Endpoint* de puerta de enlace para S3** | Permite que los recursos de la VPC accedan a S3 sin salir a Internet. Sin coste adicional. | Acceso privado de instancias EC2 a S3. |
-| ***Endpoint* de interfaz (AWS PrivateLink)** | Interfaz de red con IP privada en una subred, que da acceso privado a la API de un servicio. | DataSync con *endpoint* de VPC. |
-| **Grupos de seguridad** | Cortafuegos con estado aplicado a las interfaces de red. | Restringir el tráfico al destino de montaje de EFS o a las IP de cada socio en Transfer Family. |
+| Mecanismo                                    | Descripción                                                                                   | Uso en la unidad                                                                                |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **VPN de sitio a sitio**                     | Túnel IPsec cifrado a través de Internet entre la red local y la VPC.                         | Conexión del centro de datos con AWS.                                                           |
+| **AWS Direct Connect**                       | Conexión física dedicada entre la red local y AWS, con ancho de banda y latencia predecibles. | Migraciones grandes y flujos híbridos permanentes.                                              |
+| ***Endpoint* de puerta de enlace para S3**   | Permite que los recursos de la VPC accedan a S3 sin salir a Internet. Sin coste adicional.    | Acceso privado de instancias EC2 a S3.                                                          |
+| ***Endpoint* de interfaz (AWS PrivateLink)** | Interfaz de red con IP privada en una subred, que da acceso privado a la API de un servicio.  | DataSync con *endpoint* de VPC.                                                                 |
+| **Grupos de seguridad**                      | Cortafuegos con estado aplicado a las interfaces de red.                                      | Restringir el tráfico al destino de montaje de EFS o a las IP de cada socio en Transfer Family. |
 
 La combinación de **VPN o Direct Connect** con un ***endpoint* de interfaz** garantiza que los datos viajan desde el origen hasta el servicio sin pasar por Internet.
 
@@ -114,11 +107,11 @@ La combinación de **VPN o Direct Connect** con un ***endpoint* de interfaz** ga
 
 ### 6.1. Métricas y registros
 
-| Servicio | Métricas principales en CloudWatch | Registros |
-|---|---|---|
-| AWS DataSync | Bytes y ficheros preparados, transferidos y verificados. | CloudWatch Logs e informes de tarea en S3. |
-| AWS Transfer Family | Bytes y ficheros de entrada y salida; ejecuciones de flujos. | Registros estructurados de sesión en CloudWatch Logs. |
-| Amazon S3 | Tamaño del *bucket*, número de objetos y, opcionalmente, métricas de peticiones. | Registros de acceso al servidor. |
+| Servicio            | Métricas principales en CloudWatch                                               | Registros                                             |
+| ------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| AWS DataSync        | Bytes y ficheros preparados, transferidos y verificados.                         | CloudWatch Logs e informes de tarea en S3.            |
+| AWS Transfer Family | Bytes y ficheros de entrada y salida; ejecuciones de flujos.                     | Registros estructurados de sesión en CloudWatch Logs. |
+| Amazon S3           | Tamaño del *bucket*, número de objetos y, opcionalmente, métricas de peticiones. | Registros de acceso al servidor.                      |
 
 Sobre estas métricas se definen **alarmas de CloudWatch**, por ejemplo cuando no se ha transferido ningún byte en el periodo esperado.
 
@@ -148,17 +141,17 @@ Estos registros constituyen la **evidencia** de que la transferencia se ha reali
 
 ## 8. Lista de comprobación
 
-| Control | Comprobado |
-|---|---|
-| Los datos viajan cifrados (TLS, SSH o IPsec). | ☐ |
-| El destino cifra los datos en reposo (SSE-S3 o SSE-KMS). | ☐ |
-| El *bucket* deniega las peticiones sin TLS y bloquea el acceso público. | ☐ |
-| Los roles y usuarios tienen solo los permisos necesarios. | ☐ |
-| El tráfico no atraviesa Internet cuando el caso lo exige (VPN, Direct Connect, *endpoints*). | ☐ |
-| Las métricas y registros de cada transferencia se envían a CloudWatch. | ☐ |
-| Existe una notificación ante errores (EventBridge y SNS). | ☐ |
-| CloudTrail registra la actividad sobre los recursos implicados. | ☐ |
-| La integridad final se ha verificado con recuentos y sumas de comprobación. | ☐ |
+| Control                                                                                      | Comprobado |
+| -------------------------------------------------------------------------------------------- | ---------- |
+| Los datos viajan cifrados (TLS, SSH o IPsec).                                                | ☐          |
+| El destino cifra los datos en reposo (SSE-S3 o SSE-KMS).                                     | ☐          |
+| El *bucket* deniega las peticiones sin TLS y bloquea el acceso público.                      | ☐          |
+| Los roles y usuarios tienen solo los permisos necesarios.                                    | ☐          |
+| El tráfico no atraviesa Internet cuando el caso lo exige (VPN, Direct Connect, *endpoints*). | ☐          |
+| Las métricas y registros de cada transferencia se envían a CloudWatch.                       | ☐          |
+| Existe una notificación ante errores (EventBridge y SNS).                                    | ☐          |
+| CloudTrail registra la actividad sobre los recursos implicados.                              | ☐          |
+| La integridad final se ha verificado con recuentos y sumas de comprobación.                  | ☐          |
 
 ---
 

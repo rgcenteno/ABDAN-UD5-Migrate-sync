@@ -1,12 +1,5 @@
 # UD5 · 3. AWS DataSync
 
-> **Módulo:** 5162 · Administración de bases de datos y almacenamiento en la nube
-> **Unidad didáctica:** UD5 · Transferencia, sincronización y migración de datos
-> **Temporalización:** semana 1 · sesión 3 (práctica corta en las sesiones 4 y 5)
-> **Resultados de aprendizaje:** RA5 (criterios a, c, e, f, h) · RA6 (criterios a, e, g)
-
----
-
 ## 1. Introducción
 
 **AWS DataSync** es un servicio gestionado de transferencia de datos en línea. Automatiza el movimiento de ficheros y objetos entre sistemas de almacenamiento locales, servicios de almacenamiento de AWS y otras nubes. Frente a una herramienta como `aws s3 sync`, DataSync se encarga del paralelismo, el cifrado, los reintentos, la verificación de integridad, la programación y el registro de cada ejecución.
@@ -44,22 +37,22 @@ El flujo numerado en la figura es el siguiente:
 
 ## 3. Componentes
 
-| Componente | Descripción |
-|---|---|
-| **Agente** | Máquina virtual que se despliega junto al almacenamiento de origen y lee o escribe sus datos. Se instala en VMware ESXi, KVM o Microsoft Hyper-V, o como instancia de Amazon EC2. Tras desplegarlo, se **activa** para asociarlo a la cuenta y a la región. |
-| **Ubicación** (*location*) | Definición de un origen o destino: tipo de almacenamiento, ruta y credenciales o rol de acceso. |
-| **Tarea** (*task*) | Asocia una ubicación de origen con una de destino e incluye las opciones de transferencia. |
-| **Ejecución** (*task execution*) | Cada ejecución concreta de una tarea, con su propio estado, métricas e informe. |
+| Componente                       | Descripción                                                                                                                                                                                                                                                 |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Agente**                       | Máquina virtual que se despliega junto al almacenamiento de origen y lee o escribe sus datos. Se instala en VMware ESXi, KVM o Microsoft Hyper-V, o como instancia de Amazon EC2. Tras desplegarlo, se **activa** para asociarlo a la cuenta y a la región. |
+| **Ubicación** (*location*)       | Definición de un origen o destino: tipo de almacenamiento, ruta y credenciales o rol de acceso.                                                                                                                                                             |
+| **Tarea** (*task*)               | Asocia una ubicación de origen con una de destino e incluye las opciones de transferencia.                                                                                                                                                                  |
+| **Ejecución** (*task execution*) | Cada ejecución concreta de una tarea, con su propio estado, métricas e informe.                                                                                                                                                                             |
 
 ### 3.1. ¿Es necesario un agente?
 
-| Escenario | Agente |
-|---|---|
-| Almacenamiento local (NFS, SMB, HDFS, almacenamiento de objetos propio) ↔ AWS | **Sí** |
-| Amazon EFS o Amazon FSx ↔ almacenamiento en otra nube | **Sí** |
-| Entre servicios de almacenamiento de AWS de la misma cuenta (p. ej., EFS → S3) | No |
-| Amazon S3 ↔ otro servicio de AWS en otra cuenta | No |
-| Amazon S3 ↔ almacenamiento de objetos de otras nubes | No |
+| Escenario                                                                      | Agente |
+| ------------------------------------------------------------------------------ | ------ |
+| Almacenamiento local (NFS, SMB, HDFS, almacenamiento de objetos propio) ↔ AWS  | **Sí** |
+| Amazon EFS o Amazon FSx ↔ almacenamiento en otra nube                          | **Sí** |
+| Entre servicios de almacenamiento de AWS de la misma cuenta (p. ej., EFS → S3) | No     |
+| Amazon S3 ↔ otro servicio de AWS en otra cuenta                                | No     |
+| Amazon S3 ↔ almacenamiento de objetos de otras nubes                           | No     |
 
 La mayoría de las transferencias necesitan un único agente. Para conjuntos con millones de ficheros se pueden asignar hasta cuatro agentes a una ubicación, o dividir el trabajo en varias tareas paralelas. Varios agentes **no** proporcionan alta disponibilidad: todos deben estar en línea para que la tarea arranque.
 
@@ -74,13 +67,13 @@ La mayoría de las transferencias necesitan un único agente. Para conjuntos con
 
 ## 4. Modos de tarea
 
-| | Modo básico (*Basic*) | Modo mejorado (*Enhanced*) |
-|---|---|---|
-| Funcionamiento | Prepara, transfiere y verifica los ficheros de forma secuencial. | Lista, prepara, transfiere y verifica en paralelo. |
-| Escala | Sujeto a cuotas de número de ficheros por ejecución. | Número prácticamente ilimitado de objetos. |
-| Ubicaciones | Todas las disponibles. | S3, EFS, FSx for Lustre y FSx for OpenZFS, frente a NFS, SMB, HDFS, almacenamiento de objetos y Azure Blob. |
-| Agente | Agente en modo básico. | Agente en modo mejorado. |
-| Precio | 0,0125 USD por GB transferido. | 0,015 USD por GB más 0,55 USD por ejecución. |
+|                | Modo básico (*Basic*)                                            | Modo mejorado (*Enhanced*)                                                                                  |
+| -------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Funcionamiento | Prepara, transfiere y verifica los ficheros de forma secuencial. | Lista, prepara, transfiere y verifica en paralelo.                                                          |
+| Escala         | Sujeto a cuotas de número de ficheros por ejecución.             | Número prácticamente ilimitado de objetos.                                                                  |
+| Ubicaciones    | Todas las disponibles.                                           | S3, EFS, FSx for Lustre y FSx for OpenZFS, frente a NFS, SMB, HDFS, almacenamiento de objetos y Azure Blob. |
+| Agente         | Agente en modo básico.                                           | Agente en modo mejorado.                                                                                    |
+| Precio         | 0,0125 USD por GB transferido.                                   | 0,015 USD por GB más 0,55 USD por ejecución.                                                                |
 
 *Precios de referencia en US East (N. Virginia), noviembre de 2026.*
 
@@ -88,18 +81,18 @@ La mayoría de las transferencias necesitan un único agente. Para conjuntos con
 
 ## 5. Opciones de configuración de una tarea
 
-| Opción | Valores habituales | Utilidad |
-|---|---|---|
-| **Modo de transferencia** | Solo datos modificados / todos los datos | La primera opción hace la sincronización incremental. |
-| **Verificación** | Solo ficheros transferidos / todo el destino / ninguna | Comprueba la integridad mediante sumas de comprobación al terminar. |
-| **Ficheros borrados en el origen** | Conservar / eliminar en el destino | Equivale a la opción `--delete` de `aws s3 sync`. |
-| **Sobrescritura** | Permitir / no permitir | Protege ficheros modificados en el destino. |
-| **Metadatos** | Conservar propietarios, permisos POSIX y marcas de tiempo | Imprescindible en migraciones de sistemas de ficheros. |
-| **Filtros** | Patrones de inclusión y exclusión (p. ej., `*.tmp`) | Limita qué se transfiere. |
-| **Límite de ancho de banda** | MiB/s | Evita saturar el enlace de la organización. |
-| **Programación** | Expresión `cron` o `rate` (intervalo mínimo de una hora) | Sincronización automática y desatendida. |
-| **Informe de tarea** | Resumen o detallado, guardado en S3 | Evidencia de qué se transfirió, omitió o verificó. |
-| **Registro** | Grupo de CloudWatch Logs | Diagnóstico de errores. |
+| Opción                             | Valores habituales                                        | Utilidad                                                            |
+| ---------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------- |
+| **Modo de transferencia**          | Solo datos modificados / todos los datos                  | La primera opción hace la sincronización incremental.               |
+| **Verificación**                   | Solo ficheros transferidos / todo el destino / ninguna    | Comprueba la integridad mediante sumas de comprobación al terminar. |
+| **Ficheros borrados en el origen** | Conservar / eliminar en el destino                        | Equivale a la opción `--delete` de `aws s3 sync`.                   |
+| **Sobrescritura**                  | Permitir / no permitir                                    | Protege ficheros modificados en el destino.                         |
+| **Metadatos**                      | Conservar propietarios, permisos POSIX y marcas de tiempo | Imprescindible en migraciones de sistemas de ficheros.              |
+| **Filtros**                        | Patrones de inclusión y exclusión (p. ej., `*.tmp`)       | Limita qué se transfiere.                                           |
+| **Límite de ancho de banda**       | MiB/s                                                     | Evita saturar el enlace de la organización.                         |
+| **Programación**                   | Expresión `cron` o `rate` (intervalo mínimo de una hora)  | Sincronización automática y desatendida.                            |
+| **Informe de tarea**               | Resumen o detallado, guardado en S3                       | Evidencia de qué se transfirió, omitió o verificó.                  |
+| **Registro**                       | Grupo de CloudWatch Logs                                  | Diagnóstico de errores.                                             |
 
 Cada ejecución pasa por las fases **Lanzamiento → Preparación → Transferencia → Verificación** y termina en **Éxito** o **Error**. En la fase de preparación, DataSync compara origen y destino para decidir qué debe copiar.
 
@@ -161,14 +154,14 @@ La salida de `describe-task-execution` incluye el estado, los bytes y ficheros t
 
 ## 9. DataSync frente a otras herramientas
 
-| Criterio | `aws s3 sync` | AWS DataSync |
-|---|---|---|
-| Despliegue | Ninguno; basta la CLI. | Agente (si el origen es local) y configuración de tareas. |
-| Escala | Adecuada para volúmenes moderados. | Diseñado para millones de ficheros y petabytes. |
-| Verificación | Básica. | Integrada, con informes. |
-| Programación | Externa (`cron`). | Integrada. |
-| Destinos | S3. | S3, EFS, FSx y otros. |
-| Coste | Solo peticiones y almacenamiento. | Precio por GB transferido. |
+| Criterio     | `aws s3 sync`                      | AWS DataSync                                              |
+| ------------ | ---------------------------------- | --------------------------------------------------------- |
+| Despliegue   | Ninguno; basta la CLI.             | Agente (si el origen es local) y configuración de tareas. |
+| Escala       | Adecuada para volúmenes moderados. | Diseñado para millones de ficheros y petabytes.           |
+| Verificación | Básica.                            | Integrada, con informes.                                  |
+| Programación | Externa (`cron`).                  | Integrada.                                                |
+| Destinos     | S3.                                | S3, EFS, FSx y otros.                                     |
+| Coste        | Solo peticiones y almacenamiento.  | Precio por GB transferido.                                |
 
 ---
 

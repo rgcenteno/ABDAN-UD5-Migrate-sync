@@ -1,12 +1,5 @@
 # UD5 · 5. Transferencia fuera de línea
 
-> **Módulo:** 5162 · Administración de bases de datos y almacenamiento en la nube
-> **Unidad didáctica:** UD5 · Transferencia, sincronización y migración de datos
-> **Temporalización:** semana 1 · sesión 7
-> **Resultados de aprendizaje:** RA5 (criterios a, b, d)
-
----
-
 ## 1. Introducción
 
 Cuando el volumen de datos es muy grande o la conectividad es insuficiente, transferir por red puede tardar semanas o meses (véase el apartado 5 del documento 1). En estos casos, puede ser más rápido **transportar físicamente** los datos hasta un punto de carga de AWS. Esta modalidad se denomina **transferencia fuera de línea** (*offline*).
@@ -39,12 +32,12 @@ Antes de optar por ella, conviene comprobar si basta con transferir solo los dat
 
 ### 3.1. Evolución y situación actual
 
-| Dispositivo | Características | Situación |
-|---|---|---|
-| **Snowcone** | Dispositivo pequeño y ligero para entornos de borde. | Retirado: no puede pedirse desde noviembre de 2024. |
-| **Snowball Edge Storage Optimized** | Dispositivo robusto para transferencia masiva; la última generación ofrece 210 TB. | Solo para clientes existentes desde el 7 de noviembre de 2025. |
-| **Snowball Edge Compute Optimized** | Orientado a computación en el borde, con almacenamiento local. | Solo para clientes existentes desde el 7 de noviembre de 2025. |
-| **Snowmobile** | Contenedor de transporte para volúmenes de exabytes. | Retirado. |
+| Dispositivo                         | Características                                                                    | Situación                                                        |
+| ----------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| **Snowcone**                        | Dispositivo pequeño y ligero para entornos de borde.                               | Retirado: no puede pedirse desde noviembre de 2024.              |
+| **Snowball Edge Storage Optimized** | Dispositivo robusto para transferencia masiva; la última generación ofrece 210 TB. | Solo para clientes existentes antes del 7 de noviembre de 2025.  |
+| **Snowball Edge Compute Optimized** | Orientado a computación en el borde, con almacenamiento local.                     | Solo para clientes existentes antes  del 7 de noviembre de 2025. |
+| **Snowmobile**                      | Contenedor de transporte para volúmenes de exabytes.                               | Retirado.                                                        |
 
 Desde el 7 de noviembre de 2025, **AWS no acepta nuevos clientes** en Snowball Edge. Para nuevos proyectos recomienda:
 
@@ -96,11 +89,11 @@ En febrero de 2026, el servicio contaba con 11 ubicaciones en el mundo. En Europ
 
 Se factura por **hora de puerto** reservada, aunque no se esté transfiriendo. El precio depende de la ubicación del terminal y de la región de destino.
 
-| Terminal | Destino | Precio por hora de puerto |
-|---|---|---|
-| Norteamérica | Norteamérica | 300 USD |
-| Norteamérica | Europa | 500 USD |
-| Europa | Norteamérica | 500 USD |
+| Terminal     | Destino      | Precio por hora de puerto |
+| ------------ | ------------ | ------------------------- |
+| Norteamérica | Norteamérica | 300 USD                   |
+| Norteamérica | Europa       | 500 USD                   |
+| Europa       | Norteamérica | 500 USD                   |
 
 No hay cargo por GB cuando los datos se cargan en regiones del mismo continente que el terminal. Antes de reservar, conviene consultar los requisitos de acceso vigentes y los precios de la ubicación concreta.
 
@@ -108,13 +101,13 @@ No hay cargo por GB cuando los datos se cargan en regiones del mismo continente 
 
 ## 5. Comparativa de opciones para grandes volúmenes
 
-| Criterio | DataSync con red dedicada | Data Transfer Terminal | Snowball Edge |
-|---|---|---|---|
-| Disponibilidad para nuevos clientes | Sí | Sí | No (desde noviembre de 2025) |
-| Modalidad | En línea | Física, en una instalación de AWS | Física, con envío del dispositivo |
-| Dispositivos | No aplica | Propios del cliente | De AWS |
-| Coste principal | Por GB más el enlace | Por hora de puerto | Por trabajo, días de uso y envío |
-| Sincronización posterior | Sí, incremental | No; requiere otra herramienta | No; requiere otra herramienta |
+| Criterio                            | DataSync con red dedicada | Data Transfer Terminal            | Snowball Edge                     |
+| ----------------------------------- | ------------------------- | --------------------------------- | --------------------------------- |
+| Disponibilidad para nuevos clientes | Sí                        | Sí                                | No (desde noviembre de 2025)      |
+| Modalidad                           | En línea                  | Física, en una instalación de AWS | Física, con envío del dispositivo |
+| Dispositivos                        | No aplica                 | Propios del cliente               | De AWS                            |
+| Coste principal                     | Por GB más el enlace      | Por hora de puerto                | Por trabajo, días de uso y envío  |
+| Sincronización posterior            | Sí, incremental           | No; requiere otra herramienta     | No; requiere otra herramienta     |
 
 Un patrón habitual en migraciones grandes combina ambas modalidades: una **carga inicial física** del grueso de los datos y, después, una **sincronización incremental en línea** con DataSync de los cambios producidos mientras tanto.
 
@@ -124,7 +117,7 @@ Un patrón habitual en migraciones grandes combina ambas modalidades: una **carg
 
 - **Cifrar los datos antes del transporte**, con claves que no viajen junto al soporte.
 - **Documentar la cadena de custodia**: quién manipula el soporte, cuándo y dónde.
-- **Verificar la integridad tras la carga** mediante sumas de comprobación y recuentos (documento 2, apartado 7).
+- **Verificar la integridad tras la carga** mediante sumas de comprobación y recuentos.
 - **Borrar de forma segura** los soportes una vez confirmada la carga.
 
 ---

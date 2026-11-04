@@ -56,3 +56,7 @@ nav:
       - AWS Transfer Family: "04-aws-transfer-family.md"
       - Transferencia fuera de línea: "05-transferencia-fuera-de-linea.md"
       - Seguridad, monitorización y auditoría: "07-seguridad-monitorizacion-auditoria.md"
+
+  - Semana 2:
+      - "Migración de bases de datos: técnicas y planificación": "06a-migracion-bases-datos.md"
+      - AWS Database Migration Service (DMS): "06b-aws-dms.md"
