@@ -1,12 +1,5 @@
 # UD5 · 6.1. Migración de bases de datos: técnicas y planificación
 
-> **Módulo:** 5162 · Administración de bases de datos y almacenamiento en la nube
-> **Unidad didáctica:** UD5 · Transferencia, sincronización y migración de datos
-> **Temporalización:** semana 2 · sesión 9
-> **Resultados de aprendizaje:** RA5 (criterios a, c, e, f, g, h) · RA4 (criterio e)
-
----
-
 ## 1. Introducción
 
 Migrar una base de datos es más delicado que migrar ficheros. Una base de datos cambia constantemente mientras se migra, tiene objetos además de datos (índices, vistas, procedimientos, usuarios) y suele dar servicio a aplicaciones que no pueden quedarse paradas mucho tiempo.
@@ -24,10 +17,10 @@ Este documento presenta las técnicas para trasladar una base de datos a AWS y c
 
 ## 2. Migración homogénea y heterogénea
 
-| Tipo | Definición | Ejemplo | Dificultad principal |
-|---|---|---|---|
-| **Homogénea** | El motor de origen y el de destino son el mismo. | MySQL local → Amazon RDS for MySQL | Mover los datos con poca interrupción. |
-| **Heterogénea** | El motor cambia. | Oracle → Amazon Aurora PostgreSQL | Además, convertir el esquema y el código (procedimientos, disparadores, tipos de datos). |
+| Tipo            | Definición                                       | Ejemplo                            | Dificultad principal                                                                     |
+| --------------- | ------------------------------------------------ | ---------------------------------- | ---------------------------------------------------------------------------------------- |
+| **Homogénea**   | El motor de origen y el de destino son el mismo. | MySQL local → Amazon RDS for MySQL | Mover los datos con poca interrupción.                                                   |
+| **Heterogénea** | El motor cambia.                                 | Oracle → Amazon Aurora PostgreSQL  | Además, convertir el esquema y el código (procedimientos, disparadores, tipos de datos). |
 
 En una migración homogénea, el esquema se traslada tal cual. En una heterogénea, hay dos trabajos separados: **convertir el esquema** y **mover los datos**. Conviene que la versión del motor de destino sea igual o superior a la de origen: no se puede migrar a una versión anterior.
 
@@ -41,11 +34,11 @@ Desde el punto de vista de las estrategias de migración (documento 1), pasar de
 
 Se exporta la base de datos a un fichero de sentencias SQL con las herramientas del propio motor y se ejecuta ese fichero en el destino.
 
-| Motor | Exportación | Importación |
-|---|---|---|
-| MySQL / MariaDB | `mysqldump` | `mysql` |
-| PostgreSQL | `pg_dump` | `pg_restore` o `psql` |
-| SQL Server | Asistente de exportación o `bcp` | `sqlcmd` o `bcp` |
+| Motor           | Exportación                      | Importación           |
+| --------------- | -------------------------------- | --------------------- |
+| MySQL / MariaDB | `mysqldump`                      | `mysql`               |
+| PostgreSQL      | `pg_dump`                        | `pg_restore` o `psql` |
+| SQL Server      | Asistente de exportación o `bcp` | `sqlcmd` o `bcp`      |
 
 ```bash
 # Volcado coherente de una base de datos InnoDB, con procedimientos, disparadores y eventos
@@ -103,12 +96,12 @@ La figura compara el tiempo de inactividad de las dos familias de técnicas.
 
 *Figura 1. Con volcado y restauración, la aplicación no puede escribir durante todo el proceso. Con carga completa más CDC, solo durante el corte.*
 
-| Técnica | Homogénea | Heterogénea | Inactividad | Complejidad |
-|---|---|---|---|---|
-| Volcado lógico y restauración | Sí | No (salvo exportando datos planos) | Todo el proceso | Baja |
-| Copia física | Sí | No | Todo el proceso | Media |
-| Carga inicial + replicación nativa | Sí | No | Solo el corte | Media-alta |
-| AWS DMS (carga completa + CDC) | Sí | Sí | Solo el corte | Media |
+| Técnica                            | Homogénea | Heterogénea                        | Inactividad     | Complejidad |
+| ---------------------------------- | --------- | ---------------------------------- | --------------- | ----------- |
+| Volcado lógico y restauración      | Sí        | No (salvo exportando datos planos) | Todo el proceso | Baja        |
+| Copia física                       | Sí        | No                                 | Todo el proceso | Media       |
+| Carga inicial + replicación nativa | Sí        | No                                 | Solo el corte   | Media-alta  |
+| AWS DMS (carga completa + CDC)     | Sí        | Sí                                 | Solo el corte   | Media       |
 
 ---
 
@@ -164,13 +157,13 @@ Hay que decidir de antemano qué se hará si el destino falla después del corte
 
 Que la migración termine sin errores no garantiza que los datos sean correctos. La validación combina varias comprobaciones:
 
-| Comprobación | Cómo | Detecta |
-|---|---|---|
-| Recuento de filas | `SELECT COUNT(*)` por tabla en origen y destino | Filas que faltan o sobran. |
-| Sumas de comprobación | `CHECKSUM TABLE` (MySQL) o sumas sobre columnas numéricas | Diferencias de contenido. |
-| Muestreo | Comparar registros concretos, incluidos los más recientes | Problemas de codificación o de tipos de datos. |
-| Objetos | Comparar el número de índices, vistas, procedimientos y disparadores | Objetos no migrados. |
-| Pruebas funcionales | Ejecutar los casos de uso principales de la aplicación | Errores que los datos no muestran. |
+| Comprobación          | Cómo                                                                 | Detecta                                        |
+| --------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
+| Recuento de filas     | `SELECT COUNT(*)` por tabla en origen y destino                      | Filas que faltan o sobran.                     |
+| Sumas de comprobación | `CHECKSUM TABLE` (MySQL) o sumas sobre columnas numéricas            | Diferencias de contenido.                      |
+| Muestreo              | Comparar registros concretos, incluidos los más recientes            | Problemas de codificación o de tipos de datos. |
+| Objetos               | Comparar el número de índices, vistas, procedimientos y disparadores | Objetos no migrados.                           |
+| Pruebas funcionales   | Ejecutar los casos de uso principales de la aplicación               | Errores que los datos no muestran.             |
 
 AWS DMS incluye además una **validación automática** fila a fila, que se estudia en el documento 6.2.
 

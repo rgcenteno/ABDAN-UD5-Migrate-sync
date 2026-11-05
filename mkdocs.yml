@@ -8,6 +8,7 @@ theme:
     - navigation.expand
     - content.code.copy
     - content.code.annotate
+    - content.tabs.link
 
   palette:
     - scheme: default
@@ -60,3 +61,5 @@ nav:
   - Semana 2:
       - "Migración de bases de datos: técnicas y planificación": "06a-migracion-bases-datos.md"
       - AWS Database Migration Service (DMS): "06b-aws-dms.md"
+  - Prácticas:
+      - "Migración con DMS": practica-migracion-dms-aurora.md
