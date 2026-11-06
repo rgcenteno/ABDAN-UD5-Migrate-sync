@@ -1,0 +1,1363 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../04-aws-transfer-family/">
+      
+      
+        <link rel="next" href="../07-seguridad-monitorizacion-auditoria/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Transferencia fuera de línea - UD5. Transferencia, sincronización y migración de datos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ud5-5-transferencia-fuera-de-linea" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-header__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            UD5. Transferencia, sincronización y migración de datos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Transferencia fuera de línea
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-nav__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    UD5. Transferencia, sincronización y migración de datos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 1
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 1
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-fundamentos-migracion-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fundamentos de la migración de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-amazon-s3-destino-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Amazon S3 como destino de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-aws-datasync/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS DataSync
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-aws-transfer-family/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Transfer Family
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transferencia fuera de línea
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transferencia fuera de línea
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introducción">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-cuando-transferir-fuera-de-linea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. ¿Cuándo transferir fuera de línea?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-la-familia-aws-snow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. La familia AWS Snow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. La familia AWS Snow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-evolucion-y-situacion-actual" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Evolución y situación actual
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-ciclo-de-vida-de-un-trabajo-de-importacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Ciclo de vida de un trabajo de importación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-garantias-de-seguridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Garantías de seguridad
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-aws-data-transfer-terminal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. AWS Data Transfer Terminal
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. AWS Data Transfer Terminal">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-funcionamiento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Funcionamiento
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-modelo-de-costes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Modelo de costes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-comparativa-de-opciones-para-grandes-volumenes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Comparativa de opciones para grandes volúmenes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-recomendaciones-de-seguridad-para-cualquier-transferencia-fisica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Recomendaciones de seguridad para cualquier transferencia física
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-ideas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Ideas clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-preguntas-de-autoevaluacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Preguntas de autoevaluación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-seguridad-monitorizacion-auditoria/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Seguridad, monitorización y auditoría
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 2
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-migracion-bases-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración de bases de datos: técnicas y planificación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06b-aws-dms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Database Migration Service (DMS)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practica-migracion-dms-aurora/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración con DMS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introducción">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-cuando-transferir-fuera-de-linea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. ¿Cuándo transferir fuera de línea?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-la-familia-aws-snow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. La familia AWS Snow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. La familia AWS Snow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-evolucion-y-situacion-actual" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Evolución y situación actual
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-ciclo-de-vida-de-un-trabajo-de-importacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Ciclo de vida de un trabajo de importación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-garantias-de-seguridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Garantías de seguridad
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-aws-data-transfer-terminal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. AWS Data Transfer Terminal
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. AWS Data Transfer Terminal">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-funcionamiento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Funcionamiento
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-modelo-de-costes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Modelo de costes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-comparativa-de-opciones-para-grandes-volumenes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Comparativa de opciones para grandes volúmenes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-recomendaciones-de-seguridad-para-cualquier-transferencia-fisica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Recomendaciones de seguridad para cualquier transferencia física
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-ideas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Ideas clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-preguntas-de-autoevaluacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Preguntas de autoevaluación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="ud5-5-transferencia-fuera-de-linea">UD5 · 5. Transferencia fuera de línea<a class="headerlink" href="#ud5-5-transferencia-fuera-de-linea" title="Permanent link">&para;</a></h1>
+<h2 id="1-introduccion">1. Introducción<a class="headerlink" href="#1-introduccion" title="Permanent link">&para;</a></h2>
+<p>Cuando el volumen de datos es muy grande o la conectividad es insuficiente, transferir por red puede tardar semanas o meses (véase el apartado 5 del documento 1). En estos casos, puede ser más rápido <strong>transportar físicamente</strong> los datos hasta un punto de carga de AWS. Esta modalidad se denomina <strong>transferencia fuera de línea</strong> (<em>offline</em>).</p>
+<p>Durante una década, la solución de AWS para este escenario fue la <strong>familia AWS Snow</strong>: dispositivos que AWS enviaba al cliente. En 2025 esta oferta dejó de estar disponible para nuevos clientes, y AWS orienta ahora la transferencia física hacia <strong>AWS Data Transfer Terminal</strong>. Este documento estudia ambos modelos: el primero, por su valor conceptual y porque sigue en uso por clientes existentes; el segundo, como alternativa vigente.</p>
+<h3 id="objetivos">Objetivos<a class="headerlink" href="#objetivos" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Determinar cuándo está justificada una transferencia fuera de línea.</li>
+<li>Describir el ciclo de vida de un trabajo de importación con Snowball Edge y sus garantías de seguridad.</li>
+<li>Conocer la situación actual de la familia Snow y sus alternativas.</li>
+<li>Describir el funcionamiento y el modelo de costes de AWS Data Transfer Terminal.</li>
+</ul>
+<hr />
+<h2 id="2-cuando-transferir-fuera-de-linea">2. ¿Cuándo transferir fuera de línea?<a class="headerlink" href="#2-cuando-transferir-fuera-de-linea" title="Permanent link">&para;</a></h2>
+<p>Se considera la transferencia física cuando se cumple alguna de estas condiciones:</p>
+<ul>
+<li>El tiempo estimado de transferencia por red supera el plazo disponible para el proyecto (como orientación, más de una semana).</li>
+<li>El enlace de red es necesario para la actividad diaria y no puede dedicarse a la migración.</li>
+<li>El origen está en una ubicación remota con conectividad escasa o inexistente.</li>
+<li>Ampliar temporalmente el ancho de banda resulta más caro que el transporte físico.</li>
+</ul>
+<p>Antes de optar por ella, conviene comprobar si basta con transferir solo los datos activos o con contratar una conexión dedicada temporal (AWS Direct Connect) y usar DataSync.</p>
+<hr />
+<h2 id="3-la-familia-aws-snow">3. La familia AWS Snow<a class="headerlink" href="#3-la-familia-aws-snow" title="Permanent link">&para;</a></h2>
+<h3 id="31-evolucion-y-situacion-actual">3.1. Evolución y situación actual<a class="headerlink" href="#31-evolucion-y-situacion-actual" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Dispositivo</th>
+<th>Características</th>
+<th>Situación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Snowcone</strong></td>
+<td>Dispositivo pequeño y ligero para entornos de borde.</td>
+<td>Retirado: no puede pedirse desde noviembre de 2024.</td>
+</tr>
+<tr>
+<td><strong>Snowball Edge Storage Optimized</strong></td>
+<td>Dispositivo robusto para transferencia masiva; la última generación ofrece 210 TB.</td>
+<td>Solo para clientes existentes antes del 7 de noviembre de 2025.</td>
+</tr>
+<tr>
+<td><strong>Snowball Edge Compute Optimized</strong></td>
+<td>Orientado a computación en el borde, con almacenamiento local.</td>
+<td>Solo para clientes existentes antes  del 7 de noviembre de 2025.</td>
+</tr>
+<tr>
+<td><strong>Snowmobile</strong></td>
+<td>Contenedor de transporte para volúmenes de exabytes.</td>
+<td>Retirado.</td>
+</tr>
+</tbody>
+</table>
+<p>Desde el 7 de noviembre de 2025, <strong>AWS no acepta nuevos clientes</strong> en Snowball Edge. Para nuevos proyectos recomienda:</p>
+<ul>
+<li><strong>AWS DataSync</strong> para transferencias en línea.</li>
+<li><strong>AWS Data Transfer Terminal</strong> para transferencias físicas seguras.</li>
+<li><strong>Soluciones de socios de AWS</strong> para casos específicos.</li>
+<li><strong>AWS Outposts</strong> como alternativa a los casos de computación en el borde.</li>
+</ul>
+<h3 id="32-ciclo-de-vida-de-un-trabajo-de-importacion">3.2. Ciclo de vida de un trabajo de importación<a class="headerlink" href="#32-ciclo-de-vida-de-un-trabajo-de-importacion" title="Permanent link">&para;</a></h3>
+<p>Aunque ya no puede contratarse, el modelo Snowball ilustra bien las garantías que exige cualquier transferencia física:</p>
+<p><img alt="Ciclo de un trabajo Snowball y flujo de AWS Data Transfer Terminal" src="../img/ud5-05-fuera-de-linea.png" /></p>
+<p><em>Figura 5. Ciclo de un trabajo de importación con Snowball Edge (arriba) y flujo de carga con AWS Data Transfer Terminal (abajo).</em></p>
+<ol>
+<li><strong>Creación del trabajo</strong> en la consola: tipo (importación a S3, exportación desde S3 o computación local), <em>bucket</em> de destino, clave de AWS KMS y dirección de envío.</li>
+<li><strong>Envío del dispositivo</strong> al cliente. Su estado puede seguirse mediante notificaciones de Amazon SNS.</li>
+<li><strong>Desbloqueo y copia local.</strong> El cliente descarga de la consola un <strong>manifiesto</strong> y un <strong>código de desbloqueo</strong>, que se distribuyen por separado, y desbloquea el dispositivo con el cliente de Snowball Edge. Los datos se copian mediante su interfaz compatible con S3 o mediante NFS y se cifran en el propio dispositivo.</li>
+<li><strong>Devolución.</strong> La etiqueta de envío electrónica del dispositivo se actualiza automáticamente con la dirección de AWS.</li>
+<li><strong>Importación y borrado.</strong> AWS carga los datos en el <em>bucket</em> y, a continuación, <strong>borra el dispositivo</strong> siguiendo las directrices del NIST para la sanitización de soportes.</li>
+</ol>
+<h3 id="33-garantias-de-seguridad">3.3. Garantías de seguridad<a class="headerlink" href="#33-garantias-de-seguridad" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Cifrado obligatorio</strong> con claves de 256 bits gestionadas en AWS KMS. Las claves <strong>no se almacenan</strong> en el dispositivo.</li>
+<li><strong>Separación de credenciales:</strong> el manifiesto y el código de desbloqueo se obtienen por separado; con uno solo no se puede acceder a los datos.</li>
+<li><strong>Protección física:</strong> carcasa con detección de manipulación y módulo de plataforma segura (TPM).</li>
+<li><strong>Cadena de custodia</strong> trazable durante todo el transporte.</li>
+<li><strong>Borrado certificado</strong> tras la importación.</li>
+</ul>
+<hr />
+<h2 id="4-aws-data-transfer-terminal">4. AWS Data Transfer Terminal<a class="headerlink" href="#4-aws-data-transfer-terminal" title="Permanent link">&para;</a></h2>
+<h3 id="41-funcionamiento">4.1. Funcionamiento<a class="headerlink" href="#41-funcionamiento" title="Permanent link">&para;</a></h3>
+<p><strong>AWS Data Transfer Terminal</strong> es una red de <strong>instalaciones físicas seguras</strong> a las que el cliente lleva sus propios dispositivos de almacenamiento para cargar los datos en AWS mediante una conexión de alta capacidad. A diferencia de Snowball, no es AWS quien envía un dispositivo: es el cliente quien se desplaza.</p>
+<p>El proceso es el siguiente:</p>
+<ol>
+<li><strong>Reserva</strong> de una franja horaria en la consola de AWS, indicando el personal autorizado.</li>
+<li><strong>Desplazamiento</strong> a la instalación con los dispositivos. El acceso es controlado y la ubicación exacta de la sala se mantiene discreta por seguridad.</li>
+<li><strong>Conexión</strong> de los dispositivos a los puertos de red de alta velocidad (por ejemplo, de 100 GbE) mediante fibra óptica.</li>
+<li><strong>Carga</strong> de los datos a los <em>endpoints</em> públicos de AWS (Amazon S3, Amazon EFS y otros) y <strong>verificación</strong> de la transferencia.</li>
+</ol>
+<p>En febrero de 2026, el servicio contaba con 11 ubicaciones en el mundo. En Europa estaban disponibles <strong>Múnich, Londres y París</strong>.</p>
+<h3 id="42-modelo-de-costes">4.2. Modelo de costes<a class="headerlink" href="#42-modelo-de-costes" title="Permanent link">&para;</a></h3>
+<p>Se factura por <strong>hora de puerto</strong> reservada, aunque no se esté transfiriendo. El precio depende de la ubicación del terminal y de la región de destino.</p>
+<table>
+<thead>
+<tr>
+<th>Terminal</th>
+<th>Destino</th>
+<th>Precio por hora de puerto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Norteamérica</td>
+<td>Norteamérica</td>
+<td>300 USD</td>
+</tr>
+<tr>
+<td>Norteamérica</td>
+<td>Europa</td>
+<td>500 USD</td>
+</tr>
+<tr>
+<td>Europa</td>
+<td>Norteamérica</td>
+<td>500 USD</td>
+</tr>
+</tbody>
+</table>
+<p>No hay cargo por GB cuando los datos se cargan en regiones del mismo continente que el terminal. Antes de reservar, conviene consultar los requisitos de acceso vigentes y los precios de la ubicación concreta.</p>
+<hr />
+<h2 id="5-comparativa-de-opciones-para-grandes-volumenes">5. Comparativa de opciones para grandes volúmenes<a class="headerlink" href="#5-comparativa-de-opciones-para-grandes-volumenes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>DataSync con red dedicada</th>
+<th>Data Transfer Terminal</th>
+<th>Snowball Edge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Disponibilidad para nuevos clientes</td>
+<td>Sí</td>
+<td>Sí</td>
+<td>No (desde noviembre de 2025)</td>
+</tr>
+<tr>
+<td>Modalidad</td>
+<td>En línea</td>
+<td>Física, en una instalación de AWS</td>
+<td>Física, con envío del dispositivo</td>
+</tr>
+<tr>
+<td>Dispositivos</td>
+<td>No aplica</td>
+<td>Propios del cliente</td>
+<td>De AWS</td>
+</tr>
+<tr>
+<td>Coste principal</td>
+<td>Por GB más el enlace</td>
+<td>Por hora de puerto</td>
+<td>Por trabajo, días de uso y envío</td>
+</tr>
+<tr>
+<td>Sincronización posterior</td>
+<td>Sí, incremental</td>
+<td>No; requiere otra herramienta</td>
+<td>No; requiere otra herramienta</td>
+</tr>
+</tbody>
+</table>
+<p>Un patrón habitual en migraciones grandes combina ambas modalidades: una <strong>carga inicial física</strong> del grueso de los datos y, después, una <strong>sincronización incremental en línea</strong> con DataSync de los cambios producidos mientras tanto.</p>
+<hr />
+<h2 id="6-recomendaciones-de-seguridad-para-cualquier-transferencia-fisica">6. Recomendaciones de seguridad para cualquier transferencia física<a class="headerlink" href="#6-recomendaciones-de-seguridad-para-cualquier-transferencia-fisica" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Cifrar los datos antes del transporte</strong>, con claves que no viajen junto al soporte.</li>
+<li><strong>Documentar la cadena de custodia</strong>: quién manipula el soporte, cuándo y dónde.</li>
+<li><strong>Verificar la integridad tras la carga</strong> mediante sumas de comprobación y recuentos.</li>
+<li><strong>Borrar de forma segura</strong> los soportes una vez confirmada la carga.</li>
+</ul>
+<hr />
+<h2 id="7-ideas-clave">7. Ideas clave<a class="headerlink" href="#7-ideas-clave" title="Permanent link">&para;</a></h2>
+<ul>
+<li>La transferencia física se justifica cuando la red no permite cumplir los plazos o no puede dedicarse a la migración.</li>
+<li>Snowball Edge ya no admite nuevos clientes desde el 7 de noviembre de 2025; Snowcone y Snowmobile están retirados.</li>
+<li>El modelo Snowball ilustra las garantías básicas: cifrado con claves externas, separación de credenciales, cadena de custodia y borrado certificado.</li>
+<li>AWS Data Transfer Terminal es la alternativa física vigente: el cliente lleva sus dispositivos a una instalación de AWS y paga por hora de puerto.</li>
+<li>La combinación de carga física inicial y sincronización en línea posterior es un patrón frecuente.</li>
+</ul>
+<h2 id="8-preguntas-de-autoevaluacion">8. Preguntas de autoevaluación<a class="headerlink" href="#8-preguntas-de-autoevaluacion" title="Permanent link">&para;</a></h2>
+<ol>
+<li>¿Por qué el código de desbloqueo y el manifiesto de un Snowball se distribuyen por separado?</li>
+<li>Una empresa debe migrar 500 TB a <code>eu-south-2</code> y dispone de una línea de 1 Gbps. Calcula el tiempo por red y razona qué alternativas tendría hoy.</li>
+<li>¿Qué herramienta usarías para trasladar los cambios producidos en el origen después de una carga física inicial?</li>
+</ol>
+<hr />
+<h2 id="referencias">Referencias<a class="headerlink" href="#referencias" title="Permanent link">&para;</a></h2>
+<ul>
+<li>AWS. <em>Amazon Snowball Edge availability change</em> (Snowball Edge Developer Guide). <a href="https://docs.aws.amazon.com/snowball/latest/developer-guide/snowball-edge-availability-change.html">https://docs.aws.amazon.com/snowball/latest/developer-guide/snowball-edge-availability-change.html</a></li>
+<li>AWS Storage Blog. <em>AWS Snow device updates</em>. <a href="https://aws.amazon.com/blogs/storage/aws-snow-device-updates">https://aws.amazon.com/blogs/storage/aws-snow-device-updates</a></li>
+<li>AWS News Blog. <em>New physical AWS Data Transfer Terminals let you upload to the cloud faster</em>. <a href="https://aws.amazon.com/blogs/aws/new-physical-aws-data-transfer-terminals-let-you-upload-to-the-cloud-faster">https://aws.amazon.com/blogs/aws/new-physical-aws-data-transfer-terminals-let-you-upload-to-the-cloud-faster</a></li>
+<li>AWS. <em>AWS announces 6 new locations for AWS Data Transfer Terminal</em> (febrero de 2026). <a href="https://aws.amazon.com/about-aws/whats-new/2026/02/aws-data-transfer-terminal-6-new-locations">https://aws.amazon.com/about-aws/whats-new/2026/02/aws-data-transfer-terminal-6-new-locations</a></li>
+<li>AWS. <em>AWS Data Transfer Terminal pricing</em>. <a href="https://aws.amazon.com/data-transfer-terminal/pricing">https://aws.amazon.com/data-transfer-terminal/pricing</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

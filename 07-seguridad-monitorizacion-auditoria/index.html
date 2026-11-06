@@ -1,0 +1,1456 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../05-transferencia-fuera-de-linea/">
+      
+      
+        <link rel="next" href="../06a-migracion-bases-datos/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Seguridad, monitorización y auditoría - UD5. Transferencia, sincronización y migración de datos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ud5-7-seguridad-monitorizacion-y-auditoria-de-las-transferencias" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-header__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            UD5. Transferencia, sincronización y migración de datos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Seguridad, monitorización y auditoría
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-nav__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    UD5. Transferencia, sincronización y migración de datos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 1
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 1
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-fundamentos-migracion-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fundamentos de la migración de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-amazon-s3-destino-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Amazon S3 como destino de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-aws-datasync/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS DataSync
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-aws-transfer-family/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Transfer Family
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-transferencia-fuera-de-linea/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transferencia fuera de línea
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Seguridad, monitorización y auditoría
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Seguridad, monitorización y auditoría
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introducción">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-arquitectura-de-referencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Arquitectura de referencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-cifrado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Cifrado
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Cifrado">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-en-transito" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. En tránsito
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-en-reposo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. En reposo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-control-de-acceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Control de acceso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-conectividad-privada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Conectividad privada
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-monitorizacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Monitorización
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Monitorización">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-metricas-y-registros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1. Métricas y registros
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-eventos-y-notificaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2. Eventos y notificaciones
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-auditoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Auditoría
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-lista-de-comprobacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Lista de comprobación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-ideas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Ideas clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-preguntas-de-autoevaluacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Preguntas de autoevaluación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 2
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-migracion-bases-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración de bases de datos: técnicas y planificación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06b-aws-dms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Database Migration Service (DMS)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practica-migracion-dms-aurora/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración con DMS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introducción">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-arquitectura-de-referencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Arquitectura de referencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-cifrado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Cifrado
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Cifrado">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-en-transito" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. En tránsito
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-en-reposo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. En reposo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-control-de-acceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Control de acceso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-conectividad-privada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Conectividad privada
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-monitorizacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Monitorización
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Monitorización">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-metricas-y-registros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1. Métricas y registros
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-eventos-y-notificaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2. Eventos y notificaciones
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-auditoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Auditoría
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-lista-de-comprobacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Lista de comprobación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-ideas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Ideas clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-preguntas-de-autoevaluacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Preguntas de autoevaluación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="ud5-7-seguridad-monitorizacion-y-auditoria-de-las-transferencias">UD5 · 7. Seguridad, monitorización y auditoría de las transferencias<a class="headerlink" href="#ud5-7-seguridad-monitorizacion-y-auditoria-de-las-transferencias" title="Permanent link">&para;</a></h1>
+<h2 id="1-introduccion">1. Introducción<a class="headerlink" href="#1-introduccion" title="Permanent link">&para;</a></h2>
+<p>Una transferencia de datos es uno de los momentos de mayor exposición de la información: los datos salen de su entorno habitual, atraviesan redes y llegan a sistemas nuevos. Por eso, la seguridad y la supervisión no son un añadido final, sino parte del diseño desde el principio.</p>
+<p>Este documento reúne, de forma transversal a todos los servicios de la unidad, los mecanismos que garantizan que la información <strong>solo viaja entre los orígenes y destinos autorizados</strong>, que lo hace <strong>cifrada</strong> y que cada operación queda <strong>registrada y supervisada</strong>.</p>
+<h3 id="objetivos">Objetivos<a class="headerlink" href="#objetivos" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Aplicar cifrado en tránsito y en reposo a una transferencia.</li>
+<li>Definir permisos con el principio de mínimo privilegio.</li>
+<li>Establecer conectividad privada con AWS mediante VPN, Direct Connect y <em>endpoints</em> de VPC.</li>
+<li>Supervisar las transferencias con CloudWatch y EventBridge, y auditarlas con CloudTrail.</li>
+</ul>
+<hr />
+<h2 id="2-arquitectura-de-referencia">2. Arquitectura de referencia<a class="headerlink" href="#2-arquitectura-de-referencia" title="Permanent link">&para;</a></h2>
+<p><img alt="Seguridad, monitorización y auditoría en una transferencia con DataSync" src="../img/ud5-07-seguridad-monitorizacion.png" /></p>
+<p><em>Figura 6. Transferencia privada con AWS DataSync: el agente se conecta mediante VPN o Direct Connect a un endpoint de interfaz de la VPC; los datos se cifran con una clave de KMS y la actividad se registra en CloudWatch, CloudTrail y EventBridge.</em></p>
+<p>La arquitectura aplica <strong>defensa en profundidad</strong>, con controles en cuatro capas:</p>
+<table>
+<thead>
+<tr>
+<th>Capa</th>
+<th>Control</th>
+<th>Elemento de la figura</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Red</td>
+<td>Conectividad privada y sin exposición a Internet.</td>
+<td>VPN o Direct Connect y <em>endpoint</em> de interfaz.</td>
+</tr>
+<tr>
+<td>Identidad</td>
+<td>Permisos mínimos para cada servicio.</td>
+<td>Rol IAM.</td>
+</tr>
+<tr>
+<td>Datos</td>
+<td>Cifrado en tránsito y en reposo.</td>
+<td>TLS y SSE-KMS.</td>
+</tr>
+<tr>
+<td>Supervisión</td>
+<td>Métricas, eventos y registro de la actividad.</td>
+<td>CloudWatch, EventBridge y CloudTrail.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-cifrado">3. Cifrado<a class="headerlink" href="#3-cifrado" title="Permanent link">&para;</a></h2>
+<h3 id="31-en-transito">3.1. En tránsito<a class="headerlink" href="#31-en-transito" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Servicio</th>
+<th>Mecanismo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AWS CLI y Amazon S3</td>
+<td>HTTPS (TLS).</td>
+</tr>
+<tr>
+<td>AWS DataSync</td>
+<td>TLS entre el agente y el servicio.</td>
+</tr>
+<tr>
+<td>AWS Transfer Family</td>
+<td>SSH (SFTP), TLS (FTPS) o firma y cifrado de mensajes (AS2). FTP no cifra.</td>
+</tr>
+<tr>
+<td>Conexión entre redes</td>
+<td>IPsec en la VPN; Direct Connect puede reforzarse con VPN o cifrado MACsec.</td>
+</tr>
+</tbody>
+</table>
+<p>Para <strong>impedir cualquier acceso sin cifrar</strong> a un <em>bucket</em>, se añade una política que deniega las peticiones que no usan TLS:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">"Version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2012-10-17"</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">"Statement"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">"Sid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DenegarSinTLS"</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Deny"</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">"Principal"</span><span class="p">:</span><span class="w"> </span><span class="s2">"*"</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="nt">"Action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"s3:*"</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="nt">"Resource"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">      </span><span class="s2">"arn:aws:s3:::ud5-destino-&lt;iniciales&gt;"</span><span class="p">,</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">      </span><span class="s2">"arn:aws:s3:::ud5-destino-&lt;iniciales&gt;/*"</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="p">],</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="nt">"Condition"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"Bool"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"aws:SecureTransport"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="p">}]</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="32-en-reposo">3.2. En reposo<a class="headerlink" href="#32-en-reposo" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Amazon S3</strong> cifra todos los objetos nuevos por defecto con <strong>SSE-S3</strong> (claves gestionadas por S3).</li>
+<li>Cuando se requiere control sobre las claves, rotación propia o auditoría de su uso, se utiliza <strong>SSE-KMS</strong> con una <strong>clave administrada por el cliente</strong> en AWS KMS. Activar las <strong>claves de bucket</strong> (<em>S3 Bucket Keys</em>) reduce el número de llamadas a KMS y, con ello, su coste.</li>
+<li><strong>Amazon EFS</strong> y <strong>Amazon RDS</strong> permiten activar el cifrado en reposo al crear el recurso.</li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Cifrado por defecto del bucket con una clave de KMS y clave de bucket activada</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>aws<span class="w"> </span>s3api<span class="w"> </span>put-bucket-encryption<span class="w"> </span>--bucket<span class="w"> </span>ud5-destino-&lt;iniciales&gt;<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span>--server-side-encryption-configuration<span class="w"> </span><span class="s1">'{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"aws:kms","KMSMasterKeyID":"&lt;arn-clave-kms&gt;"},"BucketKeyEnabled":true}]}'</span>
+</span></code></pre></div>
+<hr />
+<h2 id="4-control-de-acceso">4. Control de acceso<a class="headerlink" href="#4-control-de-acceso" title="Permanent link">&para;</a></h2>
+<p>El principio de <strong>mínimo privilegio</strong> implica que cada servicio y cada usuario reciba solo los permisos imprescindibles:</p>
+<ul>
+<li><strong>DataSync</strong> accede al <em>bucket</em> mediante un rol IAM. Ese rol debe limitarse al <em>bucket</em> y al prefijo de destino, y a las acciones necesarias (listar, leer, escribir).</li>
+<li><strong>Transfer Family</strong> asigna a cada usuario un rol y, opcionalmente, una <strong>política de sesión</strong> que lo restringe a su carpeta.</li>
+<li>Las <strong>políticas de bucket</strong> pueden limitar el acceso a determinados roles, a un <em>endpoint</em> de VPC concreto (condición <code>aws:SourceVpce</code>) o a conexiones cifradas.</li>
+<li>Las <strong>políticas de clave de KMS</strong> controlan quién puede cifrar y descifrar con cada clave.</li>
+</ul>
+<blockquote>
+<p><strong>En el Learner Lab</strong> no se pueden crear roles IAM; se utiliza el rol predefinido <code>LabRole</code>, que tiene permisos amplios. En los informes de práctica se pide <strong>describir</strong> qué permisos mínimos tendría el rol en un entorno real.</p>
+</blockquote>
+<hr />
+<h2 id="5-conectividad-privada">5. Conectividad privada<a class="headerlink" href="#5-conectividad-privada" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Mecanismo</th>
+<th>Descripción</th>
+<th>Uso en la unidad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>VPN de sitio a sitio</strong></td>
+<td>Túnel IPsec cifrado a través de Internet entre la red local y la VPC.</td>
+<td>Conexión del centro de datos con AWS.</td>
+</tr>
+<tr>
+<td><strong>AWS Direct Connect</strong></td>
+<td>Conexión física dedicada entre la red local y AWS, con ancho de banda y latencia predecibles.</td>
+<td>Migraciones grandes y flujos híbridos permanentes.</td>
+</tr>
+<tr>
+<td><strong><em>Endpoint</em> de puerta de enlace para S3</strong></td>
+<td>Permite que los recursos de la VPC accedan a S3 sin salir a Internet. Sin coste adicional.</td>
+<td>Acceso privado de instancias EC2 a S3.</td>
+</tr>
+<tr>
+<td><strong><em>Endpoint</em> de interfaz (AWS PrivateLink)</strong></td>
+<td>Interfaz de red con IP privada en una subred, que da acceso privado a la API de un servicio.</td>
+<td>DataSync con <em>endpoint</em> de VPC.</td>
+</tr>
+<tr>
+<td><strong>Grupos de seguridad</strong></td>
+<td>Cortafuegos con estado aplicado a las interfaces de red.</td>
+<td>Restringir el tráfico al destino de montaje de EFS o a las IP de cada socio en Transfer Family.</td>
+</tr>
+</tbody>
+</table>
+<p>La combinación de <strong>VPN o Direct Connect</strong> con un <strong><em>endpoint</em> de interfaz</strong> garantiza que los datos viajan desde el origen hasta el servicio sin pasar por Internet.</p>
+<hr />
+<h2 id="6-monitorizacion">6. Monitorización<a class="headerlink" href="#6-monitorizacion" title="Permanent link">&para;</a></h2>
+<h3 id="61-metricas-y-registros">6.1. Métricas y registros<a class="headerlink" href="#61-metricas-y-registros" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Servicio</th>
+<th>Métricas principales en CloudWatch</th>
+<th>Registros</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AWS DataSync</td>
+<td>Bytes y ficheros preparados, transferidos y verificados.</td>
+<td>CloudWatch Logs e informes de tarea en S3.</td>
+</tr>
+<tr>
+<td>AWS Transfer Family</td>
+<td>Bytes y ficheros de entrada y salida; ejecuciones de flujos.</td>
+<td>Registros estructurados de sesión en CloudWatch Logs.</td>
+</tr>
+<tr>
+<td>Amazon S3</td>
+<td>Tamaño del <em>bucket</em>, número de objetos y, opcionalmente, métricas de peticiones.</td>
+<td>Registros de acceso al servidor.</td>
+</tr>
+</tbody>
+</table>
+<p>Sobre estas métricas se definen <strong>alarmas de CloudWatch</strong>, por ejemplo cuando no se ha transferido ningún byte en el periodo esperado.</p>
+<h3 id="62-eventos-y-notificaciones">6.2. Eventos y notificaciones<a class="headerlink" href="#62-eventos-y-notificaciones" title="Permanent link">&para;</a></h3>
+<p><strong>Amazon EventBridge</strong> recibe los cambios de estado de los servicios y permite reaccionar ante ellos. La siguiente regla detecta las ejecuciones de DataSync que terminan con error, para enviarlas, por ejemplo, a un tema de Amazon SNS que notifique por correo electrónico:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">"source"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"aws.datasync"</span><span class="p">],</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">"detail-type"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"DataSync Task Execution State Change"</span><span class="p">],</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"State"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ERROR"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<hr />
+<h2 id="7-auditoria">7. Auditoría<a class="headerlink" href="#7-auditoria" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>AWS CloudTrail</strong> registra las llamadas a la API de AWS: quién creó o modificó una tarea de DataSync, un usuario de Transfer Family o una política de <em>bucket</em>, cuándo y desde dónde. Por defecto registra los <strong>eventos de administración</strong>; los <strong>eventos de datos</strong> de S3 (lectura y escritura de objetos) deben activarse expresamente.</li>
+<li>Los <strong>informes de tarea de DataSync</strong> y los <strong>registros de Transfer Family</strong> documentan qué ficheros se transfirieron, por quién y con qué resultado.</li>
+<li>Los <strong>registros de acceso al servidor de S3</strong> recogen cada petición recibida por el <em>bucket</em>.</li>
+</ul>
+<p>Estos registros constituyen la <strong>evidencia</strong> de que la transferencia se ha realizado únicamente entre los orígenes y destinos especificados, tal como exigen los criterios RA5.e y RA6.d.</p>
+<hr />
+<h2 id="8-lista-de-comprobacion">8. Lista de comprobación<a class="headerlink" href="#8-lista-de-comprobacion" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Comprobado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Los datos viajan cifrados (TLS, SSH o IPsec).</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>El destino cifra los datos en reposo (SSE-S3 o SSE-KMS).</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>El <em>bucket</em> deniega las peticiones sin TLS y bloquea el acceso público.</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Los roles y usuarios tienen solo los permisos necesarios.</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>El tráfico no atraviesa Internet cuando el caso lo exige (VPN, Direct Connect, <em>endpoints</em>).</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Las métricas y registros de cada transferencia se envían a CloudWatch.</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>Existe una notificación ante errores (EventBridge y SNS).</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>CloudTrail registra la actividad sobre los recursos implicados.</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>La integridad final se ha verificado con recuentos y sumas de comprobación.</td>
+<td>☐</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-ideas-clave">9. Ideas clave<a class="headerlink" href="#9-ideas-clave" title="Permanent link">&para;</a></h2>
+<ul>
+<li>La seguridad de una transferencia se diseña por capas: red, identidad, datos y supervisión.</li>
+<li>El cifrado en tránsito puede imponerse con políticas de <em>bucket</em>; el cifrado en reposo está activo por defecto en S3 y puede reforzarse con KMS.</li>
+<li>Los roles IAM y las políticas de sesión aplican el mínimo privilegio a los servicios y a los usuarios.</li>
+<li>VPN, Direct Connect y los <em>endpoints</em> de VPC permiten transferencias sin exposición a Internet.</li>
+<li>CloudWatch y EventBridge supervisan las transferencias; CloudTrail y los registros de cada servicio las auditan.</li>
+</ul>
+<h2 id="10-preguntas-de-autoevaluacion">10. Preguntas de autoevaluación<a class="headerlink" href="#10-preguntas-de-autoevaluacion" title="Permanent link">&para;</a></h2>
+<ol>
+<li>¿Qué diferencia hay entre un <em>endpoint</em> de puerta de enlace y un <em>endpoint</em> de interfaz?</li>
+<li>¿Por qué no basta con el cifrado por defecto SSE-S3 si la organización necesita auditar cada uso de la clave de cifrado?</li>
+<li>Diseña una regla de EventBridge que avise cuando una ejecución de DataSync termina correctamente. ¿Qué cambiarías respecto a la del apartado 6.2?</li>
+</ol>
+<hr />
+<h2 id="referencias">Referencias<a class="headerlink" href="#referencias" title="Permanent link">&para;</a></h2>
+<ul>
+<li>AWS. <em>Protecting data with encryption</em> (Amazon S3 User Guide). <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html">https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html</a></li>
+<li>AWS. <em>What is AWS DataSync?</em> <a href="https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html">https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html</a></li>
+<li>AWS. <em>What is AWS Transfer Family?</em> <a href="https://docs.aws.amazon.com/transfer/latest/userguide/what-is-aws-transfer-family.html">https://docs.aws.amazon.com/transfer/latest/userguide/what-is-aws-transfer-family.html</a></li>
+<li>AWS. <em>What is AWS CloudTrail?</em> <a href="https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html">https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

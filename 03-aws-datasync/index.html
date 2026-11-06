@@ -1,0 +1,1461 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../02-amazon-s3-destino-datos/">
+      
+      
+        <link rel="next" href="../04-aws-transfer-family/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>AWS DataSync - UD5. Transferencia, sincronización y migración de datos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ud5-3-aws-datasync" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-header__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            UD5. Transferencia, sincronización y migración de datos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              AWS DataSync
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-nav__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    UD5. Transferencia, sincronización y migración de datos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 1
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 1
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-fundamentos-migracion-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fundamentos de la migración de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-amazon-s3-destino-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Amazon S3 como destino de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS DataSync
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS DataSync
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introducción">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-componentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Componentes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Componentes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-es-necesario-un-agente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. ¿Es necesario un agente?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-tipos-de-ubicacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Tipos de ubicación
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-modos-de-tarea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Modos de tarea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-opciones-de-configuracion-de-una-tarea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Opciones de configuración de una tarea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-ejemplo-con-la-aws-cli-de-amazon-efs-a-amazon-s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Ejemplo con la AWS CLI: de Amazon EFS a Amazon S3
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-red-y-seguridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Red y seguridad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-monitorizacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Monitorización
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-datasync-frente-a-otras-herramientas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. DataSync frente a otras herramientas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-ideas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Ideas clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-preguntas-de-autoevaluacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Preguntas de autoevaluación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-aws-transfer-family/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Transfer Family
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-transferencia-fuera-de-linea/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transferencia fuera de línea
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-seguridad-monitorizacion-auditoria/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Seguridad, monitorización y auditoría
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 2
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-migracion-bases-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración de bases de datos: técnicas y planificación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06b-aws-dms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Database Migration Service (DMS)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practica-migracion-dms-aurora/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración con DMS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introducción">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-componentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Componentes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Componentes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-es-necesario-un-agente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. ¿Es necesario un agente?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-tipos-de-ubicacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Tipos de ubicación
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-modos-de-tarea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Modos de tarea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-opciones-de-configuracion-de-una-tarea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Opciones de configuración de una tarea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-ejemplo-con-la-aws-cli-de-amazon-efs-a-amazon-s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Ejemplo con la AWS CLI: de Amazon EFS a Amazon S3
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-red-y-seguridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Red y seguridad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-monitorizacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Monitorización
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-datasync-frente-a-otras-herramientas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. DataSync frente a otras herramientas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-ideas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Ideas clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-preguntas-de-autoevaluacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Preguntas de autoevaluación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="ud5-3-aws-datasync">UD5 · 3. AWS DataSync<a class="headerlink" href="#ud5-3-aws-datasync" title="Permanent link">&para;</a></h1>
+<h2 id="1-introduccion">1. Introducción<a class="headerlink" href="#1-introduccion" title="Permanent link">&para;</a></h2>
+<p><strong>AWS DataSync</strong> es un servicio gestionado de transferencia de datos en línea. Automatiza el movimiento de ficheros y objetos entre sistemas de almacenamiento locales, servicios de almacenamiento de AWS y otras nubes. Frente a una herramienta como <code>aws s3 sync</code>, DataSync se encarga del paralelismo, el cifrado, los reintentos, la verificación de integridad, la programación y el registro de cada ejecución.</p>
+<p>Sus casos de uso típicos son:</p>
+<ul>
+<li><strong>Migración</strong> de sistemas de ficheros completos (NFS, SMB, HDFS) a AWS.</li>
+<li><strong>Archivado</strong> de datos fríos en clases de almacenamiento económicas de S3.</li>
+<li><strong>Replicación</strong> periódica entre servicios de AWS, por ejemplo de Amazon EFS a S3.</li>
+<li><strong>Flujos híbridos</strong>, en los que los datos generados en local se envían regularmente a la nube para su análisis.</li>
+</ul>
+<h3 id="objetivos">Objetivos<a class="headerlink" href="#objetivos" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Identificar los componentes de DataSync: agente, ubicaciones, tareas y ejecuciones.</li>
+<li>Determinar cuándo es necesario desplegar un agente.</li>
+<li>Configurar una tarea con verificación, filtros, límite de ancho de banda y programación.</li>
+<li>Monitorizar las ejecuciones y estimar su coste.</li>
+</ul>
+<hr />
+<h2 id="2-arquitectura">2. Arquitectura<a class="headerlink" href="#2-arquitectura" title="Permanent link">&para;</a></h2>
+<p><img alt="Arquitectura de AWS DataSync" src="../img/ud5-03-datasync.png" /></p>
+<p><em>Figura 3. Transferencia desde un servidor de ficheros local hacia Amazon S3 y Amazon EFS mediante AWS DataSync.</em></p>
+<p>El flujo numerado en la figura es el siguiente:</p>
+<ol>
+<li>El <strong>agente</strong> lee los datos del servidor NFS o SMB local.</li>
+<li>El agente los envía cifrados con TLS al servicio DataSync de la región, por el puerto 443.</li>
+<li>DataSync escribe los datos en la <strong>ubicación de destino</strong> (S3, EFS, FSx…).</li>
+<li>Las métricas y los registros de cada ejecución se publican en <strong>Amazon CloudWatch</strong>.</li>
+</ol>
+<hr />
+<h2 id="3-componentes">3. Componentes<a class="headerlink" href="#3-componentes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Agente</strong></td>
+<td>Máquina virtual que se despliega junto al almacenamiento de origen y lee o escribe sus datos. Se instala en VMware ESXi, KVM o Microsoft Hyper-V, o como instancia de Amazon EC2. Tras desplegarlo, se <strong>activa</strong> para asociarlo a la cuenta y a la región.</td>
+</tr>
+<tr>
+<td><strong>Ubicación</strong> (<em>location</em>)</td>
+<td>Definición de un origen o destino: tipo de almacenamiento, ruta y credenciales o rol de acceso.</td>
+</tr>
+<tr>
+<td><strong>Tarea</strong> (<em>task</em>)</td>
+<td>Asocia una ubicación de origen con una de destino e incluye las opciones de transferencia.</td>
+</tr>
+<tr>
+<td><strong>Ejecución</strong> (<em>task execution</em>)</td>
+<td>Cada ejecución concreta de una tarea, con su propio estado, métricas e informe.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="31-es-necesario-un-agente">3.1. ¿Es necesario un agente?<a class="headerlink" href="#31-es-necesario-un-agente" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Escenario</th>
+<th>Agente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Almacenamiento local (NFS, SMB, HDFS, almacenamiento de objetos propio) ↔ AWS</td>
+<td><strong>Sí</strong></td>
+</tr>
+<tr>
+<td>Amazon EFS o Amazon FSx ↔ almacenamiento en otra nube</td>
+<td><strong>Sí</strong></td>
+</tr>
+<tr>
+<td>Entre servicios de almacenamiento de AWS de la misma cuenta (p. ej., EFS → S3)</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Amazon S3 ↔ otro servicio de AWS en otra cuenta</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Amazon S3 ↔ almacenamiento de objetos de otras nubes</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p>La mayoría de las transferencias necesitan un único agente. Para conjuntos con millones de ficheros se pueden asignar hasta cuatro agentes a una ubicación, o dividir el trabajo en varias tareas paralelas. Varios agentes <strong>no</strong> proporcionan alta disponibilidad: todos deben estar en línea para que la tarea arranque.</p>
+<blockquote>
+<p><strong>En el Learner Lab</strong> se trabajará con transferencias entre servicios de AWS (EFS → S3), que no requieren agente.</p>
+</blockquote>
+<h3 id="32-tipos-de-ubicacion">3.2. Tipos de ubicación<a class="headerlink" href="#32-tipos-de-ubicacion" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Locales u otras nubes:</strong> NFS, SMB, HDFS, almacenamiento de objetos compatible con S3 y Azure Blob Storage.</li>
+<li><strong>AWS:</strong> Amazon S3, Amazon EFS y Amazon FSx (Windows File Server, Lustre, NetApp ONTAP y OpenZFS).</li>
+</ul>
+<hr />
+<h2 id="4-modos-de-tarea">4. Modos de tarea<a class="headerlink" href="#4-modos-de-tarea" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Modo básico (<em>Basic</em>)</th>
+<th>Modo mejorado (<em>Enhanced</em>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Funcionamiento</td>
+<td>Prepara, transfiere y verifica los ficheros de forma secuencial.</td>
+<td>Lista, prepara, transfiere y verifica en paralelo.</td>
+</tr>
+<tr>
+<td>Escala</td>
+<td>Sujeto a cuotas de número de ficheros por ejecución.</td>
+<td>Número prácticamente ilimitado de objetos.</td>
+</tr>
+<tr>
+<td>Ubicaciones</td>
+<td>Todas las disponibles.</td>
+<td>S3, EFS, FSx for Lustre y FSx for OpenZFS, frente a NFS, SMB, HDFS, almacenamiento de objetos y Azure Blob.</td>
+</tr>
+<tr>
+<td>Agente</td>
+<td>Agente en modo básico.</td>
+<td>Agente en modo mejorado.</td>
+</tr>
+<tr>
+<td>Precio</td>
+<td>0,0125 USD por GB transferido.</td>
+<td>0,015 USD por GB más 0,55 USD por ejecución.</td>
+</tr>
+</tbody>
+</table>
+<p><em>Precios de referencia en US East (N. Virginia), noviembre de 2026.</em></p>
+<hr />
+<h2 id="5-opciones-de-configuracion-de-una-tarea">5. Opciones de configuración de una tarea<a class="headerlink" href="#5-opciones-de-configuracion-de-una-tarea" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Opción</th>
+<th>Valores habituales</th>
+<th>Utilidad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Modo de transferencia</strong></td>
+<td>Solo datos modificados / todos los datos</td>
+<td>La primera opción hace la sincronización incremental.</td>
+</tr>
+<tr>
+<td><strong>Verificación</strong></td>
+<td>Solo ficheros transferidos / todo el destino / ninguna</td>
+<td>Comprueba la integridad mediante sumas de comprobación al terminar.</td>
+</tr>
+<tr>
+<td><strong>Ficheros borrados en el origen</strong></td>
+<td>Conservar / eliminar en el destino</td>
+<td>Equivale a la opción <code>--delete</code> de <code>aws s3 sync</code>.</td>
+</tr>
+<tr>
+<td><strong>Sobrescritura</strong></td>
+<td>Permitir / no permitir</td>
+<td>Protege ficheros modificados en el destino.</td>
+</tr>
+<tr>
+<td><strong>Metadatos</strong></td>
+<td>Conservar propietarios, permisos POSIX y marcas de tiempo</td>
+<td>Imprescindible en migraciones de sistemas de ficheros.</td>
+</tr>
+<tr>
+<td><strong>Filtros</strong></td>
+<td>Patrones de inclusión y exclusión (p. ej., <code>*.tmp</code>)</td>
+<td>Limita qué se transfiere.</td>
+</tr>
+<tr>
+<td><strong>Límite de ancho de banda</strong></td>
+<td>MiB/s</td>
+<td>Evita saturar el enlace de la organización.</td>
+</tr>
+<tr>
+<td><strong>Programación</strong></td>
+<td>Expresión <code>cron</code> o <code>rate</code> (intervalo mínimo de una hora)</td>
+<td>Sincronización automática y desatendida.</td>
+</tr>
+<tr>
+<td><strong>Informe de tarea</strong></td>
+<td>Resumen o detallado, guardado en S3</td>
+<td>Evidencia de qué se transfirió, omitió o verificó.</td>
+</tr>
+<tr>
+<td><strong>Registro</strong></td>
+<td>Grupo de CloudWatch Logs</td>
+<td>Diagnóstico de errores.</td>
+</tr>
+</tbody>
+</table>
+<p>Cada ejecución pasa por las fases <strong>Lanzamiento → Preparación → Transferencia → Verificación</strong> y termina en <strong>Éxito</strong> o <strong>Error</strong>. En la fase de preparación, DataSync compara origen y destino para decidir qué debe copiar.</p>
+<hr />
+<h2 id="6-ejemplo-con-la-aws-cli-de-amazon-efs-a-amazon-s3">6. Ejemplo con la AWS CLI: de Amazon EFS a Amazon S3<a class="headerlink" href="#6-ejemplo-con-la-aws-cli-de-amazon-efs-a-amazon-s3" title="Permanent link">&para;</a></h2>
+<p>Este ejemplo reproduce el escenario de la práctica corta. Requiere un sistema de ficheros EFS con un destino de montaje, un <em>bucket</em> S3 y un rol con permisos sobre el <em>bucket</em> (en el Learner Lab, <code>LabRole</code>).</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># 1. Ubicación de origen: EFS</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1">#    DataSync crea interfaces de red en la subred indicada; el grupo de seguridad</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1">#    debe permitir el tráfico NFS (TCP 2049) hacia el destino de montaje de EFS.</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>aws<span class="w"> </span>datasync<span class="w"> </span>create-location-efs<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span>--efs-filesystem-arn<span class="w"> </span>arn:aws:elasticfilesystem:us-east-1:&lt;cuenta&gt;:file-system/&lt;fs-id&gt;<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span>--ec2-config<span class="w"> </span><span class="nv">SubnetArn</span><span class="o">=</span>arn:aws:ec2:us-east-1:&lt;cuenta&gt;:subnet/&lt;subnet-id&gt;,SecurityGroupArns<span class="o">=</span>arn:aws:ec2:us-east-1:&lt;cuenta&gt;:security-group/&lt;sg-id&gt;
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># 2. Ubicación de destino: S3</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>aws<span class="w"> </span>datasync<span class="w"> </span>create-location-s3<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span>--s3-bucket-arn<span class="w"> </span>arn:aws:s3:::ud5-destino-&lt;iniciales&gt;<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span>--subdirectory<span class="w"> </span>/datasync<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span>--s3-config<span class="w"> </span><span class="nv">BucketAccessRoleArn</span><span class="o">=</span>arn:aws:iam::&lt;cuenta&gt;:role/LabRole
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># 3. Tarea con verificación, transferencia incremental, filtro y programación diaria</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>aws<span class="w"> </span>datasync<span class="w"> </span>create-task<span class="w"> </span>--name<span class="w"> </span>ud5-efs-a-s3<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span>--source-location-arn<span class="w"> </span>&lt;arn-ubicacion-efs&gt;<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">    </span>--destination-location-arn<span class="w"> </span>&lt;arn-ubicacion-s3&gt;<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">    </span>--options<span class="w"> </span><span class="nv">VerifyMode</span><span class="o">=</span>ONLY_FILES_TRANSFERRED,TransferMode<span class="o">=</span>CHANGED<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">    </span>--excludes<span class="w"> </span><span class="nv">FilterType</span><span class="o">=</span>SIMPLE_PATTERN,Value<span class="o">=</span><span class="s2">"*.tmp"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">    </span>--schedule<span class="w"> </span><span class="nv">ScheduleExpression</span><span class="o">=</span><span class="s2">"cron(0 2 * * ? *)"</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="c1"># 4. Ejecución manual y seguimiento</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>aws<span class="w"> </span>datasync<span class="w"> </span>start-task-execution<span class="w"> </span>--task-arn<span class="w"> </span>&lt;arn-tarea&gt;
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>aws<span class="w"> </span>datasync<span class="w"> </span>describe-task-execution<span class="w"> </span>--task-execution-arn<span class="w"> </span>&lt;arn-ejecucion&gt;
+</span></code></pre></div>
+<p>La salida de <code>describe-task-execution</code> incluye el estado, los bytes y ficheros transferidos y el resultado de la verificación.</p>
+<hr />
+<h2 id="7-red-y-seguridad">7. Red y seguridad<a class="headerlink" href="#7-red-y-seguridad" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Cifrado en tránsito:</strong> todo el tráfico entre el agente y el servicio viaja cifrado con TLS.</li>
+<li><strong>Cifrado en reposo:</strong> depende del destino (cifrado de S3 o de EFS).</li>
+<li><strong>Tipo de <em>endpoint</em> del servicio:</strong> público, FIPS o de VPC. Con un <em>endpoint</em> de VPC (AWS PrivateLink), el tráfico del agente no atraviesa Internet. Se estudia en el documento 7.</li>
+<li><strong>Permisos:</strong> DataSync accede a S3 asumiendo un rol IAM, que debe limitarse al <em>bucket</em> y prefijo necesarios.</li>
+<li><strong>Red local:</strong> el agente solo necesita conexiones <strong>salientes</strong> hacia AWS (principalmente el puerto 443). No hay que abrir puertos entrantes desde Internet.</li>
+</ul>
+<hr />
+<h2 id="8-monitorizacion">8. Monitorización<a class="headerlink" href="#8-monitorizacion" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Métricas en CloudWatch:</strong> bytes y ficheros transferidos, preparados y verificados en cada ejecución.</li>
+<li><strong>Registros en CloudWatch Logs:</strong> detalle de los ficheros con error.</li>
+<li><strong>Eventos en Amazon EventBridge:</strong> cambios de estado de las ejecuciones, útiles para enviar una notificación cuando una tarea falla.</li>
+<li><strong>Informes de tarea:</strong> fichero en S3 con el resultado de cada fichero.</li>
+</ul>
+<hr />
+<h2 id="9-datasync-frente-a-otras-herramientas">9. DataSync frente a otras herramientas<a class="headerlink" href="#9-datasync-frente-a-otras-herramientas" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th><code>aws s3 sync</code></th>
+<th>AWS DataSync</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Despliegue</td>
+<td>Ninguno; basta la CLI.</td>
+<td>Agente (si el origen es local) y configuración de tareas.</td>
+</tr>
+<tr>
+<td>Escala</td>
+<td>Adecuada para volúmenes moderados.</td>
+<td>Diseñado para millones de ficheros y petabytes.</td>
+</tr>
+<tr>
+<td>Verificación</td>
+<td>Básica.</td>
+<td>Integrada, con informes.</td>
+</tr>
+<tr>
+<td>Programación</td>
+<td>Externa (<code>cron</code>).</td>
+<td>Integrada.</td>
+</tr>
+<tr>
+<td>Destinos</td>
+<td>S3.</td>
+<td>S3, EFS, FSx y otros.</td>
+</tr>
+<tr>
+<td>Coste</td>
+<td>Solo peticiones y almacenamiento.</td>
+<td>Precio por GB transferido.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10-ideas-clave">10. Ideas clave<a class="headerlink" href="#10-ideas-clave" title="Permanent link">&para;</a></h2>
+<ul>
+<li>DataSync automatiza transferencias en línea con cifrado, paralelismo, verificación y programación.</li>
+<li>Necesita un agente cuando intervienen almacenamiento local u otras nubes; entre servicios de AWS de la misma cuenta, no.</li>
+<li>Una tarea une dos ubicaciones; sus opciones controlan la incrementalidad, la verificación, los filtros y el ancho de banda.</li>
+<li>CloudWatch, EventBridge y los informes de tarea permiten supervisar cada ejecución.</li>
+</ul>
+<h2 id="11-preguntas-de-autoevaluacion">11. Preguntas de autoevaluación<a class="headerlink" href="#11-preguntas-de-autoevaluacion" title="Permanent link">&para;</a></h2>
+<ol>
+<li>¿Por qué no es necesario desplegar un agente para transferir datos de Amazon EFS a Amazon S3 dentro de la misma cuenta?</li>
+<li>Una tarea programada diariamente copia 50 GB nuevos cada día en modo básico. Estima su coste mensual de DataSync.</li>
+<li>¿Qué opción de la tarea usarías para que la transferencia no sature la línea de la empresa en horario laboral?</li>
+</ol>
+<hr />
+<h2 id="referencias">Referencias<a class="headerlink" href="#referencias" title="Permanent link">&para;</a></h2>
+<ul>
+<li>AWS. <em>What is AWS DataSync?</em> <a href="https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html">https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html</a></li>
+<li>AWS. <em>Do I need an AWS DataSync agent?</em> <a href="https://docs.aws.amazon.com/datasync/latest/userguide/do-i-need-datasync-agent.html">https://docs.aws.amazon.com/datasync/latest/userguide/do-i-need-datasync-agent.html</a></li>
+<li>AWS. <em>AWS DataSync pricing</em>. <a href="https://aws.amazon.com/datasync/pricing/">https://aws.amazon.com/datasync/pricing/</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

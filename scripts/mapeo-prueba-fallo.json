@@ -1,0 +1,11 @@
+{
+  "rules": [
+    {
+      "rule-type": "selection",
+      "rule-id": "1",
+      "rule-name": "tabla-inexistente",
+      "object-locator": { "schema-name": "ud5", "table-name": "tabla_inexistente" },
+      "rule-action": "include"
+    }
+  ]
+}

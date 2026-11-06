@@ -1,0 +1,1541 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../07-seguridad-monitorizacion-auditoria/">
+      
+      
+        <link rel="next" href="../06b-aws-dms/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Migración de bases de datos: técnicas y planificación - UD5. Transferencia, sincronización y migración de datos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ud5-61-migracion-de-bases-de-datos-tecnicas-y-planificacion" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-header__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            UD5. Transferencia, sincronización y migración de datos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Migración de bases de datos: técnicas y planificación
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-nav__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    UD5. Transferencia, sincronización y migración de datos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 1
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 1
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-fundamentos-migracion-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fundamentos de la migración de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-amazon-s3-destino-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Amazon S3 como destino de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-aws-datasync/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS DataSync
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-aws-transfer-family/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Transfer Family
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-transferencia-fuera-de-linea/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transferencia fuera de línea
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-seguridad-monitorizacion-auditoria/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Seguridad, monitorización y auditoría
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 2
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración de bases de datos: técnicas y planificación
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración de bases de datos: técnicas y planificación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introducción">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-migracion-homogenea-y-heterogenea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Migración homogénea y heterogénea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-tecnicas-de-migracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Técnicas de migración
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Técnicas de migración">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-volcado-logico-y-restauracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Volcado lógico y restauración
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-copia-fisica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Copia física
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-replicacion-nativa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Replicación nativa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-aws-database-migration-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. AWS Database Migration Service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-comparativa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5. Comparativa
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-planificacion-de-la-migracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Planificación de la migración
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Planificación de la migración">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-evaluacion-del-origen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Evaluación del origen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-diseno-del-destino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Diseño del destino
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-pruebas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3. Pruebas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-plan-de-corte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4. Plan de corte
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-plan-de-vuelta-atras" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5. Plan de vuelta atrás
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-validacion-de-los-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Validación de los datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-seguridad-durante-la-migracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Seguridad durante la migración
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-ideas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Ideas clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-preguntas-de-autoevaluacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Preguntas de autoevaluación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06b-aws-dms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Database Migration Service (DMS)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practica-migracion-dms-aurora/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración con DMS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introducción">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-migracion-homogenea-y-heterogenea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Migración homogénea y heterogénea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-tecnicas-de-migracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Técnicas de migración
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Técnicas de migración">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-volcado-logico-y-restauracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Volcado lógico y restauración
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-copia-fisica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Copia física
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-replicacion-nativa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Replicación nativa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-aws-database-migration-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. AWS Database Migration Service
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-comparativa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5. Comparativa
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-planificacion-de-la-migracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Planificación de la migración
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Planificación de la migración">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-evaluacion-del-origen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Evaluación del origen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-diseno-del-destino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Diseño del destino
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-pruebas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3. Pruebas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-plan-de-corte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4. Plan de corte
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-plan-de-vuelta-atras" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5. Plan de vuelta atrás
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-validacion-de-los-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Validación de los datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-seguridad-durante-la-migracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Seguridad durante la migración
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-ideas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Ideas clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-preguntas-de-autoevaluacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Preguntas de autoevaluación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="ud5-61-migracion-de-bases-de-datos-tecnicas-y-planificacion">UD5 · 6.1. Migración de bases de datos: técnicas y planificación<a class="headerlink" href="#ud5-61-migracion-de-bases-de-datos-tecnicas-y-planificacion" title="Permanent link">&para;</a></h1>
+<h2 id="1-introduccion">1. Introducción<a class="headerlink" href="#1-introduccion" title="Permanent link">&para;</a></h2>
+<p>Migrar una base de datos es más delicado que migrar ficheros. Una base de datos cambia constantemente mientras se migra, tiene objetos además de datos (índices, vistas, procedimientos, usuarios) y suele dar servicio a aplicaciones que no pueden quedarse paradas mucho tiempo.</p>
+<p>Este documento presenta las técnicas para trasladar una base de datos a AWS y cómo planificar el proceso para que termine con los datos íntegros y el menor tiempo de inactividad posible. El documento 6.2 estudia en detalle AWS Database Migration Service (DMS).</p>
+<h3 id="objetivos">Objetivos<a class="headerlink" href="#objetivos" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Distinguir entre migraciones homogéneas y heterogéneas.</li>
+<li>Conocer las técnicas de migración y el tiempo de inactividad que implica cada una.</li>
+<li>Planificar una migración: evaluación, pruebas, corte y vuelta atrás.</li>
+<li>Validar que los datos migrados coinciden con el origen.</li>
+</ul>
+<hr />
+<h2 id="2-migracion-homogenea-y-heterogenea">2. Migración homogénea y heterogénea<a class="headerlink" href="#2-migracion-homogenea-y-heterogenea" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Definición</th>
+<th>Ejemplo</th>
+<th>Dificultad principal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Homogénea</strong></td>
+<td>El motor de origen y el de destino son el mismo.</td>
+<td>MySQL local → Amazon RDS for MySQL</td>
+<td>Mover los datos con poca interrupción.</td>
+</tr>
+<tr>
+<td><strong>Heterogénea</strong></td>
+<td>El motor cambia.</td>
+<td>Oracle → Amazon Aurora PostgreSQL</td>
+<td>Además, convertir el esquema y el código (procedimientos, disparadores, tipos de datos).</td>
+</tr>
+</tbody>
+</table>
+<p>En una migración homogénea, el esquema se traslada tal cual. En una heterogénea, hay dos trabajos separados: <strong>convertir el esquema</strong> y <strong>mover los datos</strong>. Conviene que la versión del motor de destino sea igual o superior a la de origen: no se puede migrar a una versión anterior.</p>
+<p>Desde el punto de vista de las estrategias de migración (documento 1), pasar de un servidor propio a Amazon RDS con el mismo motor es <strong>Replatform</strong>. Cambiar de motor forma parte habitualmente de un <strong>Refactor</strong>.</p>
+<hr />
+<h2 id="3-tecnicas-de-migracion">3. Técnicas de migración<a class="headerlink" href="#3-tecnicas-de-migracion" title="Permanent link">&para;</a></h2>
+<h3 id="31-volcado-logico-y-restauracion">3.1. Volcado lógico y restauración<a class="headerlink" href="#31-volcado-logico-y-restauracion" title="Permanent link">&para;</a></h3>
+<p>Se exporta la base de datos a un fichero de sentencias SQL con las herramientas del propio motor y se ejecuta ese fichero en el destino.</p>
+<table>
+<thead>
+<tr>
+<th>Motor</th>
+<th>Exportación</th>
+<th>Importación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MySQL / MariaDB</td>
+<td><code>mysqldump</code></td>
+<td><code>mysql</code></td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td><code>pg_dump</code></td>
+<td><code>pg_restore</code> o <code>psql</code></td>
+</tr>
+<tr>
+<td>SQL Server</td>
+<td>Asistente de exportación o <code>bcp</code></td>
+<td><code>sqlcmd</code> o <code>bcp</code></td>
+</tr>
+</tbody>
+</table>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Volcado coherente de una base de datos InnoDB, con procedimientos, disparadores y eventos</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>mysqldump<span class="w"> </span>-h<span class="w"> </span>origen.empresa.local<span class="w"> </span>-u<span class="w"> </span>admin<span class="w"> </span>-p<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span>--single-transaction<span class="w"> </span>--routines<span class="w"> </span>--triggers<span class="w"> </span>--events<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span>--set-gtid-purged<span class="o">=</span>OFF<span class="w"> </span>--databases<span class="w"> </span>tienda<span class="w"> </span>&gt;<span class="w"> </span>tienda.sql
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Restauración en Amazon RDS for MySQL</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>mysql<span class="w"> </span>-h<span class="w"> </span>tienda-db.xxxxxxxx.us-east-1.rds.amazonaws.com<span class="w"> </span>-u<span class="w"> </span>admin<span class="w"> </span>-p<span class="w"> </span>&lt;<span class="w"> </span>tienda.sql
+</span></code></pre></div>
+<ul>
+<li><strong>Ventajas:</strong> sencilla, sin herramientas adicionales, migra datos y objetos.</li>
+<li><strong>Inconvenientes:</strong> las escrituras deben detenerse desde que empieza el volcado hasta que la aplicación apunta al destino; todo ese tiempo es <strong>inactividad</strong>. Con bases de datos grandes puede durar horas.</li>
+<li><strong>Cuándo usarla:</strong> bases de datos pequeñas o medianas, o cuando se dispone de una ventana de mantenimiento amplia.</li>
+</ul>
+<blockquote>
+<p><strong>Nota.</strong> En Amazon RDS no existe un usuario con privilegio <code>SUPER</code>. Si el volcado incluye cláusulas <code>DEFINER</code> de otro usuario o sentencias de GTID, la restauración puede fallar. Por eso se usa <code>--set-gtid-purged=OFF</code> y se revisan los <code>DEFINER</code>.</p>
+</blockquote>
+<h3 id="32-copia-fisica">3.2. Copia física<a class="headerlink" href="#32-copia-fisica" title="Permanent link">&para;</a></h3>
+<p>Se copian los ficheros de datos del motor, no sentencias SQL. Es mucho más rápida en volúmenes grandes.</p>
+<ul>
+<li><strong>MySQL:</strong> se hace una copia con Percona XtraBackup, se sube a S3 y se crea una instancia de RDS restaurándola desde S3.</li>
+<li><strong>SQL Server:</strong> copia de seguridad nativa (<code>.bak</code>) en S3 y restauración en RDS for SQL Server.</li>
+<li><strong>Oracle:</strong> Oracle Data Pump con los ficheros en S3.</li>
+</ul>
+<p>Tiene el mismo inconveniente que el volcado: si la base de datos sigue recibiendo escrituras, esos cambios no llegan al destino. Por eso suele combinarse con la técnica siguiente.</p>
+<h3 id="33-replicacion-nativa">3.3. Replicación nativa<a class="headerlink" href="#33-replicacion-nativa" title="Permanent link">&para;</a></h3>
+<p>Se configura el destino como <strong>réplica</strong> del origen usando el mecanismo de replicación del propio motor. Tras una carga inicial (por volcado o copia física), los cambios se aplican de forma continua hasta el corte.</p>
+<ul>
+<li><strong>MySQL:</strong> replicación basada en el registro binario (<em>binlog</em>). En RDS for MySQL, el destino se configura como réplica de un servidor externo con los procedimientos almacenados <code>mysql.rds_set_external_source</code> (en versiones anteriores, <code>mysql.rds_set_external_master</code>) y <code>mysql.rds_start_replication</code>.</li>
+<li><strong>PostgreSQL:</strong> replicación lógica con publicaciones (<code>CREATE PUBLICATION</code>) en el origen y suscripciones (<code>CREATE SUBSCRIPTION</code>) en el destino.</li>
+</ul>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">-- En el destino (RDS for MySQL), tras la carga inicial con mysqldump --source-data=2</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">CALL</span><span class="w"> </span><span class="n">mysql</span><span class="p">.</span><span class="n">rds_set_external_source</span><span class="p">(</span><span class="s1">'origen.empresa.local'</span><span class="p">,</span><span class="w"> </span><span class="mi">3306</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">     </span><span class="s1">'repl_user'</span><span class="p">,</span><span class="w"> </span><span class="s1">'contraseña'</span><span class="p">,</span><span class="w"> </span><span class="s1">'mysql-bin.000042'</span><span class="p">,</span><span class="w"> </span><span class="mi">154</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">  </span><span class="c1">-- último parámetro: SSL</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">CALL</span><span class="w"> </span><span class="n">mysql</span><span class="p">.</span><span class="n">rds_start_replication</span><span class="p">;</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">SHOW</span><span class="w"> </span><span class="n">REPLICA</span><span class="w"> </span><span class="n">STATUS</span><span class="err">\</span><span class="k">G</span><span class="w">   </span><span class="c1">-- comprobar Seconds_Behind_Source</span>
+</span></code></pre></div>
+<ul>
+<li><strong>Ventajas:</strong> inactividad mínima; usa mecanismos conocidos del motor.</li>
+<li><strong>Inconvenientes:</strong> solo sirve para migraciones homogéneas; exige red entre origen y destino y conocer bien el motor.</li>
+</ul>
+<h3 id="34-aws-database-migration-service">3.4. AWS Database Migration Service<a class="headerlink" href="#34-aws-database-migration-service" title="Permanent link">&para;</a></h3>
+<p>AWS DMS es un servicio gestionado que hace la <strong>carga completa</strong> de los datos y, opcionalmente, la <strong>captura de datos de cambios</strong> (CDC, <em>Change Data Capture</em>), leyendo los registros de transacciones del origen. Sirve tanto para migraciones homogéneas como heterogéneas y no requiere instalar nada en el origen. Se estudia en el documento 6.2.</p>
+<h3 id="35-comparativa">3.5. Comparativa<a class="headerlink" href="#35-comparativa" title="Permanent link">&para;</a></h3>
+<p>La figura compara el tiempo de inactividad de las dos familias de técnicas.</p>
+<p><img alt="Tiempo de inactividad según la técnica de migración" src="../img/ud5-06-tiempo-inactividad.png" /></p>
+<p><em>Figura 1. Con volcado y restauración, la aplicación no puede escribir durante todo el proceso. Con carga completa más CDC, solo durante el corte.</em></p>
+<table>
+<thead>
+<tr>
+<th>Técnica</th>
+<th>Homogénea</th>
+<th>Heterogénea</th>
+<th>Inactividad</th>
+<th>Complejidad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Volcado lógico y restauración</td>
+<td>Sí</td>
+<td>No (salvo exportando datos planos)</td>
+<td>Todo el proceso</td>
+<td>Baja</td>
+</tr>
+<tr>
+<td>Copia física</td>
+<td>Sí</td>
+<td>No</td>
+<td>Todo el proceso</td>
+<td>Media</td>
+</tr>
+<tr>
+<td>Carga inicial + replicación nativa</td>
+<td>Sí</td>
+<td>No</td>
+<td>Solo el corte</td>
+<td>Media-alta</td>
+</tr>
+<tr>
+<td>AWS DMS (carga completa + CDC)</td>
+<td>Sí</td>
+<td>Sí</td>
+<td>Solo el corte</td>
+<td>Media</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-planificacion-de-la-migracion">4. Planificación de la migración<a class="headerlink" href="#4-planificacion-de-la-migracion" title="Permanent link">&para;</a></h2>
+<h3 id="41-evaluacion-del-origen">4.1. Evaluación del origen<a class="headerlink" href="#41-evaluacion-del-origen" title="Permanent link">&para;</a></h3>
+<p>Antes de elegir técnica hay que inventariar la base de datos:</p>
+<ul>
+<li><strong>Motor, versión y edición.</strong> Determinan el destino posible y las técnicas compatibles.</li>
+<li><strong>Tamaño</strong> de los datos y de las tablas más grandes, y <strong>ritmo de cambios</strong> (transacciones por segundo, volumen de <em>binlog</em> diario).</li>
+<li><strong>Objetos:</strong> tablas sin clave primaria, columnas de tipo LOB (<code>BLOB</code>, <code>TEXT</code>), procedimientos, disparadores, eventos, vistas.</li>
+<li><strong>Juego de caracteres y collation</strong>, para evitar problemas con tildes y eñes.</li>
+<li><strong>Usuarios y permisos</strong> que habrá que recrear en el destino.</li>
+<li><strong>Dependencias:</strong> aplicaciones, informes o procesos por lotes que se conectan a la base de datos.</li>
+</ul>
+<p>Cuando hay muchas bases de datos que evaluar, AWS recomienda <strong>AWS Migration Evaluator</strong> para el inventario y la estimación de costes. La herramienta anterior, DMS Fleet Advisor, dejó de tener soporte el 20 de mayo de 2026.</p>
+<h3 id="42-diseno-del-destino">4.2. Diseño del destino<a class="headerlink" href="#42-diseno-del-destino" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Servicio:</strong> Amazon RDS (mismo motor, gestionado) o Amazon Aurora (compatible con MySQL o PostgreSQL, mayor escalabilidad).</li>
+<li><strong>Dimensionamiento:</strong> clase de instancia, almacenamiento e IOPS a partir del uso actual.</li>
+<li><strong>Disponibilidad:</strong> Multi-AZ para producción.</li>
+<li><strong>Red y seguridad:</strong> subredes privadas, grupos de seguridad que solo permitan el tráfico necesario y conectividad con el origen (VPN o AWS Direct Connect).</li>
+<li><strong>Parámetros:</strong> grupo de parámetros con la misma configuración relevante que el origen (<code>sql_mode</code>, zona horaria, juego de caracteres).</li>
+</ul>
+<h3 id="43-pruebas">4.3. Pruebas<a class="headerlink" href="#43-pruebas" title="Permanent link">&para;</a></h3>
+<p>Siempre se hace al menos una <strong>migración de prueba</strong> completa antes de la definitiva. Sirve para medir tiempos reales, detectar incompatibilidades y probar la aplicación contra el destino.</p>
+<h3 id="44-plan-de-corte">4.4. Plan de corte<a class="headerlink" href="#44-plan-de-corte" title="Permanent link">&para;</a></h3>
+<p>El <strong>corte</strong> (<em>cutover</em>) es el momento en que la aplicación deja de usar el origen y pasa al destino. Con carga completa más CDC, los pasos habituales son:</p>
+<ol>
+<li>Comprobar que la <strong>latencia de replicación</strong> es cercana a cero.</li>
+<li><strong>Detener las escrituras</strong> en el origen: parar la aplicación o poner la base de datos en solo lectura.</li>
+<li>Esperar a que se apliquen los últimos cambios (latencia cero).</li>
+<li><strong>Validar</strong> los datos (apartado 5).</li>
+<li>Cambiar la <strong>cadena de conexión</strong> de la aplicación o el registro DNS hacia el destino.</li>
+<li>Abrir las escrituras en el destino y <strong>supervisar</strong> errores y rendimiento.</li>
+</ol>
+<h3 id="45-plan-de-vuelta-atras">4.5. Plan de vuelta atrás<a class="headerlink" href="#45-plan-de-vuelta-atras" title="Permanent link">&para;</a></h3>
+<p>Hay que decidir de antemano qué se hará si el destino falla después del corte:</p>
+<ul>
+<li>Mantener el origen intacto y <strong>en solo lectura</strong> durante un periodo acordado.</li>
+<li>Fijar <strong>criterios objetivos</strong> para volver atrás (por ejemplo, errores de la aplicación o un rendimiento inaceptable).</li>
+<li>Si se necesita volver sin perder los cambios hechos en el destino, configurar una <strong>replicación inversa</strong> del destino al origen.</li>
+</ul>
+<hr />
+<h2 id="5-validacion-de-los-datos">5. Validación de los datos<a class="headerlink" href="#5-validacion-de-los-datos" title="Permanent link">&para;</a></h2>
+<p>Que la migración termine sin errores no garantiza que los datos sean correctos. La validación combina varias comprobaciones:</p>
+<table>
+<thead>
+<tr>
+<th>Comprobación</th>
+<th>Cómo</th>
+<th>Detecta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Recuento de filas</td>
+<td><code>SELECT COUNT(*)</code> por tabla en origen y destino</td>
+<td>Filas que faltan o sobran.</td>
+</tr>
+<tr>
+<td>Sumas de comprobación</td>
+<td><code>CHECKSUM TABLE</code> (MySQL) o sumas sobre columnas numéricas</td>
+<td>Diferencias de contenido.</td>
+</tr>
+<tr>
+<td>Muestreo</td>
+<td>Comparar registros concretos, incluidos los más recientes</td>
+<td>Problemas de codificación o de tipos de datos.</td>
+</tr>
+<tr>
+<td>Objetos</td>
+<td>Comparar el número de índices, vistas, procedimientos y disparadores</td>
+<td>Objetos no migrados.</td>
+</tr>
+<tr>
+<td>Pruebas funcionales</td>
+<td>Ejecutar los casos de uso principales de la aplicación</td>
+<td>Errores que los datos no muestran.</td>
+</tr>
+</tbody>
+</table>
+<p>AWS DMS incluye además una <strong>validación automática</strong> fila a fila, que se estudia en el documento 6.2.</p>
+<hr />
+<h2 id="6-seguridad-durante-la-migracion">6. Seguridad durante la migración<a class="headerlink" href="#6-seguridad-durante-la-migracion" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Conexiones cifradas</strong> con TLS entre origen, herramienta de migración y destino.</li>
+<li><strong>Usuario de migración</strong> con los privilegios mínimos (lectura y replicación en el origen), que se elimina al terminar.</li>
+<li><strong>Credenciales</strong> guardadas en AWS Secrets Manager, no en <em>scripts</em> ni en ficheros de configuración.</li>
+<li><strong>Destino cifrado</strong> en reposo con AWS KMS desde su creación, porque en RDS no se puede activar el cifrado sobre una instancia existente.</li>
+<li><strong>Ficheros intermedios</strong> (volcados, copias de seguridad) cifrados y eliminados al acabar.</li>
+</ul>
+<hr />
+<h2 id="7-ideas-clave">7. Ideas clave<a class="headerlink" href="#7-ideas-clave" title="Permanent link">&para;</a></h2>
+<ul>
+<li>En una migración homogénea solo se mueven los datos; en una heterogénea, además, hay que convertir el esquema y el código.</li>
+<li>El volcado y la copia física obligan a detener las escrituras durante todo el proceso; la replicación nativa y DMS con CDC reducen la inactividad al momento del corte.</li>
+<li>Una migración se planifica: evaluación del origen, diseño del destino, migración de prueba, plan de corte y plan de vuelta atrás.</li>
+<li>La validación combina recuentos, sumas de comprobación, muestreo y pruebas funcionales.</li>
+</ul>
+<h2 id="8-preguntas-de-autoevaluacion">8. Preguntas de autoevaluación<a class="headerlink" href="#8-preguntas-de-autoevaluacion" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Una tienda en línea con una base de datos MySQL de 400 GB no puede estar parada más de 15 minutos. ¿Qué técnica descartarías y cuál propondrías?</li>
+<li>¿Por qué el volcado con <code>mysqldump</code> puede fallar al restaurarse en Amazon RDS? ¿Qué opción lo evita?</li>
+<li>Enumera los pasos del corte y explica qué ocurre si se cambia la cadena de conexión antes de que la latencia de replicación llegue a cero.</li>
+</ol>
+<hr />
+<h2 id="referencias">Referencias<a class="headerlink" href="#referencias" title="Permanent link">&para;</a></h2>
+<ul>
+<li>AWS. <em>Importing data into an Amazon RDS for MySQL DB instance</em>. <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Procedural.Importing.html">https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Procedural.Importing.html</a></li>
+<li>AWS. <em>Restoring a backup into an Amazon RDS for MySQL DB instance</em> (Percona XtraBackup desde S3). <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Procedural.Importing.html">https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Procedural.Importing.html</a></li>
+<li>MySQL. <em>mysqldump — A Database Backup Program</em>. <a href="https://dev.mysql.com/doc/refman/8.0/en/mysqldump.html">https://dev.mysql.com/doc/refman/8.0/en/mysqldump.html</a></li>
+<li>PostgreSQL. <em>Logical Replication</em>. <a href="https://www.postgresql.org/docs/current/logical-replication.html">https://www.postgresql.org/docs/current/logical-replication.html</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
