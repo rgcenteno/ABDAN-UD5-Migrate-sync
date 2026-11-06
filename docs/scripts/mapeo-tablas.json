@@ -1,0 +1,19 @@
+{
+  "rules": [
+    {
+      "rule-type": "selection",
+      "rule-id": "1",
+      "rule-name": "incluir-esquema-ud5",
+      "object-locator": { "schema-name": "ud5", "table-name": "%" },
+      "rule-action": "include"
+    },
+    {
+      "rule-type": "transformation",
+      "rule-id": "2",
+      "rule-name": "columnas-en-minusculas",
+      "rule-target": "column",
+      "object-locator": { "schema-name": "ud5", "table-name": "%", "column-name": "%" },
+      "rule-action": "convert-lowercase"
+    }
+  ]
+}
