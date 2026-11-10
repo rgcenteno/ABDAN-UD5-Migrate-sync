@@ -1,0 +1,1855 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://rgcenteno.github.io/ABDAN-UD5-Migrate-sync/06b-aws-dms/">
+      
+      
+        <link rel="prev" href="../06a-migracion-bases-datos/">
+      
+      
+        <link rel="next" href="../practica-migracion-dms-aurora/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>AWS Database Migration Service (DMS) - UD5. Transferencia, sincronización y migración de datos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ud5-62-aws-database-migration-service-dms" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-header__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            UD5. Transferencia, sincronización y migración de datos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              AWS Database Migration Service (DMS)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-nav__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    UD5. Transferencia, sincronización y migración de datos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 1
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 1
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-fundamentos-migracion-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fundamentos de la migración de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-amazon-s3-destino-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Amazon S3 como destino de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-aws-datasync/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS DataSync
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-aws-transfer-family/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Transfer Family
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-transferencia-fuera-de-linea/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transferencia fuera de línea
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-seguridad-monitorizacion-auditoria/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Seguridad, monitorización y auditoría
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 2
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-migracion-bases-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración de bases de datos: técnicas y planificación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Database Migration Service (DMS)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Database Migration Service (DMS)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introducción">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-componentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Componentes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-tipos-de-tarea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Tipos de tarea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-preparacion-del-origen-para-cdc-mysql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Preparación del origen para CDC (MySQL)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Preparación del origen para CDC (MySQL)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-mysql-autogestionado-local-o-en-ec2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1. MySQL autogestionado (local o en EC2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-amazon-rds-for-mysql-como-origen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2. Amazon RDS for MySQL como origen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-usuario-de-dms-en-el-origen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3. Usuario de DMS en el origen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-limitaciones-relevantes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4. Limitaciones relevantes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-que-migra-dms-y-que-no" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Qué migra DMS y qué no
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-configuracion-de-la-tarea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Configuración de la tarea
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Configuración de la tarea">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-mapeo-de-tablas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1. Mapeo de tablas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-ajustes-principales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2. Ajustes principales
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-evaluacion-previa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3. Evaluación previa
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-validacion-de-los-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Validación de los datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-monitorizacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Monitorización
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-migraciones-heterogeneas-dms-schema-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Migraciones heterogéneas: DMS Schema Conversion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-migraciones-homogeneas-de-dms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Migraciones homogéneas de DMS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-costes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Costes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-ejemplo-con-la-aws-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Ejemplo con la AWS CLI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-ideas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Ideas clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-preguntas-de-autoevaluacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Preguntas de autoevaluación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practica-migracion-dms-aurora/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración con DMS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introducción">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-componentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Componentes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-tipos-de-tarea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Tipos de tarea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-preparacion-del-origen-para-cdc-mysql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Preparación del origen para CDC (MySQL)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Preparación del origen para CDC (MySQL)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-mysql-autogestionado-local-o-en-ec2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1. MySQL autogestionado (local o en EC2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-amazon-rds-for-mysql-como-origen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2. Amazon RDS for MySQL como origen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-usuario-de-dms-en-el-origen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3. Usuario de DMS en el origen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-limitaciones-relevantes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4. Limitaciones relevantes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-que-migra-dms-y-que-no" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Qué migra DMS y qué no
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-configuracion-de-la-tarea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Configuración de la tarea
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Configuración de la tarea">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-mapeo-de-tablas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1. Mapeo de tablas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-ajustes-principales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2. Ajustes principales
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-evaluacion-previa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3. Evaluación previa
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-validacion-de-los-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Validación de los datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-monitorizacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Monitorización
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-migraciones-heterogeneas-dms-schema-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Migraciones heterogéneas: DMS Schema Conversion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-migraciones-homogeneas-de-dms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Migraciones homogéneas de DMS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-costes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Costes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-ejemplo-con-la-aws-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Ejemplo con la AWS CLI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-ideas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Ideas clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-preguntas-de-autoevaluacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Preguntas de autoevaluación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="ud5-62-aws-database-migration-service-dms">UD5 · 6.2. AWS Database Migration Service (DMS)<a class="headerlink" href="#ud5-62-aws-database-migration-service-dms" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Módulo:</strong> 5162 · Administración de bases de datos y almacenamiento en la nube
+<strong>Unidad didáctica:</strong> UD5 · Transferencia, sincronización y migración de datos
+<strong>Temporalización:</strong> semana 2 · sesión 10 (práctica evaluable en las sesiones 11 a 15)
+<strong>Resultados de aprendizaje:</strong> RA5 (criterios a, b, c, e, f, g, h) · RA4 (criterio e) · RA6 (criterios e, g)</p>
+</blockquote>
+<hr />
+<h2 id="1-introduccion">1. Introducción<a class="headerlink" href="#1-introduccion" title="Permanent link">&para;</a></h2>
+<p><strong>AWS Database Migration Service (DMS)</strong> es un servicio gestionado para migrar bases de datos a AWS y replicar datos entre bases de datos. Lee los datos del origen, los transforma si es necesario y los escribe en el destino. Mientras tanto, la base de datos de origen <strong>sigue en servicio</strong>.</p>
+<p>Sus usos principales son:</p>
+<ul>
+<li><strong>Migraciones homogéneas:</strong> MySQL local → Amazon RDS for MySQL.</li>
+<li><strong>Migraciones heterogéneas:</strong> Oracle → Amazon Aurora PostgreSQL, junto con DMS Schema Conversion.</li>
+<li><strong>Replicación continua</strong> entre bases de datos, por ejemplo para alimentar un almacén de datos o mantener una copia sincronizada.</li>
+</ul>
+<h3 id="objetivos">Objetivos<a class="headerlink" href="#objetivos" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Identificar los componentes de DMS: instancia de replicación, puntos de enlace y tareas.</li>
+<li>Distinguir los tipos de tarea: carga completa, CDC y carga completa más CDC.</li>
+<li>Preparar una base de datos MySQL como origen de CDC.</li>
+<li>Configurar el mapeo de tablas, la validación y la monitorización de una tarea.</li>
+<li>Conocer las opciones de DMS para migraciones heterogéneas y homogéneas.</li>
+</ul>
+<hr />
+<h2 id="2-arquitectura">2. Arquitectura<a class="headerlink" href="#2-arquitectura" title="Permanent link">&para;</a></h2>
+<p><img alt="Arquitectura de una migración con AWS DMS" src="../img/ud5-06-dms-arquitectura.png" /></p>
+<p><em>Figura 1. Migración de MySQL local a Amazon RDS for MySQL. La instancia de replicación lee el origen a través de la VPN y escribe en el destino; las credenciales están en Secrets Manager y la tarea se supervisa con CloudWatch.</em></p>
+<p>La instancia de replicación se despliega en una <strong>subred privada</strong> de la VPC y necesita conectividad con el origen y con el destino. Cuando el origen está en un centro de datos local, la conexión se hace mediante VPN o AWS Direct Connect.</p>
+<hr />
+<h2 id="3-componentes">3. Componentes<a class="headerlink" href="#3-componentes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Instancia de replicación</strong></td>
+<td>Instancia EC2 gestionada por AWS que ejecuta las tareas. Se elige la clase (por ejemplo, <code>dms.t3.medium</code>), el almacenamiento, la versión del motor de DMS y si es Multi-AZ.</td>
+</tr>
+<tr>
+<td><strong>DMS Serverless</strong></td>
+<td>Alternativa a la instancia: DMS aprovisiona y escala la capacidad automáticamente. Se configura un mínimo y un máximo de <strong>DCU</strong> (<em>DMS Capacity Units</em>; 1 DCU = 2 GB de RAM), de 1 a 384.</td>
+</tr>
+<tr>
+<td><strong>Punto de enlace de origen</strong> (<em>source endpoint</em>)</td>
+<td>Datos de conexión a la base de datos de origen: motor, servidor, puerto, usuario y opciones SSL.</td>
+</tr>
+<tr>
+<td><strong>Punto de enlace de destino</strong> (<em>target endpoint</em>)</td>
+<td>Igual, para la base de datos de destino. Puede ser una base de datos, Amazon S3, Amazon Kinesis y otros.</td>
+</tr>
+<tr>
+<td><strong>Tarea de migración</strong> (<em>task</em>)</td>
+<td>Une una instancia, un origen y un destino; define el tipo de migración, qué tablas se migran y cómo.</td>
+</tr>
+</tbody>
+</table>
+<p>Antes de crear una tarea se debe <strong>probar la conexión</strong> de cada punto de enlace desde la instancia de replicación. La mayoría de los errores iniciales son de red (grupos de seguridad, rutas) o de credenciales.</p>
+<blockquote>
+<p><strong>Versión del motor de DMS.</strong> A noviembre de 2026, la versión por defecto es la 3.5.4 y la más reciente publicada es la 3.6.1. La versión determina los motores y funciones disponibles.</p>
+</blockquote>
+<hr />
+<h2 id="4-tipos-de-tarea">4. Tipos de tarea<a class="headerlink" href="#4-tipos-de-tarea" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Qué hace</th>
+<th>Cuándo usarlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Carga completa</strong> (<em>full load</em>)</td>
+<td>Copia los datos existentes en el momento de iniciar la tarea.</td>
+<td>Migraciones con ventana de parada o copias puntuales.</td>
+</tr>
+<tr>
+<td><strong>Carga completa + CDC</strong></td>
+<td>Copia los datos existentes y después replica los cambios que se producen en el origen.</td>
+<td>Migraciones con mínima inactividad. Es el caso más habitual.</td>
+</tr>
+<tr>
+<td><strong>Solo CDC</strong></td>
+<td>Replica únicamente los cambios a partir de un momento dado.</td>
+<td>Cuando la carga inicial se ha hecho con otra herramienta (por ejemplo, un volcado nativo).</td>
+</tr>
+</tbody>
+</table>
+<p>En una tarea de <strong>carga completa + CDC</strong>, el proceso tiene tres fases:</p>
+<ol>
+<li><strong>Carga completa:</strong> DMS copia cada tabla. Los cambios que se producen mientras tanto se guardan en <strong>caché</strong> en la instancia de replicación.</li>
+<li><strong>Aplicación de los cambios en caché:</strong> al terminar la carga de cada tabla, DMS aplica los cambios acumulados.</li>
+<li><strong>Replicación continua:</strong> DMS lee el registro de transacciones del origen (el <em>binlog</em> en MySQL) y aplica cada cambio en el destino hasta que se detiene la tarea.</li>
+</ol>
+<hr />
+<h2 id="5-preparacion-del-origen-para-cdc-mysql">5. Preparación del origen para CDC (MySQL)<a class="headerlink" href="#5-preparacion-del-origen-para-cdc-mysql" title="Permanent link">&para;</a></h2>
+<p>Para capturar cambios, DMS lee el <strong>registro binario</strong> de MySQL. Por tanto, el origen debe tenerlo activado con un formato concreto.</p>
+<h3 id="51-mysql-autogestionado-local-o-en-ec2">5.1. MySQL autogestionado (local o en EC2)<a class="headerlink" href="#51-mysql-autogestionado-local-o-en-ec2" title="Permanent link">&para;</a></h3>
+<p>Parámetros en <code>my.cnf</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor requerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>server_id</code></td>
+<td>1 o mayor</td>
+</tr>
+<tr>
+<td><code>log-bin</code></td>
+<td>Ruta del registro binario (activa el <em>binlog</em>)</td>
+</tr>
+<tr>
+<td><code>binlog_format</code></td>
+<td><code>ROW</code></td>
+</tr>
+<tr>
+<td><code>binlog_row_image</code></td>
+<td><code>FULL</code></td>
+</tr>
+<tr>
+<td><code>binlog_expire_logs_seconds</code></td>
+<td>86400 (1 día) o más, en MySQL 8.0 y posteriores</td>
+</tr>
+<tr>
+<td><code>binlog_checksum</code></td>
+<td><code>NONE</code>, solo con versiones de DMS 3.4.7 o anteriores</td>
+</tr>
+<tr>
+<td><code>log_slave_updates</code></td>
+<td><code>TRUE</code>, si el origen es una réplica de lectura</td>
+</tr>
+</tbody>
+</table>
+<div class="language-ini highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">[mysqld]</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="na">server_id</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="s">1</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="na">log-bin</span><span class="w">                    </span><span class="o">=</span><span class="w"> </span><span class="s">/var/log/mysql/mysql-bin</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="na">binlog_format</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="s">ROW</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="na">binlog_row_image</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s">FULL</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="na">binlog_expire_logs_seconds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">86400</span>
+</span></code></pre></div>
+<h3 id="52-amazon-rds-for-mysql-como-origen">5.2. Amazon RDS for MySQL como origen<a class="headerlink" href="#52-amazon-rds-for-mysql-como-origen" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Activar las <strong>copias de seguridad automáticas</strong>, que habilitan el registro binario.</li>
+<li>En el grupo de parámetros: <code>binlog_format = ROW</code> y <code>binlog_row_image = FULL</code>. Después, reiniciar la instancia para que todas las sesiones usen el nuevo formato.</li>
+<li>Ampliar la <strong>retención del binlog</strong>, porque RDS lo purga muy pronto:</li>
+</ul>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">CALL</span><span class="w"> </span><span class="n">mysql</span><span class="p">.</span><span class="n">rds_set_configuration</span><span class="p">(</span><span class="s1">'binlog retention hours'</span><span class="p">,</span><span class="w"> </span><span class="mi">24</span><span class="p">);</span>
+</span></code></pre></div>
+<h3 id="53-usuario-de-dms-en-el-origen">5.3. Usuario de DMS en el origen<a class="headerlink" href="#53-usuario-de-dms-en-el-origen" title="Permanent link">&para;</a></h3>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="s1">'dms_user'</span><span class="o">@</span><span class="s1">'%'</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="s1">'contraseña-segura'</span><span class="p">;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">tienda</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">'dms_user'</span><span class="o">@</span><span class="s1">'%'</span><span class="p">;</span><span class="w">                         </span><span class="c1">-- carga completa y CDC</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">GRANT</span><span class="w"> </span><span class="n">REPLICATION</span><span class="w"> </span><span class="n">CLIENT</span><span class="p">,</span><span class="w"> </span><span class="n">REPLICATION</span><span class="w"> </span><span class="n">SLAVE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">'dms_user'</span><span class="o">@</span><span class="s1">'%'</span><span class="p">;</span><span class="w">  </span><span class="c1">-- solo para CDC</span>
+</span></code></pre></div>
+<h3 id="54-limitaciones-relevantes">5.4. Limitaciones relevantes<a class="headerlink" href="#54-limitaciones-relevantes" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>DDL durante el CDC:</strong> se replican <code>CREATE TABLE</code>, <code>ADD COLUMN</code>, <code>DROP COLUMN</code>, cambios de tipo y renombrado de columnas. <strong>No</strong> se replican <code>DROP TABLE</code> ni <code>RENAME TABLE</code>.</li>
+<li><strong>Columnas generadas</strong> (<code>VIRTUAL</code>, <code>GENERATED ALWAYS</code>): sus cambios no se capturan.</li>
+<li><strong>LOB:</strong> si la tarea no incluye LOB, no se migran las columnas <code>MEDIUMTEXT</code>, <code>LONGTEXT</code>, <code>MEDIUMBLOB</code> ni <code>LONGBLOB</code>.</li>
+<li><strong>Tablas sin clave primaria:</strong> DMS necesita identificar cada fila para aplicar actualizaciones y borrados. Conviene añadir una clave primaria antes de migrar.</li>
+<li><strong>Ficheros binlog muy grandes</strong> (más de 4 GB) pueden hacer fallar la tarea.</li>
+</ul>
+<p>Para PostgreSQL, el equivalente es activar la <strong>replicación lógica</strong>: <code>wal_level = logical</code> en un servidor propio, o el parámetro <code>rds.logical_replication = 1</code> en Amazon RDS.</p>
+<hr />
+<h2 id="6-que-migra-dms-y-que-no">6. Qué migra DMS y qué no<a class="headerlink" href="#6-que-migra-dms-y-que-no" title="Permanent link">&para;</a></h2>
+<p>DMS migra <strong>datos</strong>. Al crear las tablas en el destino, solo crea los objetos básicos: tablas, claves primarias y, en algunos casos, índices únicos. <strong>No</strong> migra índices secundarios, claves foráneas, procedimientos, funciones, disparadores, vistas ni usuarios.</p>
+<p>Por eso, en una migración homogénea se sigue este orden:</p>
+<ol>
+<li>Crear el <strong>esquema</strong> en el destino con las herramientas nativas, sin datos: <code>mysqldump --no-data --routines --triggers</code>.</li>
+<li><strong>Desactivar</strong> temporalmente en el destino las claves foráneas y los disparadores, para que no interfieran con la carga.</li>
+<li>Ejecutar la tarea de DMS con el modo de preparación <code>DO_NOTHING</code> o <code>TRUNCATE_BEFORE_LOAD</code>.</li>
+<li><strong>Reactivar</strong> las claves foráneas y los disparadores en el momento del corte.</li>
+</ol>
+<blockquote>
+<p>Un disparador activo en el destino durante el CDC se ejecutaría dos veces: una en el origen, cuyo efecto ya llega replicado, y otra en el destino.</p>
+</blockquote>
+<hr />
+<h2 id="7-configuracion-de-la-tarea">7. Configuración de la tarea<a class="headerlink" href="#7-configuracion-de-la-tarea" title="Permanent link">&para;</a></h2>
+<h3 id="71-mapeo-de-tablas">7.1. Mapeo de tablas<a class="headerlink" href="#71-mapeo-de-tablas" title="Permanent link">&para;</a></h3>
+<p>El <strong>mapeo de tablas</strong> (<em>table mappings</em>) es un documento JSON con reglas de <strong>selección</strong> (qué se migra) y de <strong>transformación</strong> (cambios de nombre, columnas añadidas o eliminadas):</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">"rules"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">      </span><span class="nt">"rule-type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"selection"</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">      </span><span class="nt">"rule-id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">      </span><span class="nt">"rule-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"incluir-tienda"</span><span class="p">,</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">      </span><span class="nt">"object-locator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"schema-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tienda"</span><span class="p">,</span><span class="w"> </span><span class="nt">"table-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"%"</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">      </span><span class="nt">"rule-action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"include"</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">      </span><span class="nt">"rule-type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"selection"</span><span class="p">,</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">      </span><span class="nt">"rule-id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">      </span><span class="nt">"rule-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"excluir-logs"</span><span class="p">,</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">      </span><span class="nt">"object-locator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"schema-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tienda"</span><span class="p">,</span><span class="w"> </span><span class="nt">"table-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"log_%"</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">      </span><span class="nt">"rule-action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"exclude"</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">      </span><span class="nt">"rule-type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"transformation"</span><span class="p">,</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">      </span><span class="nt">"rule-id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">      </span><span class="nt">"rule-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"renombrar-esquema"</span><span class="p">,</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">      </span><span class="nt">"rule-target"</span><span class="p">:</span><span class="w"> </span><span class="s2">"schema"</span><span class="p">,</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">      </span><span class="nt">"object-locator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"schema-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tienda"</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">      </span><span class="nt">"rule-action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"rename"</span><span class="p">,</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tienda_prod"</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>No conviene usar el comodín <code>%</code> como nombre de esquema, porque incluiría los esquemas del sistema y la tarea fallaría en el destino.</p>
+<h3 id="72-ajustes-principales">7.2. Ajustes principales<a class="headerlink" href="#72-ajustes-principales" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Ajuste</th>
+<th>Opciones</th>
+<th>Recomendación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Preparación de las tablas de destino</strong></td>
+<td><code>DO_NOTHING</code>, <code>DROP_AND_CREATE</code>, <code>TRUNCATE_BEFORE_LOAD</code></td>
+<td><code>DO_NOTHING</code> o <code>TRUNCATE_BEFORE_LOAD</code> si el esquema se ha creado antes.</td>
+</tr>
+<tr>
+<td><strong>Modo LOB</strong></td>
+<td>No incluir, LOB limitado (tamaño máximo), LOB completo</td>
+<td>LOB limitado si se conoce el tamaño máximo: es mucho más rápido.</td>
+</tr>
+<tr>
+<td><strong>Validación de datos</strong></td>
+<td>Activada o desactivada</td>
+<td>Activada (apartado 8).</td>
+</tr>
+<tr>
+<td><strong>Registro</strong></td>
+<td>Registros de la tarea en CloudWatch Logs, con nivel por componente</td>
+<td>Activado.</td>
+</tr>
+<tr>
+<td><strong>Detener tras la carga completa</strong></td>
+<td>Detener antes o después de aplicar los cambios en caché</td>
+<td>Útil para crear índices secundarios antes de iniciar el CDC.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="73-evaluacion-previa">7.3. Evaluación previa<a class="headerlink" href="#73-evaluacion-previa" title="Permanent link">&para;</a></h3>
+<p>Las <strong>evaluaciones previas a la migración</strong> (<em>premigration assessments</em>) analizan la tarea antes de ejecutarla y avisan de problemas: tipos de datos no admitidos, tablas sin clave primaria, LOB o parámetros de CDC incorrectos. Sus resultados se guardan en S3.</p>
+<hr />
+<h2 id="8-validacion-de-los-datos">8. Validación de los datos<a class="headerlink" href="#8-validacion-de-los-datos" title="Permanent link">&para;</a></h2>
+<p>Con la validación activada, DMS compara <strong>fila a fila</strong> el origen y el destino de cada tabla, tanto después de la carga completa como durante el CDC.</p>
+<ul>
+<li>El resultado se consulta en las <strong>estadísticas de la tabla</strong>: filas validadas, pendientes y fallidas, y el estado de validación (<code>Validated</code>, <code>Mismatched records</code>, <code>Pending records</code>…).</li>
+<li>Las discrepancias se registran en la tabla <code>awsdms_validation_failures_v1</code> del destino.</li>
+<li>La validación consume recursos de la instancia y de ambas bases de datos; en tablas muy grandes alarga la migración.</li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>aws<span class="w"> </span>dms<span class="w"> </span>describe-table-statistics<span class="w"> </span>--replication-task-arn<span class="w"> </span>&lt;arn-tarea&gt;<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span>--query<span class="w"> </span><span class="s2">"TableStatistics[].[TableName,FullLoadRows,Inserts,Updates,Deletes,ValidationState]"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span>--output<span class="w"> </span>table
+</span></code></pre></div>
+<hr />
+<h2 id="9-monitorizacion">9. Monitorización<a class="headerlink" href="#9-monitorizacion" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Métrica de CloudWatch</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FullLoadThroughputRowsTarget</code></td>
+<td>Filas por segundo escritas en el destino durante la carga completa.</td>
+</tr>
+<tr>
+<td><code>CDCLatencySource</code></td>
+<td>Segundos de retraso entre el último cambio en el origen y su lectura por DMS.</td>
+</tr>
+<tr>
+<td><code>CDCLatencyTarget</code></td>
+<td>Segundos de retraso entre el cambio en el origen y su aplicación en el destino. Es la métrica que decide el momento del corte.</td>
+</tr>
+<tr>
+<td><code>CDCIncomingChanges</code></td>
+<td>Cambios recibidos pendientes de aplicar.</td>
+</tr>
+<tr>
+<td><code>CPUUtilization</code>, <code>FreeableMemory</code></td>
+<td>Recursos de la instancia de replicación.</td>
+</tr>
+</tbody>
+</table>
+<p>Además, los <strong>eventos de DMS</strong> (a través de Amazon EventBridge o de suscripciones de eventos) avisan de cambios de estado de la tarea y de fallos.</p>
+<hr />
+<h2 id="10-migraciones-heterogeneas-dms-schema-conversion">10. Migraciones heterogéneas: DMS Schema Conversion<a class="headerlink" href="#10-migraciones-heterogeneas-dms-schema-conversion" title="Permanent link">&para;</a></h2>
+<p>En una migración heterogénea, antes de mover los datos hay que <strong>convertir el esquema y el código</strong> al motor de destino.</p>
+<p><img alt="Migración heterogénea con DMS Schema Conversion" src="../img/ud5-06-conversion-heterogenea.png" /></p>
+<p><em>Figura 2. DMS Schema Conversion convierte el esquema y genera un informe de evaluación; una tarea de DMS carga y replica después los datos.</em></p>
+<p><strong>DMS Schema Conversion</strong> es una función gestionada de DMS, accesible desde la consola, que:</p>
+<ol>
+<li>Lee los metadatos del origen y genera un <strong>informe de evaluación</strong> con lo que se convierte automáticamente y lo que requiere trabajo manual.</li>
+<li>Convierte tablas, vistas, procedimientos, funciones y disparadores al motor de destino.</li>
+<li>Aplica el código convertido en el destino o lo exporta como <em>scripts</em> SQL a Amazon S3.</li>
+</ol>
+<p>Usa el motor de conversión de <strong>AWS Schema Conversion Tool (SCT)</strong>, la aplicación de escritorio clásica para esta tarea. Para algunos orígenes (Oracle, SQL Server, Db2, SAP ASE hacia PostgreSQL) ofrece además conversión asistida por <strong>IA generativa</strong> para los objetos que las reglas no convierten. Su uso es gratuito: solo se paga el almacenamiento en S3.</p>
+<table>
+<thead>
+<tr>
+<th>Origen</th>
+<th>Destinos admitidos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Oracle</td>
+<td>Aurora/RDS PostgreSQL, Aurora/RDS MySQL, Amazon Redshift</td>
+</tr>
+<tr>
+<td>SQL Server</td>
+<td>Aurora/RDS PostgreSQL, Aurora/RDS MySQL</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>Aurora/RDS MySQL</td>
+</tr>
+<tr>
+<td>MySQL</td>
+<td>Aurora/RDS PostgreSQL</td>
+</tr>
+<tr>
+<td>IBM Db2 (LUW y z/OS)</td>
+<td>Aurora/RDS PostgreSQL</td>
+</tr>
+<tr>
+<td>SAP ASE</td>
+<td>Aurora/RDS PostgreSQL</td>
+</tr>
+</tbody>
+</table>
+<p>Tanto Schema Conversion como las migraciones homogéneas (apartado 11) se organizan en <strong>proyectos de migración</strong>, formados por un <strong>perfil de instancia</strong> (red y seguridad) y dos <strong>proveedores de datos</strong> (origen y destino).</p>
+<hr />
+<h2 id="11-migraciones-homogeneas-de-dms">11. Migraciones homogéneas de DMS<a class="headerlink" href="#11-migraciones-homogeneas-de-dms" title="Permanent link">&para;</a></h2>
+<p>Para migraciones entre el <strong>mismo motor</strong> hacia Amazon RDS o Aurora (MySQL, PostgreSQL, MongoDB), DMS ofrece las <strong>migraciones de datos homogéneas</strong>. En ellas, DMS usa las <strong>herramientas nativas</strong> del motor en un entorno sin servidor que aprovisiona y escala automáticamente.</p>
+<ul>
+<li>Admite carga completa, replicación continua y ambas.</li>
+<li>Migra también objetos secundarios como funciones y procedimientos.</li>
+<li>No incluye validación de datos integrada.</li>
+<li>En MySQL, las reglas de selección solo se admiten en carga completa.</li>
+<li>Se paga por hora mientras dura la migración, sin cargos de almacenamiento ni de transferencia.</li>
+</ul>
+<p><strong>Cuándo usar cada opción en una migración MySQL → RDS for MySQL:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Necesidad</th>
+<th>Opción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Control fino de tablas, transformaciones y validación</td>
+<td>Tarea de DMS clásica (instancia o Serverless)</td>
+</tr>
+<tr>
+<td>Migrar todo, incluidos procedimientos, con herramientas nativas y sin gestionar capacidad</td>
+<td>Migración homogénea de DMS</td>
+</tr>
+<tr>
+<td>Sin DMS (o si DMS no está disponible)</td>
+<td>Volcado inicial + replicación nativa (documento 6.1)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="12-costes">12. Costes<a class="headerlink" href="#12-costes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Modelo de precio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Instancia de replicación</td>
+<td>Por hora según la clase, más el almacenamiento adicional. Las instancias T3 incluyen 50 GB.</td>
+</tr>
+<tr>
+<td>DMS Serverless</td>
+<td>Por hora y DCU consumida.</td>
+</tr>
+<tr>
+<td>Migraciones homogéneas</td>
+<td>Por hora mientras dura la migración.</td>
+</tr>
+<tr>
+<td>DMS Schema Conversion</td>
+<td>Gratuito; solo se paga el almacenamiento en S3.</td>
+</tr>
+<tr>
+<td>Transferencia de datos</td>
+<td>Gratuita la entrada a DMS y entre DMS y RDS o EC2 en la misma zona de disponibilidad; tarifa normal entre zonas, regiones o hacia fuera de AWS.</td>
+</tr>
+</tbody>
+</table>
+<p><em>Consulta los precios actuales por región en la página de precios de DMS y en la AWS Pricing Calculator.</em></p>
+<p>El mayor error de coste es <strong>olvidar la instancia de replicación encendida</strong> al terminar. Hay que eliminarla, junto con sus puntos de enlace, cuando la migración ha concluido.</p>
+<hr />
+<h2 id="13-ejemplo-con-la-aws-cli">13. Ejemplo con la AWS CLI<a class="headerlink" href="#13-ejemplo-con-la-aws-cli" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># 1. Grupo de subredes para la instancia de replicación (subredes privadas)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>aws<span class="w"> </span>dms<span class="w"> </span>create-replication-subnet-group<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span>--replication-subnet-group-identifier<span class="w"> </span>ud5-dms-subnets<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span>--replication-subnet-group-description<span class="w"> </span><span class="s2">"Subredes privadas UD5"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span>--subnet-ids<span class="w"> </span>subnet-aaaa<span class="w"> </span>subnet-bbbb
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># 2. Instancia de replicación</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>aws<span class="w"> </span>dms<span class="w"> </span>create-replication-instance<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span>--replication-instance-identifier<span class="w"> </span>ud5-dms<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span>--replication-instance-class<span class="w"> </span>dms.t3.medium<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span>--allocated-storage<span class="w"> </span><span class="m">50</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">    </span>--replication-subnet-group-identifier<span class="w"> </span>ud5-dms-subnets<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">    </span>--vpc-security-group-ids<span class="w"> </span>sg-dms<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">    </span>--no-publicly-accessible
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="c1"># 3. Puntos de enlace de origen y destino</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>aws<span class="w"> </span>dms<span class="w"> </span>create-endpoint<span class="w"> </span>--endpoint-identifier<span class="w"> </span>ud5-origen<span class="w"> </span>--endpoint-type<span class="w"> </span><span class="nb">source</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">    </span>--engine-name<span class="w"> </span>mysql<span class="w"> </span>--server-name<span class="w"> </span><span class="m">10</span>.0.1.25<span class="w"> </span>--port<span class="w"> </span><span class="m">3306</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">    </span>--username<span class="w"> </span>dms_user<span class="w"> </span>--password<span class="w"> </span><span class="s1">'&lt;contraseña&gt;'</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>aws<span class="w"> </span>dms<span class="w"> </span>create-endpoint<span class="w"> </span>--endpoint-identifier<span class="w"> </span>ud5-destino<span class="w"> </span>--endpoint-type<span class="w"> </span>target<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">    </span>--engine-name<span class="w"> </span>mysql<span class="w"> </span>--server-name<span class="w"> </span>tienda-db.xxxxxxxx.us-east-1.rds.amazonaws.com<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="w">    </span>--port<span class="w"> </span><span class="m">3306</span><span class="w"> </span>--username<span class="w"> </span>admin<span class="w"> </span>--password<span class="w"> </span><span class="s1">'&lt;contraseña&gt;'</span><span class="w"> </span>--ssl-mode<span class="w"> </span>require
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="c1"># 4. Probar las conexiones</span>
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>aws<span class="w"> </span>dms<span class="w"> </span>test-connection<span class="w"> </span>--replication-instance-arn<span class="w"> </span>&lt;arn-instancia&gt;<span class="w"> </span>--endpoint-arn<span class="w"> </span>&lt;arn-origen&gt;
+</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>aws<span class="w"> </span>dms<span class="w"> </span>test-connection<span class="w"> </span>--replication-instance-arn<span class="w"> </span>&lt;arn-instancia&gt;<span class="w"> </span>--endpoint-arn<span class="w"> </span>&lt;arn-destino&gt;
+</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>
+</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="c1"># 5. Tarea de carga completa + CDC con el mapeo de tablas del apartado 7.1</span>
+</span><span id="__span-5-29"><a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>aws<span class="w"> </span>dms<span class="w"> </span>create-replication-task<span class="w"> </span>--replication-task-identifier<span class="w"> </span>ud5-tienda<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-30"><a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="w">    </span>--source-endpoint-arn<span class="w"> </span>&lt;arn-origen&gt;<span class="w"> </span>--target-endpoint-arn<span class="w"> </span>&lt;arn-destino&gt;<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-31"><a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a><span class="w">    </span>--replication-instance-arn<span class="w"> </span>&lt;arn-instancia&gt;<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-32"><a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a><span class="w">    </span>--migration-type<span class="w"> </span>full-load-and-cdc<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-33"><a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="w">    </span>--table-mappings<span class="w"> </span>file://mapeo.json<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-34"><a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="w">    </span>--replication-task-settings<span class="w"> </span>file://ajustes.json
+</span><span id="__span-5-35"><a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>
+</span><span id="__span-5-36"><a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a><span class="c1"># 6. Inicio y seguimiento</span>
+</span><span id="__span-5-37"><a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a>aws<span class="w"> </span>dms<span class="w"> </span>start-replication-task<span class="w"> </span>--replication-task-arn<span class="w"> </span>&lt;arn-tarea&gt;<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-38"><a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a><span class="w">    </span>--start-replication-task-type<span class="w"> </span>start-replication
+</span><span id="__span-5-39"><a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a>aws<span class="w"> </span>dms<span class="w"> </span>describe-replication-tasks<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-40"><a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a><span class="w">    </span>--filters<span class="w"> </span><span class="nv">Name</span><span class="o">=</span>replication-task-arn,Values<span class="o">=</span>&lt;arn-tarea&gt;<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-41"><a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a><span class="w">    </span>--query<span class="w"> </span><span class="s2">"ReplicationTasks[0].[Status,ReplicationTaskStats.FullLoadProgressPercent]"</span>
+</span></code></pre></div>
+<p>En un entorno real, en lugar de escribir la contraseña en el comando, el punto de enlace puede leer las credenciales de <strong>AWS Secrets Manager</strong>.</p>
+<blockquote>
+<p><strong>En el Learner Lab.</strong> DMS necesita el rol de servicio <code>dms-vpc-role</code> para crear la instancia de replicación en la VPC, y en el Learner Lab no se pueden crear roles IAM. Antes de la práctica hay que comprobar si el rol existe en la cuenta del laboratorio. Si no existe, la práctica se hará con la alternativa de volcado inicial más replicación nativa del documento 6.1.</p>
+</blockquote>
+<hr />
+<h2 id="14-ideas-clave">14. Ideas clave<a class="headerlink" href="#14-ideas-clave" title="Permanent link">&para;</a></h2>
+<ul>
+<li>DMS se compone de una instancia de replicación (o capacidad sin servidor), dos puntos de enlace y una tarea.</li>
+<li>La tarea de carga completa + CDC permite migrar con el origen en servicio y reduce la inactividad al corte.</li>
+<li>En MySQL, el CDC requiere <em>binlog</em> en formato <code>ROW</code> con imagen <code>FULL</code>, retención suficiente y un usuario con privilegios de replicación.</li>
+<li>DMS migra datos, no objetos secundarios: el esquema completo se crea antes y las claves foráneas y disparadores se activan en el corte.</li>
+<li>La validación fila a fila y las métricas <code>CDCLatencySource</code> y <code>CDCLatencyTarget</code> indican cuándo es seguro hacer el corte.</li>
+<li>En migraciones heterogéneas, DMS Schema Conversion convierte el esquema y una tarea de DMS mueve los datos.</li>
+</ul>
+<h2 id="15-preguntas-de-autoevaluacion">15. Preguntas de autoevaluación<a class="headerlink" href="#15-preguntas-de-autoevaluacion" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Una tarea de DMS en modo carga completa + CDC termina la carga, pero no replica ningún cambio posterior. ¿Qué parámetros del origen revisarías?</li>
+<li>¿Por qué hay que desactivar los disparadores del destino mientras la tarea está en CDC?</li>
+<li>¿Qué métrica de CloudWatch consultarías para decidir el momento del corte y qué valor esperarías?</li>
+<li>Una empresa quiere migrar SQL Server a Aurora PostgreSQL. Describe las dos fases del proceso y el servicio que usarías en cada una.</li>
+</ol>
+<hr />
+<h2 id="referencias">Referencias<a class="headerlink" href="#referencias" title="Permanent link">&para;</a></h2>
+<ul>
+<li>AWS. <em>What is AWS Database Migration Service?</em> <a href="https://docs.aws.amazon.com/dms/latest/userguide/Welcome.html">https://docs.aws.amazon.com/dms/latest/userguide/Welcome.html</a></li>
+<li>AWS. <em>Using a MySQL-compatible database as a source for AWS DMS</em>. <a href="https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.MySQL.html">https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.MySQL.html</a></li>
+<li>AWS. <em>AWS DMS Serverless components</em>. <a href="https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Serverless.Components.html">https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Serverless.Components.html</a></li>
+<li>AWS. <em>Converting database schemas using DMS Schema Conversion</em>. <a href="https://docs.aws.amazon.com/dms/latest/userguide/CHAP_SchemaConversion.html">https://docs.aws.amazon.com/dms/latest/userguide/CHAP_SchemaConversion.html</a></li>
+<li>AWS. <em>Migrating databases to their Amazon RDS equivalents with AWS DMS</em> (migraciones homogéneas). <a href="https://docs.aws.amazon.com/dms/latest/userguide/data-migrations.html">https://docs.aws.amazon.com/dms/latest/userguide/data-migrations.html</a></li>
+<li>AWS. <em>AWS DMS release notes</em>. <a href="https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReleaseNotes.html">https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReleaseNotes.html</a></li>
+<li>AWS. <em>AWS Database Migration Service pricing</em>. <a href="https://aws.amazon.com/dms/pricing/">https://aws.amazon.com/dms/pricing/</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

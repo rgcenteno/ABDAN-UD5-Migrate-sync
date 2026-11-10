@@ -1,0 +1,7 @@
+{
+  "source": ["aws.dms"],
+  "detail-type": ["DMS Replication Task State Change"],
+  "detail": {
+    "category": ["Failure"]
+  }
+}

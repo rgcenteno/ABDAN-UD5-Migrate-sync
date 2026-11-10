@@ -1,0 +1,1348 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://rgcenteno.github.io/ABDAN-UD5-Migrate-sync/01-fundamentos-migracion-datos/">
+      
+      
+      
+        <link rel="next" href="../02-amazon-s3-destino-datos/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>Fundamentos de la migración de datos - UD5. Transferencia, sincronización y migración de datos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ud5-1-fundamentos-de-la-migracion-de-datos" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-header__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            UD5. Transferencia, sincronización y migración de datos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Fundamentos de la migración de datos
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-nav__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    UD5. Transferencia, sincronización y migración de datos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 1
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 1
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fundamentos de la migración de datos
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fundamentos de la migración de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introducción">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-conceptos-basicos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Conceptos básicos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-estrategias-de-migracion-las-7r" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Estrategias de migración: las 7R
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-transferencia-en-linea-frente-a-fuera-de-linea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Transferencia en línea frente a fuera de línea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-calculo-del-tiempo-de-transferencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Cálculo del tiempo de transferencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-modelo-de-costes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Modelo de costes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-seleccion-de-la-region-y-residencia-de-los-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Selección de la región y residencia de los datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-ideas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Ideas clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-preguntas-de-autoevaluacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Preguntas de autoevaluación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-amazon-s3-destino-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Amazon S3 como destino de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-aws-datasync/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS DataSync
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-aws-transfer-family/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Transfer Family
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-transferencia-fuera-de-linea/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transferencia fuera de línea
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-seguridad-monitorizacion-auditoria/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Seguridad, monitorización y auditoría
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 2
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-migracion-bases-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración de bases de datos: técnicas y planificación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06b-aws-dms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Database Migration Service (DMS)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practica-migracion-dms-aurora/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración con DMS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introducción">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-conceptos-basicos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Conceptos básicos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-estrategias-de-migracion-las-7r" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Estrategias de migración: las 7R
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-transferencia-en-linea-frente-a-fuera-de-linea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Transferencia en línea frente a fuera de línea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-calculo-del-tiempo-de-transferencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Cálculo del tiempo de transferencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-modelo-de-costes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Modelo de costes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-seleccion-de-la-region-y-residencia-de-los-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Selección de la región y residencia de los datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-ideas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Ideas clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-preguntas-de-autoevaluacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Preguntas de autoevaluación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="ud5-1-fundamentos-de-la-migracion-de-datos">UD5 · 1. Fundamentos de la migración de datos<a class="headerlink" href="#ud5-1-fundamentos-de-la-migracion-de-datos" title="Permanent link">&para;</a></h1>
+<p><img alt="image" src="../img/ud5-01-portada.jpg" /></p>
+<h2 id="1-introduccion">1. Introducción<a class="headerlink" href="#1-introduccion" title="Permanent link">&para;</a></h2>
+<p>Toda organización que adopta la nube se enfrenta, tarde o temprano, al problema de <strong>mover datos</strong>: ficheros de un servidor departamental, copias de seguridad, bases de datos de producción o intercambios periódicos con terceros. Esta operación, que en apariencia consiste simplemente en «copiar», condiciona en realidad el éxito de todo el proyecto: un traslado mal planificado puede provocar pérdida de datos, interrupciones del servicio o costes no previstos.</p>
+<p>Este documento presenta el marco conceptual de la unidad: la terminología básica, las estrategias de migración, los criterios para elegir entre transferencia en línea y fuera de línea, el cálculo del tiempo de transferencia y el modelo de costes asociado.</p>
+<h3 id="objetivos">Objetivos<a class="headerlink" href="#objetivos" title="Permanent link">&para;</a></h3>
+<p>Al finalizar esta sesión, el alumnado será capaz de:</p>
+<ul>
+<li>Distinguir entre transferencia, sincronización y migración de datos.</li>
+<li>Identificar la estrategia de migración adecuada (las 7R) para un caso dado.</li>
+<li>Estimar el tiempo de una transferencia a partir del volumen de datos y del ancho de banda disponible.</li>
+<li>Reconocer los componentes de coste de una transferencia en AWS.</li>
+</ul>
+<hr />
+<h2 id="2-conceptos-basicos">2. Conceptos básicos<a class="headerlink" href="#2-conceptos-basicos" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Definición</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Transferencia</strong></td>
+<td>Copia puntual de un conjunto de datos de un origen a un destino.</td>
+<td>Subir el histórico de facturas de 2020 a un <em>bucket</em> S3.</td>
+</tr>
+<tr>
+<td><strong>Sincronización unidireccional</strong></td>
+<td>Copia periódica que replica en el destino los cambios producidos en el origen.</td>
+<td>Cada noche se copian a S3 los ficheros nuevos o modificados del servidor NFS.</td>
+</tr>
+<tr>
+<td><strong>Sincronización bidireccional</strong></td>
+<td>Los cambios en cualquiera de los extremos se propagan al otro. Exige resolver conflictos.</td>
+<td>Carpeta compartida entre la sede y la nube.</td>
+</tr>
+<tr>
+<td><strong>Migración</strong></td>
+<td>Traslado definitivo de datos (y, a menudo, del sistema que los usa) a un nuevo entorno, con un punto de corte (<em>cutover</em>).</td>
+<td>Trasladar la base de datos de gestión a Amazon RDS y apagar el servidor local.</td>
+</tr>
+</tbody>
+</table>
+<p>Cualquiera de estas operaciones debe garantizar tres propiedades:</p>
+<ul>
+<li><strong>Integridad:</strong> los datos llegan completos y sin alteraciones. Se verifica mediante sumas de comprobación (<em>checksums</em>) y recuentos.</li>
+<li><strong>Seguridad:</strong> los datos están cifrados en tránsito y en reposo, y solo los perfiles autorizados intervienen en el proceso.</li>
+<li><strong>Disponibilidad:</strong> el sistema de origen sigue prestando servicio durante el traslado, o la interrupción se reduce al mínimo aceptable.</li>
+</ul>
+<hr />
+<h2 id="3-estrategias-de-migracion-las-7r">3. Estrategias de migración: las 7R<a class="headerlink" href="#3-estrategias-de-migracion-las-7r" title="Permanent link">&para;</a></h2>
+<p>AWS clasifica las estrategias de migración de aplicaciones en siete categorías, conocidas como <strong>las 7R</strong>. Aunque se formulan para aplicaciones completas, condicionan directamente qué se hace con los datos.</p>
+<table>
+<thead>
+<tr>
+<th>Estrategia</th>
+<th>Descripción</th>
+<th>Implicación para los datos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Retire</strong> (retirar)</td>
+<td>Se elimina la aplicación porque ya no aporta valor.</td>
+<td>Archivado a largo plazo o borrado controlado.</td>
+</tr>
+<tr>
+<td><strong>Retain</strong> (retener)</td>
+<td>Se mantiene en local, de momento.</td>
+<td>Posible sincronización híbrida.</td>
+</tr>
+<tr>
+<td><strong>Rehost</strong> (<em>lift and shift</em>)</td>
+<td>Se mueven las aplicaciones del entorno de origen al entorno Nube de AWS sin realizar ningún cambio en la aplicación.</td>
+<td>Copia de discos o volúmenes completos.</td>
+</tr>
+<tr>
+<td><strong>Relocate</strong> (reubicar)</td>
+<td>Se trasladan muchos servidores a la vez desde la plataforma local a su versión en la nube, o se mueven instancias u objetos de AWS a otra VPC, región o cuenta (p. ej., una instancia de Amazon RDS a otra cuenta). Sin cambios en la aplicación ni en la operación.</td>
+<td>Los datos viajan con la plataforma o mediante instantáneas compartidas, copias entre regiones o replicación de S3.</td>
+</tr>
+<tr>
+<td><strong>Repurchase</strong> (<em>drop and shop</em>)</td>
+<td>Sustituye la aplicación por una versión o producto diferente.</td>
+<td>Exportación, mapeo e importación en el formato del nuevo producto.</td>
+</tr>
+<tr>
+<td><strong>Replatform</strong> (<em>lift, tinker and shift</em> o <em>lift and reshape</em>)</td>
+<td>Se traslada con optimizaciones, pocas o muchas según los objetivos: servicio gestionado o sin servidor, sistema operativo actualizado, procesadores Graviton, paso de Windows a Linux o de máquinas virtuales a contenedores.</td>
+<td>Migración de bases de datos a servicios gestionados; el estado de los contenedores pasa a EFS, S3 o una base de datos gestionada.</td>
+</tr>
+<tr>
+<td><strong>Refactor</strong> (rediseñar)</td>
+<td>Se reescribe la aplicación para aprovechar servicios nativos de la nube.</td>
+<td>Transformación de esquemas y formatos.</td>
+</tr>
+</tbody>
+</table>
+<p><a href="https://docs.aws.amazon.com/es_es/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html">Revisa la documentación oficial para más detalles</a></p>
+<p>En migraciones grandes, AWS recomienda usar sobre todo Rehost, Replatform, Relocate y Retire, y modernizar las aplicaciones después de la migración. Refactor, la estrategia más compleja y costosa, se reserva para cuando ninguna otra es aceptable.</p>
+<p>AWS organiza además todo proyecto de migración en tres fases:</p>
+<ol>
+<li><strong>Evaluación (<em>assess</em>):</strong> inventario de datos, volúmenes, dependencias y requisitos legales.</li>
+<li><strong>Movilización (<em>mobilize</em>):</strong> diseño de la arquitectura de destino, pruebas piloto y plan detallado.</li>
+<li><strong>Migración y modernización (<em>migrate and modernize</em>):</strong> ejecución del traslado, validación y corte.</li>
+</ol>
+<hr />
+<h2 id="4-transferencia-en-linea-frente-a-fuera-de-linea">4. Transferencia en línea frente a fuera de línea<a class="headerlink" href="#4-transferencia-en-linea-frente-a-fuera-de-linea" title="Permanent link">&para;</a></h2>
+<p>La primera decisión técnica es <strong>por dónde viajan los datos</strong>:</p>
+<ul>
+<li><strong>En línea (<em>online</em>):</strong> a través de la red (Internet, VPN o AWS Direct Connect). Es la opción preferente en la gran mayoría de los casos.</li>
+<li><strong>Fuera de línea (<em>offline</em>):</strong> los datos se copian en dispositivos físicos que se transportan hasta un punto de carga de AWS. Solo se justifica con volúmenes muy grandes o conectividad muy limitada.</li>
+</ul>
+<p>La figura siguiente muestra el panorama de servicios que se estudiarán en la unidad y el tipo de origen al que responde cada uno.</p>
+<p><img alt="Panorama de servicios de transferencia y migración de datos en AWS" src="../img/ud5-01-panorama-servicios.png" /></p>
+<p><em>Figura 1. Servicios de AWS para transferencia, sincronización y migración de datos según el tipo de origen.</em></p>
+<table>
+<thead>
+<tr>
+<th>Servicio</th>
+<th>Modalidad</th>
+<th>Caso de uso principal</th>
+<th>Documento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AWS CLI (<code>aws s3 cp</code>/<code>sync</code>)</td>
+<td>En línea</td>
+<td>Cargas sencillas y sincronizaciones ligeras hacia S3.</td>
+<td>2</td>
+</tr>
+<tr>
+<td>AWS DataSync</td>
+<td>En línea</td>
+<td>Transferencias y sincronizaciones gestionadas de grandes sistemas de ficheros.</td>
+<td>3</td>
+</tr>
+<tr>
+<td>AWS Transfer Family</td>
+<td>En línea</td>
+<td>Intercambio de ficheros con terceros mediante SFTP, FTPS, FTP o AS2.</td>
+<td>4</td>
+</tr>
+<tr>
+<td>AWS Database Migration Service</td>
+<td>En línea</td>
+<td>Migración y replicación de bases de datos.</td>
+<td>Semana 2</td>
+</tr>
+<tr>
+<td>AWS Data Transfer Terminal</td>
+<td>Fuera de línea</td>
+<td>Carga física de dispositivos propios en una instalación de AWS.</td>
+<td>5</td>
+</tr>
+<tr>
+<td>AWS Snowball Edge</td>
+<td>Fuera de línea</td>
+<td>Envío de dispositivos de AWS. Solo para clientes existentes desde noviembre de 2025.</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-calculo-del-tiempo-de-transferencia">5. Cálculo del tiempo de transferencia<a class="headerlink" href="#5-calculo-del-tiempo-de-transferencia" title="Permanent link">&para;</a></h2>
+<p>El tiempo necesario para transferir un volumen de datos por red se estima con la expresión:</p>
+<div class="arithmatex">\[
+T\,(\text{s}) = \frac{V\,(\text{bits})}{B\,(\text{bits/s}) \times \eta}
+\]</div>
+<p>donde <em>V</em> es el volumen de datos, <em>B</em> el ancho de banda nominal y <em>η</em> la eficiencia real del enlace. Como valor de trabajo se suele tomar <strong>η = 0,8</strong> (80 %), ya que nunca se dispone del ancho de banda completo.</p>
+<blockquote>
+<p><strong>Atención a las unidades.</strong> El volumen suele expresarse en <em>bytes</em> y el ancho de banda en <em>bits</em> por segundo. Hay que multiplicar por 8: 1 TB = 8 × 10¹² bits.</p>
+</blockquote>
+<p><strong>Ejemplo.</strong> Transferir 10 TB por una línea de 100 Mbps al 80 %:</p>
+<div class="arithmatex">\[
+T = \frac{10 \times 8 \times 10^{12}}{100 \times 10^{6} \times 0{,}8} = 10^{6}\ \text{s} \approx 11{,}6\ \text{días}
+\]</div>
+<table>
+<thead>
+<tr>
+<th>Volumen</th>
+<th>100 Mbps</th>
+<th>1 Gbps</th>
+<th>10 Gbps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 TB</td>
+<td>1,2 días</td>
+<td>2,8 horas</td>
+<td>17 minutos</td>
+</tr>
+<tr>
+<td>10 TB</td>
+<td>11,6 días</td>
+<td>1,2 días</td>
+<td>2,8 horas</td>
+</tr>
+<tr>
+<td>100 TB</td>
+<td>116 días</td>
+<td>11,6 días</td>
+<td>1,2 días</td>
+</tr>
+</tbody>
+</table>
+<p><em>Tabla calculada con η = 0,8 y unidades decimales.</em></p>
+<p>Como criterio orientativo, la transferencia fuera de línea empieza a considerarse cuando el traslado por red supera <strong>una semana</strong> o cuando ocuparía un enlace que la organización necesita para su actividad diaria. Antes de descartarla, conviene valorar alternativas como ampliar temporalmente el ancho de banda o transferir solo los datos activos.</p>
+<hr />
+<h2 id="6-modelo-de-costes">6. Modelo de costes<a class="headerlink" href="#6-modelo-de-costes" title="Permanent link">&para;</a></h2>
+<p>Una transferencia en AWS combina varios componentes de coste. Identificarlos todos es imprescindible para cumplir el criterio RA5.b.</p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Descripción</th>
+<th>Referencia orientativa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entrada de datos a AWS</td>
+<td>Datos que llegan desde Internet.</td>
+<td>Gratuita.</td>
+</tr>
+<tr>
+<td>Salida de datos desde AWS</td>
+<td>Datos que salen hacia Internet.</td>
+<td>Primeros 100 GB/mes gratuitos (agregados entre servicios); después, precio por GB según región y volumen.</td>
+</tr>
+<tr>
+<td>Transferencia entre zonas o regiones</td>
+<td>Tráfico entre zonas de disponibilidad o entre regiones.</td>
+<td>Precio por GB.</td>
+</tr>
+<tr>
+<td>Servicio de transferencia</td>
+<td>Coste propio del servicio utilizado.</td>
+<td>DataSync: 0,0125 USD/GB (modo básico). Transfer Family: 0,30 USD por hora y protocolo, más 0,04 USD/GB.</td>
+</tr>
+<tr>
+<td>Peticiones</td>
+<td>Operaciones sobre el destino (por ejemplo, PUT y LIST en S3).</td>
+<td>Precio por cada 1000 peticiones.</td>
+</tr>
+<tr>
+<td>Almacenamiento de destino</td>
+<td>Coste mensual de los datos ya migrados.</td>
+<td>Según clase de almacenamiento.</td>
+</tr>
+</tbody>
+</table>
+<p><em>Precios de referencia en US East (N. Virginia), consultados en noviembre de 2026. Pueden variar por región y cambiar con el tiempo.</em></p>
+<p><strong>Recomendaciones:</strong></p>
+<ul>
+<li>Utilizar la <strong>AWS Pricing Calculator</strong> (<a href="https://calculator.aws">https://calculator.aws</a>) para estimar el coste completo antes de iniciar el proyecto.</li>
+<li>Prestar atención a los <strong>costes fijos por tiempo</strong> (por ejemplo, un servidor de Transfer Family se factura por hora mientras exista, aunque no se use).</li>
+<li>En el <strong>Learner Lab</strong>, el crédito es limitado. Hay que eliminar los recursos al terminar cada práctica.</li>
+</ul>
+<hr />
+<h2 id="7-seleccion-de-la-region-y-residencia-de-los-datos">7. Selección de la región y residencia de los datos<a class="headerlink" href="#7-seleccion-de-la-region-y-residencia-de-los-datos" title="Permanent link">&para;</a></h2>
+<p>La región de destino condiciona la latencia, el coste y el cumplimiento normativo:</p>
+<ul>
+<li><strong>Residencia de los datos:</strong> el Reglamento General de Protección de Datos (RGPD) exige garantías adicionales cuando los datos personales salen del Espacio Económico Europeo. Las regiones europeas (por ejemplo, <code>eu-south-2</code>, en España) facilitan su cumplimiento.</li>
+<li><strong>Disponibilidad de servicios:</strong> no todos los servicios ni todas sus funciones están disponibles en todas las regiones. Se debe consultar la lista de servicios por región.</li>
+<li><strong>Entorno de prácticas:</strong> el Learner Lab restringe las regiones utilizables (habitualmente <code>us-east-1</code> y <code>us-west-2</code>). En las prácticas se trabajará en ellas, aunque en un proyecto real se elegiría una región europea.</li>
+</ul>
+<hr />
+<h2 id="8-ideas-clave">8. Ideas clave<a class="headerlink" href="#8-ideas-clave" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Transferir, sincronizar y migrar son operaciones distintas; todas deben preservar la integridad, la seguridad y la disponibilidad.</li>
+<li>La estrategia de migración (7R) determina qué se hace con los datos.</li>
+<li>La transferencia en línea es la opción preferente; la fuera de línea se reserva para volúmenes muy grandes o redes insuficientes.</li>
+<li>El tiempo de transferencia se estima con el volumen, el ancho de banda y una eficiencia realista.</li>
+<li>El coste total incluye la salida de datos, el servicio, las peticiones y el almacenamiento, no solo el precio por GB.</li>
+</ul>
+<h2 id="9-preguntas-de-autoevaluacion">9. Preguntas de autoevaluación<a class="headerlink" href="#9-preguntas-de-autoevaluacion" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Una empresa quiere trasladar 40 TB por una línea de 500 Mbps. Estima el tiempo de transferencia con una eficiencia del 80 %. ¿Recomendarías una transferencia en línea?</li>
+<li>¿Qué estrategia de las 7R aplicarías a un servidor MySQL que se quiere trasladar a Amazon RDS sin modificar la aplicación?</li>
+<li>¿Por qué la entrada de datos a AWS es gratuita, pero no siempre lo es la migración completa?</li>
+</ol>
+<hr />
+<h2 id="referencias">Referencias<a class="headerlink" href="#referencias" title="Permanent link">&para;</a></h2>
+<ul>
+<li>AWS. <em>Migration strategies</em> (AWS Prescriptive Guidance). <a href="https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html">https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html</a></li>
+<li>AWS. Acerca de las estrategias de migración (AWS Prescriptive Guidance). Español. <a href="https://docs.aws.amazon.com/es_es/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html">https://docs.aws.amazon.com/es_es/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html</a></li>
+<li>AWS. <em>AWS DataSync pricing</em>. <a href="https://aws.amazon.com/datasync/pricing/">https://aws.amazon.com/datasync/pricing/</a></li>
+<li>AWS. <em>AWS Transfer Family pricing</em>. <a href="https://aws.amazon.com/aws-transfer-family/pricing/">https://aws.amazon.com/aws-transfer-family/pricing/</a></li>
+<li>AWS. <em>AWS Pricing Calculator</em>. <a href="https://calculator.aws">https://calculator.aws</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

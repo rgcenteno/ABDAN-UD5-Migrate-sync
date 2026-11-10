@@ -1,0 +1,1435 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://rgcenteno.github.io/ABDAN-UD5-Migrate-sync/04-aws-transfer-family/">
+      
+      
+        <link rel="prev" href="../03-aws-datasync/">
+      
+      
+        <link rel="next" href="../05-transferencia-fuera-de-linea/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>AWS Transfer Family - UD5. Transferencia, sincronización y migración de datos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ud5-4-aws-transfer-family" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-header__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            UD5. Transferencia, sincronización y migración de datos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              AWS Transfer Family
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-nav__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    UD5. Transferencia, sincronización y migración de datos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 1
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 1
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-fundamentos-migracion-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fundamentos de la migración de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-amazon-s3-destino-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Amazon S3 como destino de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-aws-datasync/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS DataSync
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Transfer Family
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Transfer Family
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introducción">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-protocolos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Protocolos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-tipos-de-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Tipos de endpoint
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-gestion-de-usuarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Gestión de usuarios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Gestión de usuarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-proveedores-de-identidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1. Proveedores de identidad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-configuracion-de-cada-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2. Configuración de cada usuario
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-flujos-gestionados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Flujos gestionados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-ejemplo-con-la-aws-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Ejemplo con la AWS CLI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-monitorizacion-y-auditoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Monitorización y auditoría
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-costes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Costes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-transfer-family-frente-a-datasync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Transfer Family frente a DataSync
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-ideas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Ideas clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-preguntas-de-autoevaluacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Preguntas de autoevaluación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-transferencia-fuera-de-linea/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transferencia fuera de línea
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-seguridad-monitorizacion-auditoria/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Seguridad, monitorización y auditoría
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 2
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-migracion-bases-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración de bases de datos: técnicas y planificación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06b-aws-dms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Database Migration Service (DMS)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../practica-migracion-dms-aurora/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración con DMS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introducción">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-protocolos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Protocolos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-tipos-de-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Tipos de endpoint
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-gestion-de-usuarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Gestión de usuarios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Gestión de usuarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-proveedores-de-identidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1. Proveedores de identidad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-configuracion-de-cada-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2. Configuración de cada usuario
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-flujos-gestionados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Flujos gestionados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-ejemplo-con-la-aws-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Ejemplo con la AWS CLI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-monitorizacion-y-auditoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Monitorización y auditoría
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-costes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Costes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-transfer-family-frente-a-datasync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Transfer Family frente a DataSync
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-ideas-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Ideas clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-preguntas-de-autoevaluacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Preguntas de autoevaluación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="ud5-4-aws-transfer-family">UD5 · 4. AWS Transfer Family<a class="headerlink" href="#ud5-4-aws-transfer-family" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Módulo:</strong> 5162 · Administración de bases de datos y almacenamiento en la nube
+<strong>Unidad didáctica:</strong> UD5 · Transferencia, sincronización y migración de datos
+<strong>Temporalización:</strong> semana 1 · sesión 6
+<strong>Resultados de aprendizaje:</strong> RA5 (criterios a, b, c, e, g) · RA6 (criterios c, d)</p>
+</blockquote>
+<hr />
+<h2 id="1-introduccion">1. Introducción<a class="headerlink" href="#1-introduccion" title="Permanent link">&para;</a></h2>
+<p>Muchas organizaciones intercambian ficheros a diario con proveedores, clientes, bancos o administraciones mediante protocolos clásicos como SFTP o FTPS. Estos socios tienen procesos y <em>scripts</em> que no van a modificar porque su interlocutor migre a la nube.</p>
+<p><strong>AWS Transfer Family</strong> resuelve este escenario. Ofrece servidores gestionados de <strong>SFTP, FTPS, FTP y AS2</strong> que almacenan los ficheros directamente en <strong>Amazon S3</strong> o <strong>Amazon EFS</strong>. Los socios siguen conectándose como siempre, mientras que la organización deja de mantener servidores de ficheros propios.</p>
+<h3 id="objetivos">Objetivos<a class="headerlink" href="#objetivos" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Identificar los protocolos y los tipos de <em>endpoint</em> que ofrece Transfer Family.</li>
+<li>Comprender las opciones de gestión de usuarios y el aislamiento mediante directorios lógicos.</li>
+<li>Conocer los flujos gestionados de postprocesamiento.</li>
+<li>Valorar su coste y compararlo con DataSync.</li>
+</ul>
+<hr />
+<h2 id="2-arquitectura">2. Arquitectura<a class="headerlink" href="#2-arquitectura" title="Permanent link">&para;</a></h2>
+<p><img alt="Arquitectura de AWS Transfer Family con Amazon S3" src="../img/ud5-04-transfer-family.png" /></p>
+<p><em>Figura 4. Intercambio de ficheros con socios externos mediante un servidor SFTP gestionado que almacena en Amazon S3.</em></p>
+<p>El cliente SFTP del socio se conecta al <em>endpoint</em> del servidor. Transfer Family autentica al usuario y asume el <strong>rol IAM</strong> asociado para leer o escribir en el <em>bucket</em>. Las sesiones se registran en <strong>CloudWatch Logs</strong>. Al terminar una carga, puede lanzarse un <strong>flujo gestionado</strong> que procesa el fichero.</p>
+<hr />
+<h2 id="3-protocolos">3. Protocolos<a class="headerlink" href="#3-protocolos" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Protocolo</th>
+<th>Seguridad</th>
+<th>Puerto</th>
+<th>Uso típico</th>
+<th>Restricciones</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SFTP</strong></td>
+<td>Cifrado mediante SSH.</td>
+<td>22</td>
+<td>Intercambio seguro de ficheros; el más extendido.</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>FTPS</strong></td>
+<td>Cifrado mediante TLS.</td>
+<td>21 (control) y rango de puertos pasivos</td>
+<td>Socios con infraestructura FTP que exigen cifrado.</td>
+<td>Requiere <em>endpoint</em> de VPC y certificado de AWS Certificate Manager.</td>
+</tr>
+<tr>
+<td><strong>FTP</strong></td>
+<td><strong>Sin cifrado</strong>.</td>
+<td>21 y puertos pasivos</td>
+<td>Aplicaciones heredadas en redes internas.</td>
+<td>Solo <em>endpoint</em> de VPC interno; nunca expuesto a Internet.</td>
+</tr>
+<tr>
+<td><strong>AS2</strong></td>
+<td>Firma y cifrado de mensajes, con acuse de recibo (MDN).</td>
+<td>HTTP/HTTPS</td>
+<td>Intercambio electrónico de documentos (EDI) entre empresas.</td>
+<td>Configuración de socios comerciales y certificados.</td>
+</tr>
+</tbody>
+</table>
+<p>Además de los servidores, la familia incluye <strong>conectores SFTP</strong>, que permiten enviar o recoger ficheros de servidores SFTP externos, y <strong>aplicaciones web</strong>, que ofrecen a usuarios no técnicos un acceso a S3 desde el navegador.</p>
+<hr />
+<h2 id="4-tipos-de-endpoint">4. Tipos de endpoint<a class="headerlink" href="#4-tipos-de-endpoint" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Accesibilidad</th>
+<th>Control de red</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Público</strong></td>
+<td>Desde Internet, con un nombre DNS proporcionado por AWS.</td>
+<td>Sin grupos de seguridad. Solo admite SFTP.</td>
+</tr>
+<tr>
+<td><strong>VPC, interno</strong></td>
+<td>Solo desde la VPC y redes conectadas (VPN, Direct Connect).</td>
+<td>Grupos de seguridad.</td>
+</tr>
+<tr>
+<td><strong>VPC, con acceso desde Internet</strong></td>
+<td>Desde Internet mediante direcciones IP elásticas fijas.</td>
+<td>Grupos de seguridad, lo que permite restringir el acceso a las IP de cada socio.</td>
+</tr>
+</tbody>
+</table>
+<p>La opción de VPC con acceso desde Internet es la habitual en entornos profesionales: los socios suelen exigir una IP fija para sus cortafuegos, y la organización puede limitar el acceso a las direcciones de cada socio.</p>
+<hr />
+<h2 id="5-gestion-de-usuarios">5. Gestión de usuarios<a class="headerlink" href="#5-gestion-de-usuarios" title="Permanent link">&para;</a></h2>
+<h3 id="51-proveedores-de-identidad">5.1. Proveedores de identidad<a class="headerlink" href="#51-proveedores-de-identidad" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Proveedor</th>
+<th>Autenticación</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Gestionado por el servicio</strong></td>
+<td>Claves SSH públicas almacenadas en Transfer Family.</td>
+<td>Pocos usuarios y solo SFTP. Es la opción más sencilla.</td>
+</tr>
+<tr>
+<td><strong>AWS Directory Service</strong></td>
+<td>Credenciales de Microsoft Active Directory.</td>
+<td>Usuarios corporativos ya existentes en AD.</td>
+</tr>
+<tr>
+<td><strong>Proveedor personalizado</strong></td>
+<td>Función AWS Lambda o API de Amazon API Gateway que valida las credenciales.</td>
+<td>Integración con sistemas propios, autenticación por contraseña o múltiples factores.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-configuracion-de-cada-usuario">5.2. Configuración de cada usuario<a class="headerlink" href="#52-configuracion-de-cada-usuario" title="Permanent link">&para;</a></h3>
+<p>Cada usuario se define con:</p>
+<ul>
+<li><strong>Rol IAM:</strong> determina a qué <em>bucket</em> o sistema de ficheros puede acceder Transfer Family en su nombre.</li>
+<li><strong>Política de sesión (opcional):</strong> restringe aún más los permisos del rol para ese usuario concreto.</li>
+<li><strong>Directorio de inicio:</strong> carpeta en la que comienza la sesión.</li>
+<li><strong>Directorios lógicos:</strong> asignan rutas visibles para el usuario a rutas reales de S3 o EFS. Así, el usuario queda <strong>encerrado</strong> en su carpeta (equivalente a un <em>chroot</em>) y no ve la estructura real del almacenamiento.</li>
+<li><strong>Perfil POSIX</strong> (solo con EFS): identificadores de usuario y grupo para aplicar los permisos del sistema de ficheros.</li>
+</ul>
+<hr />
+<h2 id="6-flujos-gestionados">6. Flujos gestionados<a class="headerlink" href="#6-flujos-gestionados" title="Permanent link">&para;</a></h2>
+<p>Un <strong>flujo gestionado</strong> (<em>managed workflow</em>) es una secuencia de pasos que se ejecuta automáticamente cuando termina la carga de un fichero. Los pasos predefinidos son:</p>
+<ul>
+<li><strong>Copiar</strong> el fichero a otra ubicación.</li>
+<li><strong>Etiquetar</strong> el objeto (útil para políticas de ciclo de vida o de copias de seguridad).</li>
+<li><strong>Descifrar</strong> ficheros cifrados con PGP.</li>
+<li><strong>Eliminar</strong> el fichero original.</li>
+<li><strong>Paso personalizado</strong> mediante una función Lambda (por ejemplo, validar el formato).</li>
+</ul>
+<p>Cada flujo puede definir pasos de <strong>gestión de excepciones</strong> para cuando falla alguno de los anteriores.</p>
+<hr />
+<h2 id="7-ejemplo-con-la-aws-cli">7. Ejemplo con la AWS CLI<a class="headerlink" href="#7-ejemplo-con-la-aws-cli" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>Advertencia de coste.</strong> Un servidor de Transfer Family se factura <strong>por hora y por protocolo mientras exista</strong>, se use o no (unos 216 USD al mes por un solo protocolo). En el Learner Lab, este ejemplo debe realizarse como demostración breve y el servidor debe <strong>eliminarse inmediatamente</strong> después.</p>
+</blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># 1. Servidor SFTP público con usuarios gestionados por el servicio</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>aws<span class="w"> </span>transfer<span class="w"> </span>create-server<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span>--protocols<span class="w"> </span>SFTP<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span>--endpoint-type<span class="w"> </span>PUBLIC<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span>--identity-provider-type<span class="w"> </span>SERVICE_MANAGED<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span>--tags<span class="w"> </span><span class="nv">Key</span><span class="o">=</span>Proyecto,Value<span class="o">=</span>UD5
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># 2. Usuario encerrado en su carpeta del bucket mediante un directorio lógico</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>aws<span class="w"> </span>transfer<span class="w"> </span>create-user<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span>--server-id<span class="w"> </span>&lt;id-servidor&gt;<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span>--user-name<span class="w"> </span>socio01<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span>--role<span class="w"> </span>arn:aws:iam::&lt;cuenta&gt;:role/LabRole<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span>--home-directory-type<span class="w"> </span>LOGICAL<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span>--home-directory-mappings<span class="w"> </span><span class="s1">'[{"Entry":"/","Target":"/ud5-destino-&lt;iniciales&gt;/socios/socio01"}]'</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span>--ssh-public-key-body<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>cat<span class="w"> </span>~/.ssh/socio01.pub<span class="k">)</span><span class="s2">"</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1"># 3. Conexión desde el cliente</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>sftp<span class="w"> </span>-i<span class="w"> </span>~/.ssh/socio01<span class="w"> </span>socio01@&lt;id-servidor&gt;.server.transfer.us-east-1.amazonaws.com
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="c1"># 4. Eliminación del servidor al terminar</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>aws<span class="w"> </span>transfer<span class="w"> </span>delete-server<span class="w"> </span>--server-id<span class="w"> </span>&lt;id-servidor&gt;
+</span></code></pre></div>
+<hr />
+<h2 id="8-monitorizacion-y-auditoria">8. Monitorización y auditoría<a class="headerlink" href="#8-monitorizacion-y-auditoria" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>CloudWatch Logs:</strong> registros estructurados de cada sesión (conexiones, autenticaciones, ficheros abiertos, cargados y descargados). Requiere asignar al servidor un rol de registro.</li>
+<li><strong>Métricas de CloudWatch:</strong> bytes y ficheros de entrada y salida, y ejecuciones de flujos gestionados.</li>
+<li><strong>AWS CloudTrail:</strong> registro de las llamadas a la API, como la creación de usuarios o la modificación del servidor.</li>
+</ul>
+<hr />
+<h2 id="9-costes">9. Costes<a class="headerlink" href="#9-costes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Precio de referencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Protocolo habilitado en un servidor</td>
+<td>0,30 USD por hora y protocolo.</td>
+</tr>
+<tr>
+<td>Datos cargados o descargados</td>
+<td>0,04 USD por GB.</td>
+</tr>
+<tr>
+<td>Mensajes AS2, conectores, flujos y aplicaciones web</td>
+<td>Tarifas adicionales según uso.</td>
+</tr>
+</tbody>
+</table>
+<p><em>Precios de referencia en US East (N. Virginia), noviembre de 2026.</em></p>
+<p>A diferencia de la mayoría de los servicios de transferencia, Transfer Family tiene un <strong>coste fijo</strong> por el tiempo de vida del servidor. Por eso conviene agrupar varios socios en un mismo servidor y no habilitar protocolos innecesarios.</p>
+<hr />
+<h2 id="10-transfer-family-frente-a-datasync">10. Transfer Family frente a DataSync<a class="headerlink" href="#10-transfer-family-frente-a-datasync" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>AWS DataSync</th>
+<th>AWS Transfer Family</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quién inicia la transferencia</td>
+<td>La organización, mediante tareas.</td>
+<td>El usuario o el socio, desde su cliente.</td>
+</tr>
+<tr>
+<td>Protocolos</td>
+<td>Lectura de NFS, SMB, HDFS y almacenamiento de objetos.</td>
+<td>SFTP, FTPS, FTP y AS2.</td>
+</tr>
+<tr>
+<td>Caso típico</td>
+<td>Migración o sincronización masiva de sistemas propios.</td>
+<td>Intercambio continuo con terceros.</td>
+</tr>
+<tr>
+<td>Modelo de coste</td>
+<td>Por GB transferido.</td>
+<td>Por hora de servidor más GB transferido.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="11-ideas-clave">11. Ideas clave<a class="headerlink" href="#11-ideas-clave" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Transfer Family ofrece servidores SFTP, FTPS, FTP y AS2 gestionados, con almacenamiento en S3 o EFS.</li>
+<li>Los socios mantienen sus procesos; la organización elimina la gestión de servidores propios.</li>
+<li>El <em>endpoint</em> de VPC permite IP fijas y control mediante grupos de seguridad.</li>
+<li>Los directorios lógicos aíslan a cada usuario en su carpeta.</li>
+<li>El servidor se factura por hora mientras exista: hay que eliminarlo cuando no se use.</li>
+</ul>
+<h2 id="12-preguntas-de-autoevaluacion">12. Preguntas de autoevaluación<a class="headerlink" href="#12-preguntas-de-autoevaluacion" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Un banco exige conectarse a una IP fija y que solo su red pueda acceder al servidor. ¿Qué tipo de <em>endpoint</em> configurarías?</li>
+<li>¿Por qué FTP solo puede habilitarse en un <em>endpoint</em> de VPC interno?</li>
+<li>¿Qué mecanismo usarías para que cada proveedor solo vea su propia carpeta del <em>bucket</em>?</li>
+</ol>
+<hr />
+<h2 id="referencias">Referencias<a class="headerlink" href="#referencias" title="Permanent link">&para;</a></h2>
+<ul>
+<li>AWS. <em>What is AWS Transfer Family?</em> <a href="https://docs.aws.amazon.com/transfer/latest/userguide/what-is-aws-transfer-family.html">https://docs.aws.amazon.com/transfer/latest/userguide/what-is-aws-transfer-family.html</a></li>
+<li>AWS. <em>AWS Transfer Family pricing</em>. <a href="https://aws.amazon.com/aws-transfer-family/pricing/">https://aws.amazon.com/aws-transfer-family/pricing/</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

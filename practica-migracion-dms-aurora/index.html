@@ -1,0 +1,3000 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://rgcenteno.github.io/ABDAN-UD5-Migrate-sync/practica-migracion-dms-aurora/">
+      
+      
+        <link rel="prev" href="../06b-aws-dms/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>Migración con DMS - UD5. Transferencia, sincronización y migración de datos</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#practica-guiada-migracion-de-mysql-a-aurora-postgresql-con-aws-dms" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-header__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            UD5. Transferencia, sincronización y migración de datos
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Migración con DMS
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="UD5. Transferencia, sincronización y migración de datos" class="md-nav__button md-logo" aria-label="UD5. Transferencia, sincronización y migración de datos" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    UD5. Transferencia, sincronización y migración de datos
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 1
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 1
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-fundamentos-migracion-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fundamentos de la migración de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-amazon-s3-destino-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Amazon S3 como destino de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-aws-datasync/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS DataSync
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-aws-transfer-family/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Transfer Family
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-transferencia-fuera-de-linea/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transferencia fuera de línea
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-seguridad-monitorizacion-auditoria/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Seguridad, monitorización y auditoría
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Semana 2
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Semana 2
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06a-migracion-bases-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración de bases de datos: técnicas y planificación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06b-aws-dms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Database Migration Service (DMS)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prácticas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prácticas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración con DMS
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migración con DMS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-requisitos-previos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Requisitos previos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-base-de-datos-de-origen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Base de datos de origen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-interpretacion-de-la-lista-de-comprobacion-en-esta-arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Interpretación de la lista de comprobación en esta arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-i-red-privada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte I. Red privada
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte I. Red privada">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-comprobar-los-roles-de-dms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 1. Comprobar los roles de DMS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-crear-la-vpc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 2. Crear la VPC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-crear-los-grupos-de-seguridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 3. Crear los grupos de seguridad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-crear-los-endpoints-de-interfaz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 4. Crear los endpoints de interfaz
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-ii-almacenamiento-auditoria-y-alertas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte II. Almacenamiento, auditoría y alertas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte II. Almacenamiento, auditoría y alertas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-5-crear-y-proteger-el-bucket" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 5. Crear y proteger el bucket
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-6-activar-cloudtrail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 6. Activar CloudTrail
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-7-crear-la-notificacion-de-errores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 7. Crear la notificación de errores
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-iii-bases-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte III. Bases de datos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte III. Bases de datos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-8-crear-el-grupo-de-subredes-y-los-parametros-de-mysql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 8. Crear el grupo de subredes y los parámetros de MySQL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-9-crear-la-instancia-de-origen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 9. Crear la instancia de origen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-10-crear-el-cluster-de-destino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 10. Crear el clúster de destino
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-11-crear-la-instancia-de-administracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 11. Crear la instancia de administración
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-12-cargar-y-preparar-el-origen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 12. Cargar y preparar el origen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-13-preparar-el-destino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 13. Preparar el destino
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-14-registrar-la-linea-base" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 14. Registrar la línea base
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-iv-configuracion-de-dms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte IV. Configuración de DMS
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte IV. Configuración de DMS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-15-crear-los-recursos-de-replicacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 15. Crear los recursos de replicación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-16-crear-los-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 16. Crear los endpoints
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-17-probar-la-notificacion-de-errores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 17. Probar la notificación de errores
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-v-migracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte V. Migración
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte V. Migración">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-18-crear-la-tarea-principal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 18. Crear la tarea principal
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-19-supervisar-la-carga" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 19. Supervisar la carga
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-20-configurar-la-supervision-en-cloudwatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 20. Configurar la supervisión en CloudWatch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-21-probar-la-replicacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 21. Probar la replicación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-22-realizar-la-conmutacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 22. Realizar la conmutación
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-vi-verificacion-y-cierre" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte VI. Verificación y cierre
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte VI. Verificación y cierre">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-23-verificar-la-integridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 23. Verificar la integridad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-24-reunir-las-evidencias-de-auditoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 24. Reunir las evidencias de auditoría
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-25-retirar-los-accesos-de-migracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 25. Retirar los accesos de migración
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-lista-de-comprobacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Lista de comprobación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-resolucion-de-problemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Resolución de problemas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-limpieza-de-recursos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Limpieza de recursos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-entrega" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Entrega
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introducción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-objetivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Objetivos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-requisitos-previos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Requisitos previos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-base-de-datos-de-origen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Base de datos de origen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-interpretacion-de-la-lista-de-comprobacion-en-esta-arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Interpretación de la lista de comprobación en esta arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-i-red-privada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte I. Red privada
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte I. Red privada">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-comprobar-los-roles-de-dms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 1. Comprobar los roles de DMS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-crear-la-vpc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 2. Crear la VPC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-crear-los-grupos-de-seguridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 3. Crear los grupos de seguridad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-crear-los-endpoints-de-interfaz" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 4. Crear los endpoints de interfaz
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-ii-almacenamiento-auditoria-y-alertas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte II. Almacenamiento, auditoría y alertas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte II. Almacenamiento, auditoría y alertas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-5-crear-y-proteger-el-bucket" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 5. Crear y proteger el bucket
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-6-activar-cloudtrail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 6. Activar CloudTrail
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-7-crear-la-notificacion-de-errores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 7. Crear la notificación de errores
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-iii-bases-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte III. Bases de datos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte III. Bases de datos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-8-crear-el-grupo-de-subredes-y-los-parametros-de-mysql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 8. Crear el grupo de subredes y los parámetros de MySQL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-9-crear-la-instancia-de-origen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 9. Crear la instancia de origen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-10-crear-el-cluster-de-destino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 10. Crear el clúster de destino
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-11-crear-la-instancia-de-administracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 11. Crear la instancia de administración
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-12-cargar-y-preparar-el-origen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 12. Cargar y preparar el origen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-13-preparar-el-destino" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 13. Preparar el destino
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-14-registrar-la-linea-base" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 14. Registrar la línea base
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-iv-configuracion-de-dms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte IV. Configuración de DMS
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte IV. Configuración de DMS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-15-crear-los-recursos-de-replicacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 15. Crear los recursos de replicación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-16-crear-los-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 16. Crear los endpoints
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-17-probar-la-notificacion-de-errores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 17. Probar la notificación de errores
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-v-migracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte V. Migración
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte V. Migración">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-18-crear-la-tarea-principal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 18. Crear la tarea principal
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-19-supervisar-la-carga" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 19. Supervisar la carga
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-20-configurar-la-supervision-en-cloudwatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 20. Configurar la supervisión en CloudWatch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-21-probar-la-replicacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 21. Probar la replicación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-22-realizar-la-conmutacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 22. Realizar la conmutación
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-vi-verificacion-y-cierre" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte VI. Verificación y cierre
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte VI. Verificación y cierre">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-23-verificar-la-integridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 23. Verificar la integridad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-24-reunir-las-evidencias-de-auditoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 24. Reunir las evidencias de auditoría
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-25-retirar-los-accesos-de-migracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 25. Retirar los accesos de migración
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-lista-de-comprobacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Lista de comprobación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-resolucion-de-problemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Resolución de problemas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-limpieza-de-recursos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Limpieza de recursos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-entrega" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Entrega
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="practica-guiada-migracion-de-mysql-a-aurora-postgresql-con-aws-dms">Práctica guiada: migración de MySQL a Aurora PostgreSQL con AWS DMS<a class="headerlink" href="#practica-guiada-migracion-de-mysql-a-aurora-postgresql-con-aws-dms" title="Permanent link">&para;</a></h1>
+<ul>
+<li><strong>Módulo:</strong> Administración de bases de datos y almacenamiento en la nube</li>
+<li><strong>Curso de especialización:</strong> Recursos y Servicios en la Nube</li>
+<li><strong>Plataforma:</strong> AWS Academy Learner Lab · Consola de administración de AWS</li>
+<li><strong>Duración estimada:</strong> 3 horas y 30 minutos, de las que aproximadamente 45 minutos corresponden a tiempos de aprovisionamiento</li>
+</ul>
+<h2 id="1-introduccion">1. Introducción<a class="headerlink" href="#1-introduccion" title="Permanent link">&para;</a></h2>
+<p>Una migración heterogénea traslada datos entre motores distintos y exige resolver tres cuestiones: la conversión del esquema, el traslado de los datos y la demostración de que el resultado es íntegro. En esta práctica se migra la base de datos <code>ud5</code>, almacenada en MySQL 8.4, a un clúster de Amazon Aurora compatible con PostgreSQL mediante AWS Database Migration Service (DMS).</p>
+<p>La migración combina una <strong>carga completa</strong> con la <strong>captura de datos de cambios</strong> (CDC), de modo que el origen puede seguir admitiendo escrituras hasta el momento de la conmutación. Todo el proceso se realiza en una red privada y debe satisfacer la lista de comprobación de seguridad y operación incluida en el apartado 7.</p>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>Esta práctica no se puede realizar. Se ha intentado eliminar la necesidad de servicios y permisos al mínimo pero aún así llegamos a varios puntos en los que necesitamos permisos que son imposibles de un obtener en un LearnerLab y que hacen que la práctica sea irrealizable en este entorno.</p>
+<ul>
+<li>En el paso 7 no podemos crear la notificación de errores por falta de permisos.</li>
+<li>En el paso 15 da un error al generar el grupos de subredes DMS necesario para comenzar el trabajo. </li>
+</ul>
+</div>
+<h2 id="2-objetivos">2. Objetivos<a class="headerlink" href="#2-objetivos" title="Permanent link">&para;</a></h2>
+<p>Al finalizar la práctica, el alumnado será capaz de:</p>
+<ol>
+<li>Desplegar una red privada para una migración sin tránsito por Internet.</li>
+<li>Preparar MySQL y PostgreSQL con usuarios de privilegios mínimos.</li>
+<li>Configurar y ejecutar una tarea de DMS con carga completa, CDC y validación.</li>
+<li>Migrar manualmente los objetos que DMS no traslada.</li>
+<li>Supervisar y auditar la migración con CloudWatch, EventBridge, SNS y CloudTrail.</li>
+<li>Verificar la integridad final mediante recuentos y sumas de comprobación.</li>
+</ol>
+<h2 id="3-requisitos-previos">3. Requisitos previos<a class="headerlink" href="#3-requisitos-previos" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Acceso a un AWS Academy Learner Lab iniciado, con crédito suficiente.</li>
+<li>Región <strong>us-east-1 (N. Virginia)</strong> en todos los pasos.</li>
+<li>Una dirección de correo electrónico accesible para confirmar la suscripción de SNS.</li>
+<li>El archivo <code>00-ud5.sql</code> y la carpeta <code>scripts/</code> que acompaña a este enunciado.</li>
+</ul>
+<blockquote>
+<p><strong>Advertencia:</strong> inicie la práctica con la sesión del laboratorio recién renovada. Si la sesión expira durante la replicación, los recursos pueden detenerse y será necesario reanudar o reiniciar la tarea.</p>
+</blockquote>
+<p>Los nombres de los elementos de la consola se indican en inglés porque las traducciones pueden variar. Las contraseñas deben contener solo letras y números; no las incluya en la memoria.</p>
+<h2 id="4-base-de-datos-de-origen">4. Base de datos de origen<a class="headerlink" href="#4-base-de-datos-de-origen" title="Permanent link">&para;</a></h2>
+<p>El volcado contiene 9 tablas InnoDB y 2.142 filas, sin vistas, disparadores ni rutinas.</p>
+<table>
+<thead>
+<tr>
+<th>Tabla</th>
+<th style="text-align: right;">Filas</th>
+<th>Particularidad para la migración</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>aux_countries</code></td>
+<td style="text-align: right;">246</td>
+<td><code>INT UNSIGNED</code> y <code>AUTO_INCREMENT</code></td>
+</tr>
+<tr>
+<td><code>aux_rol</code></td>
+<td style="text-align: right;">3</td>
+<td>Texto con caracteres no ASCII y saltos de línea</td>
+</tr>
+<tr>
+<td><code>aux_rol_trabajador</code></td>
+<td style="text-align: right;">6</td>
+<td><code>AUTO_INCREMENT</code></td>
+</tr>
+<tr>
+<td><code>categoria</code></td>
+<td style="text-align: right;">15</td>
+<td>Clave ajena reflexiva</td>
+</tr>
+<tr>
+<td><code>log</code></td>
+<td style="text-align: right;">3</td>
+<td>Clave primaria compuesta</td>
+</tr>
+<tr>
+<td><code>producto</code></td>
+<td style="text-align: right;">1.023</td>
+<td><code>INT UNSIGNED</code>, <code>DECIMAL</code> y clave <code>UNIQUE</code></td>
+</tr>
+<tr>
+<td><code>proveedor</code></td>
+<td style="text-align: right;">101</td>
+<td>Clave primaria <code>VARCHAR</code></td>
+</tr>
+<tr>
+<td><code>trabajadores</code></td>
+<td style="text-align: right;">742</td>
+<td><code>TINYINT(1)</code> y columnas con mayúsculas</td>
+</tr>
+<tr>
+<td><code>usuario_sistema</code></td>
+<td style="text-align: right;">3</td>
+<td><code>DATETIME</code> y clave <code>UNIQUE</code></td>
+</tr>
+</tbody>
+</table>
+<p>DMS traslada datos, pero no replica por sí mismo todo el modelo relacional: no migra el atributo <code>AUTO_INCREMENT</code> y tampoco garantiza el orden de carga de las tablas. Por ello, se seguirá esta estrategia:</p>
+<table>
+<thead>
+<tr>
+<th>Momento</th>
+<th>Objetos</th>
+<th>Responsable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Antes de la carga</td>
+<td>Esquema, tablas y claves primarias</td>
+<td><code>02-destino-esquema.sql</code></td>
+</tr>
+<tr>
+<td>Durante la carga</td>
+<td>Filas y cambios</td>
+<td>Tarea de DMS en modo <strong>Do nothing</strong></td>
+</tr>
+<tr>
+<td>Después de la conmutación</td>
+<td><code>UNIQUE</code>, índices, claves ajenas y secuencias</td>
+<td><code>03-destino-postcarga.sql</code></td>
+</tr>
+</tbody>
+</table>
+<p>Se opta por un script revisable, en lugar de DMS Schema Conversion, porque esta función no incluye MySQL 8.4 entre sus orígenes documentados y necesita roles adicionales que no pueden crearse con normalidad en el laboratorio.</p>
+<h2 id="5-arquitectura">5. Arquitectura<a class="headerlink" href="#5-arquitectura" title="Permanent link">&para;</a></h2>
+<p><img alt="Arquitectura de la migración de RDS for MySQL a Aurora PostgreSQL mediante AWS DMS" src="../img/arquitectura-dms-aurora.png" /></p>
+<p><strong>Figura 1.</strong> Arquitectura final. Las etiquetas C1 a C9 remiten a los controles de la lista de comprobación.</p>
+<h2 id="6-interpretacion-de-la-lista-de-comprobacion-en-esta-arquitectura">6. Interpretación de la lista de comprobación en esta arquitectura<a class="headerlink" href="#6-interpretacion-de-la-lista-de-comprobacion-en-esta-arquitectura" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Aplicación en la práctica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cifrado en tránsito</td>
+<td>TLS con validación del certificado (<code>verify-full</code>) en ambos endpoints de DMS.</td>
+</tr>
+<tr>
+<td>Cifrado en reposo</td>
+<td>SSE-S3 y SSE-KMS son modalidades propias de Amazon S3. El destino Aurora usa cifrado de almacenamiento con KMS; el bucket usa SSE-KMS.</td>
+</tr>
+<tr>
+<td>Bucket protegido</td>
+<td>El bucket del proyecto y el de CloudTrail rechazan peticiones sin TLS y bloquean el acceso público.</td>
+</tr>
+<tr>
+<td>Mínimo privilegio</td>
+<td>Se aplica a usuarios de base de datos, grupos de seguridad y roles de servicio de DMS. <code>LabRole</code> se analiza como limitación del laboratorio.</td>
+</tr>
+<tr>
+<td>Sin tránsito por Internet</td>
+<td>La VPC no tiene puerta de enlace de Internet ni NAT. El acceso a S3 y Systems Manager se realiza mediante endpoints de VPC.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="parte-i-red-privada">Parte I. Red privada<a class="headerlink" href="#parte-i-red-privada" title="Permanent link">&para;</a></h2>
+<h3 id="paso-1-comprobar-los-roles-de-dms">Paso 1. Comprobar los roles de DMS<a class="headerlink" href="#paso-1-comprobar-los-roles-de-dms" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Abra <strong>IAM &gt; Roles</strong> y busque <code>dms-vpc-role</code> y <code>dms-cloudwatch-logs-role</code>.</li>
+<li>Si faltan, cree cada rol mediante <strong>Create role &gt; AWS service &gt; DMS</strong> y adjunte, respectivamente, <code>AmazonDMSVPCManagementRole</code> y <code>AmazonDMSCloudWatchLogsRole</code>.</li>
+<li>Si IAM deniega la operación, continúe con los pasos siguientes: la consola de DMS puede intentar crearlos. Si tampoco lo consigue, comuníquelo al profesorado antes de crear recursos de coste elevado.</li>
+</ol>
+<blockquote>
+<p>Estos roles deben conservar exactamente esos nombres, porque DMS los busca por nombre.</p>
+</blockquote>
+<p>Este paso no funciona</p>
+<h3 id="paso-2-crear-la-vpc">Paso 2. Crear la VPC<a class="headerlink" href="#paso-2-crear-la-vpc" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Abra <strong>VPC &gt; Create VPC &gt; VPC and more</strong> y configure:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name tag auto-generation</td>
+<td><code>ud5</code></td>
+</tr>
+<tr>
+<td>IPv4 CIDR block</td>
+<td><code>10.50.0.0/16</code></td>
+</tr>
+<tr>
+<td>Availability Zones</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Public subnets</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Private subnets</td>
+<td>2</td>
+</tr>
+<tr>
+<td>NAT gateways</td>
+<td>None</td>
+</tr>
+<tr>
+<td>VPC endpoints</td>
+<td><strong>S3 Gateway</strong></td>
+</tr>
+<tr>
+<td>DNS hostnames y DNS resolution</td>
+<td>Activados</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>Cree la VPC y compruebe, en <strong>Your VPCs &gt; Resource map</strong>, que dispone de dos subredes privadas y ninguna puerta de enlace de Internet.</li>
+<li>Renombre la VPC a <code>ud5-vpc</code> si la consola le ha asignado otro nombre.</li>
+</ol>
+<h3 id="paso-3-crear-los-grupos-de-seguridad">Paso 3. Crear los grupos de seguridad<a class="headerlink" href="#paso-3-crear-los-grupos-de-seguridad" title="Permanent link">&para;</a></h3>
+<p>En <strong>VPC &gt; Security groups</strong>, cree estos grupos en <code>ud5-vpc</code>. Cree primero <code>ud5-admin-sg</code> y <code>ud5-dms-sg</code>, ya que los demás hacen referencia a ellos.</p>
+<table>
+<thead>
+<tr>
+<th>Grupo</th>
+<th>Regla de entrada</th>
+<th>Origen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ud5-admin-sg</code></td>
+<td>Ninguna</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ud5-dms-sg</code></td>
+<td>Ninguna</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ud5-mysql-sg</code></td>
+<td>TCP 3306</td>
+<td><code>ud5-admin-sg</code> y <code>ud5-dms-sg</code></td>
+</tr>
+<tr>
+<td><code>ud5-aurora-sg</code></td>
+<td>TCP 5432</td>
+<td><code>ud5-admin-sg</code> y <code>ud5-dms-sg</code></td>
+</tr>
+<tr>
+<td><code>ud5-endpoints-sg</code></td>
+<td>TCP 443</td>
+<td><code>ud5-admin-sg</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="paso-4-crear-los-endpoints-de-interfaz">Paso 4. Crear los endpoints de interfaz<a class="headerlink" href="#paso-4-crear-los-endpoints-de-interfaz" title="Permanent link">&para;</a></h3>
+<p>Cree tres endpoints en <strong>VPC &gt; Endpoints &gt; Create endpoint</strong>, con <strong>AWS services</strong>, la VPC <code>ud5-vpc</code>, ambas subredes, el grupo <code>ud5-endpoints-sg</code> y <strong>Enable DNS name</strong> activado:</p>
+<ul>
+<li><code>com.amazonaws.us-east-1.ssm</code></li>
+<li><code>com.amazonaws.us-east-1.ssmmessages</code></li>
+<li><code>com.amazonaws.us-east-1.ec2messages</code></li>
+</ul>
+<p>Espere a que todos alcancen el estado <strong>Available</strong>.</p>
+<h2 id="parte-ii-almacenamiento-auditoria-y-alertas">Parte II. Almacenamiento, auditoría y alertas<a class="headerlink" href="#parte-ii-almacenamiento-auditoria-y-alertas" title="Permanent link">&para;</a></h2>
+<h3 id="paso-5-crear-y-proteger-el-bucket">Paso 5. Crear y proteger el bucket<a class="headerlink" href="#paso-5-crear-y-proteger-el-bucket" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Obtenga el identificador de la cuenta en el menú superior derecho.</li>
+<li>En <strong>S3 &gt; Create bucket</strong>, cree <code>ud5-migracion-&lt;id-cuenta&gt;</code> con estos valores:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bucket type</td>
+<td>General purpose</td>
+</tr>
+<tr>
+<td>Object Ownership</td>
+<td>ACLs disabled</td>
+</tr>
+<tr>
+<td>Block all public access</td>
+<td>Activado</td>
+</tr>
+<tr>
+<td>Bucket Versioning</td>
+<td>Enable</td>
+</tr>
+<tr>
+<td>Default encryption</td>
+<td>SSE-KMS con la clave administrada <code>aws/s3</code></td>
+</tr>
+<tr>
+<td>Bucket Key</td>
+<td>Enable</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>En <strong>Permissions &gt; Bucket policy</strong>, pegue la política siguiente, sustituyendo <code>NOMBRE_DEL_BUCKET</code>:</li>
+</ol>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">"Version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2012-10-17"</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">"Statement"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">      </span><span class="nt">"Sid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DenegarTransporteSinTLS"</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">      </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Deny"</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">      </span><span class="nt">"Principal"</span><span class="p">:</span><span class="w"> </span><span class="s2">"*"</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">      </span><span class="nt">"Action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"s3:*"</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">      </span><span class="nt">"Resource"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="s2">"arn:aws:s3:::NOMBRE_DEL_BUCKET"</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">        </span><span class="s2">"arn:aws:s3:::NOMBRE_DEL_BUCKET/*"</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">      </span><span class="p">],</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">      </span><span class="nt">"Condition"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">        </span><span class="nt">"Bool"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"aws:SecureTransport"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="p">}</span>
+</span></code></pre></div>
+<ol>
+<li>Descargue en su equipo el paquete de certificados de la región: <code>https://truststore.pki.rds.amazonaws.com/us-east-1/us-east-1-bundle.pem</code>.</li>
+<li>Suba al bucket <code>00-ud5.sql</code> y <code>us-east-1-bundle.pem</code> bajo el prefijo <code>entrada/</code>, y el contenido de <code>scripts/</code> bajo el prefijo <code>scripts/</code>.</li>
+</ol>
+<h3 id="paso-6-activar-cloudtrail">Paso 6. Activar CloudTrail<a class="headerlink" href="#paso-6-activar-cloudtrail" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Abra <strong>CloudTrail &gt; Trails &gt; Create trail</strong> y configure:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trail name</td>
+<td><code>ud5-trail</code></td>
+</tr>
+<tr>
+<td>Storage location</td>
+<td>Create new S3 bucket</td>
+</tr>
+<tr>
+<td>Log file SSE-KMS encryption</td>
+<td>Desactivado (el bucket conserva su cifrado predeterminado)</td>
+</tr>
+<tr>
+<td>Log file validation</td>
+<td>Enabled</td>
+</tr>
+<tr>
+<td><em>CloudWatch Logs</em></td>
+<td>Desactivado</td>
+</tr>
+<tr>
+<td><em>Log events</em></td>
+<td>Management events y Data events</td>
+</tr>
+<tr>
+<td><em>API activity</em></td>
+<td>Read y Write</td>
+</tr>
+<tr>
+<td>Registro recursivo</td>
+<td>Deshabilitadao</td>
+</tr>
+<tr>
+<td>Entrega de notificación SNS</td>
+<td>Deshabilitado</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>En <strong>Data events</strong>, seleccione <strong>S3</strong>, use una plantilla personalizada y limite el registro a <code>resources.ARN</code> que empiece por <code>arn:aws:s3:::ud5-migracion-&lt;id-cuenta&gt;/</code>.</li>
+<li>Cree el registro. A continuación, en el bucket que ha creado CloudTrail, compruebe que <strong>Block all public access</strong> está activado y <strong>añada</strong> la instrucción <code>DenegarTransporteSinTLS</code> a la política existente, sin eliminar las instrucciones de CloudTrail.</li>
+</ol>
+<blockquote>
+<p>Si el laboratorio no permite crear el registro, conserve como evidencia <strong>Event history</strong>, que registra los eventos de administración sin necesidad de un registro de seguimiento, y anote la limitación en la memoria.</p>
+</blockquote>
+<h3 id="paso-7-crear-la-notificacion-de-errores">Paso 7. Crear la notificación de errores<a class="headerlink" href="#paso-7-crear-la-notificacion-de-errores" title="Permanent link">&para;</a></h3>
+<ol>
+<li>En <strong>SNS &gt; Topics</strong>, cree el tema estándar <code>ud5-dms-alertas</code>.</li>
+<li>Cree una suscripción <strong>Email</strong> y confírmela desde su correo.</li>
+<li>En <strong>Access policy</strong>, añada esta instrucción a la lista <code>Statement</code>, sustituyendo el ARN del tema:</li>
+</ol>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">"Sid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PermitirEventBridge"</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Allow"</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">"Principal"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"Service"</span><span class="p">:</span><span class="w"> </span><span class="s2">"events.amazonaws.com"</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">"Action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sns:Publish"</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">"Resource"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ARN_DEL_TEMA"</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<ol>
+<li>En <strong>EventBridge &gt; Buses de eventos &gt; default&gt;  Rules &gt; Create rule</strong>, cree <code>ud5-dms-fallos</code> en el bus <code>default</code>, de tipo <strong>Rule with an event pattern</strong>, con este patrón personalizado:</li>
+</ol>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">"source"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"aws.dms"</span><span class="p">],</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">"detail-type"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"DMS Replication Task State Change"</span><span class="p">],</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">"detail"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">"category"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Failure"</span><span class="p">]</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<ol>
+<li>Seleccione como destino el tema <code>ud5-dms-alertas</code> y cree la regla.</li>
+</ol>
+<p>Falla por falta de permisos</p>
+<h2 id="parte-iii-bases-de-datos">Parte III. Bases de datos<a class="headerlink" href="#parte-iii-bases-de-datos" title="Permanent link">&para;</a></h2>
+<h3 id="paso-8-crear-el-grupo-de-subredes-y-los-parametros-de-mysql">Paso 8. Crear el grupo de subredes y los parámetros de MySQL<a class="headerlink" href="#paso-8-crear-el-grupo-de-subredes-y-los-parametros-de-mysql" title="Permanent link">&para;</a></h3>
+<ol>
+<li>En <strong>RDS &gt; Subnet groups</strong>, cree <code>ud5-db-subnets</code> en <code>ud5-vpc</code> con las dos subredes privadas.</li>
+<li>En <strong>RDS &gt; Parameter groups</strong>, cree <code>ud5-mysql84-params</code>, con motor MySQL Community y familia <code>mysql8.4</code>.</li>
+<li>Edite el grupo y establezca:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+<th>Finalidad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>binlog_format</code></td>
+<td><code>ROW</code></td>
+<td>Captura de cambios por DMS</td>
+</tr>
+<tr>
+<td><code>binlog_row_image</code></td>
+<td><code>full</code></td>
+<td>Imagen completa de cada fila</td>
+</tr>
+<tr>
+<td><code>require_secure_transport</code></td>
+<td><code>1</code></td>
+<td>Rechazo de conexiones sin TLS</td>
+</tr>
+</tbody>
+</table>
+<h3 id="paso-9-crear-la-instancia-de-origen">Paso 9. Crear la instancia de origen<a class="headerlink" href="#paso-9-crear-la-instancia-de-origen" title="Permanent link">&para;</a></h3>
+<p>En <strong>RDS &gt; Databases &gt; Create database</strong>, elija <strong>Full configuration</strong> y <strong>MySQL</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Engine version</td>
+<td>MySQL 8.4 (última versión secundaria ofrecida)</td>
+</tr>
+<tr>
+<td>Template</td>
+<td>Dev/Test</td>
+</tr>
+<tr>
+<td>Deployment</td>
+<td>Single-AZ, una instancia</td>
+</tr>
+<tr>
+<td>DB instance identifier</td>
+<td><code>ud5-mysql</code></td>
+</tr>
+<tr>
+<td>Master username</td>
+<td><code>admin</code></td>
+</tr>
+<tr>
+<td>Credentials</td>
+<td>Self managed</td>
+</tr>
+<tr>
+<td>Instance class</td>
+<td><code>db.t3.small</code></td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>General Purpose, 20 GiB, sin autoescalado</td>
+</tr>
+<tr>
+<td>VPC y DB subnet group</td>
+<td><code>ud5-vpc</code> y <code>ud5-db-subnets</code></td>
+</tr>
+<tr>
+<td>Public access</td>
+<td>No</td>
+</tr>
+<tr>
+<td>VPC security group</td>
+<td><code>ud5-mysql-sg</code> (retire <code>default</code>)</td>
+</tr>
+<tr>
+<td>Initial database name</td>
+<td><code>ud5</code></td>
+</tr>
+<tr>
+<td>DB parameter group</td>
+<td><code>ud5-mysql84-params</code></td>
+</tr>
+<tr>
+<td>Automated backups</td>
+<td>Activados, retención de 1 día</td>
+</tr>
+<tr>
+<td>Encryption</td>
+<td>Activado, clave <code>aws/rds</code></td>
+</tr>
+<tr>
+<td>Enhanced Monitoring</td>
+<td>Desactivado</td>
+</tr>
+<tr>
+<td>Deletion protection</td>
+<td>Desactivado</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Las copias de seguridad automáticas no son opcionales: en RDS for MySQL activan el registro binario que necesita CDC.</p>
+</blockquote>
+<h3 id="paso-10-crear-el-cluster-de-destino">Paso 10. Crear el clúster de destino<a class="headerlink" href="#paso-10-crear-el-cluster-de-destino" title="Permanent link">&para;</a></h3>
+<p>En <strong>Create database</strong>, elija <strong>Aurora (PostgreSQL Compatible)</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Engine version</td>
+<td>Aurora PostgreSQL 17 (17.4 o posterior)</td>
+</tr>
+<tr>
+<td>Template</td>
+<td>Dev/Test</td>
+</tr>
+<tr>
+<td>DB cluster identifier</td>
+<td><code>ud5-aurora</code></td>
+</tr>
+<tr>
+<td>Master username</td>
+<td><code>adminud5</code></td>
+</tr>
+<tr>
+<td>Credentials</td>
+<td>Self managed</td>
+</tr>
+<tr>
+<td>Cluster storage</td>
+<td>Aurora Standard</td>
+</tr>
+<tr>
+<td>Instance class</td>
+<td>Burstable, <code>db.t3.medium</code></td>
+</tr>
+<tr>
+<td>Aurora Replica</td>
+<td>No crear</td>
+</tr>
+<tr>
+<td>VPC y DB subnet group</td>
+<td><code>ud5-vpc</code> y <code>ud5-db-subnets</code></td>
+</tr>
+<tr>
+<td>Public access</td>
+<td>No</td>
+</tr>
+<tr>
+<td>VPC security group</td>
+<td><code>ud5-aurora-sg</code> (retire <code>default</code>)</td>
+</tr>
+<tr>
+<td>Initial database name</td>
+<td><code>ud5</code></td>
+</tr>
+<tr>
+<td>Encryption</td>
+<td>Activado, clave <code>aws/rds</code></td>
+</tr>
+<tr>
+<td>Enhanced Monitoring y Performance Insights</td>
+<td>Desactivados</td>
+</tr>
+<tr>
+<td>Deletion protection</td>
+<td>Desactivado</td>
+</tr>
+</tbody>
+</table>
+<p>Anote el <strong>writer endpoint</strong> del clúster y el endpoint de <code>ud5-mysql</code>.</p>
+<h3 id="paso-11-crear-la-instancia-de-administracion">Paso 11. Crear la instancia de administración<a class="headerlink" href="#paso-11-crear-la-instancia-de-administracion" title="Permanent link">&para;</a></h3>
+<ol>
+<li>En <strong>EC2 &gt; Launch instance</strong>, cree <code>ud5-admin</code> con <strong>Amazon Linux 2023</strong>, tipo <code>t3.micro</code> y par de claves vockey.</li>
+<li>En la configuración de red, seleccione <code>ud5-vpc</code>, una subred privada, <strong>Auto-assign public IP: Disable</strong> y el grupo <code>ud5-admin-sg</code>.</li>
+<li>En <strong>Advanced details &gt; IAM instance profile</strong>, elija <code>LabInstanceProfile</code>.</li>
+<li>Cuando la instancia supere las comprobaciones, conéctese con <strong>Connect &gt; Session Manager</strong>.</li>
+<li>Ejecute, los siguientes comandos sustituyendo los valores entre ángulos:</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>sudo<span class="w"> </span>-iu<span class="w"> </span>ec2-user
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>cat<span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc<span class="w"> </span><span class="s">&lt;&lt;'FIN'</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="s">export AWS_DEFAULT_REGION=us-east-1</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="s">export BUCKET=ud5-migracion-&lt;id-cuenta&gt;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="s">export MYSQL_HOST=&lt;endpoint-de-ud5-mysql&gt;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="s">export AURORA_HOST=&lt;writer-endpoint-de-ud5-aurora&gt;</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="s">export CA=$HOME/ud5/us-east-1-bundle.pem</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="s">alias my='mysql -h $MYSQL_HOST -u admin -p --ssl-ca=$CA --ssl-verify-server-cert --default-character-set=utf8mb4'</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="s">alias pg='psql "host=$AURORA_HOST port=5432 dbname=ud5 user=adminud5 sslmode=verify-full sslrootcert=$CA"'</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="s">FIN</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="nb">source</span><span class="w"> </span>~/.bashrc
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>mariadb105<span class="w"> </span>postgresql17
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/ud5/evidencias<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/ud5
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>aws<span class="w"> </span>s3<span class="w"> </span>cp<span class="w"> </span>s3://<span class="nv">$BUCKET</span>/entrada/<span class="w"> </span>.<span class="w"> </span>--recursive
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>aws<span class="w"> </span>s3<span class="w"> </span>cp<span class="w"> </span>s3://<span class="nv">$BUCKET</span>/scripts/<span class="w"> </span>.<span class="w"> </span>--recursive
+</span></code></pre></div>
+<blockquote>
+<p>Si <code>postgresql17</code> no está disponible, consulte <code>dnf list 'postgresql1*'</code> e instale la versión más reciente. La instalación funciona sin NAT porque los repositorios de Amazon Linux 2023 se sirven desde S3, accesible por el endpoint de puerta de enlace.</p>
+</blockquote>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Si al ejecutar <code>source ~/.bashrc</code> tenemos un error de sintaxis o no se generan las variables, tendremos que editar manualmente el fichero <code>~/.bashrc</code>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>nano<span class="w"> </span>~/.bashrc
+</span></code></pre></div>
+e insertar las variables manualmente al final del fichero.</p>
+</div>
+<ol>
+<li>Compruebe el aislamiento de la red y la protección del bucket:</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>curl<span class="w"> </span>-m<span class="w"> </span><span class="m">5</span><span class="w"> </span>-I<span class="w"> </span>https://aws.amazon.com
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>aws<span class="w"> </span>s3<span class="w"> </span>ls<span class="w"> </span>s3://<span class="nv">$BUCKET</span><span class="w"> </span>--endpoint-url<span class="w"> </span>http://s3.us-east-1.amazonaws.com
+</span></code></pre></div>
+<p>El primer comando debe agotar el tiempo de espera, y el segundo debe devolver <code>AccessDenied</code>.</p>
+<h3 id="paso-12-cargar-y-preparar-el-origen">Paso 12. Cargar y preparar el origen<a class="headerlink" href="#paso-12-cargar-y-preparar-el-origen" title="Permanent link">&para;</a></h3>
+<p>Vamos a crear un usuario en <code>mysql</code> para migrar los datos. Para ello primero crearemos una variable de sesión llamada <code>CLAVE_DMS</code> que será la clave de acceso del usuario creado. Puedes ver los comandos que se ejecutan si revisas el fichero <code>00-fuente-usuario-dms.sql</code></p>
+<p>Ejecute este paso y los siguientes desde <code>~/ud5</code>, en la misma sesión si es posible, ya que <code>CLAVE_DMS</code> no se conserva entre sesiones.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Comandos bash</label><label for="__tabbed_1_2">Fichero 00-fuente-usuario-dms.sql</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>my<span class="w"> </span>ud5<span class="w"> </span>&lt;<span class="w"> </span><span class="m">00</span>-ud5.sql
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Vamos a establecer la clave para hacer las migraciones DMS"</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nb">read</span><span class="w"> </span>-rs<span class="w"> </span>CLAVE_DMS<span class="p">;</span><span class="w"> </span><span class="nb">echo</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>sed<span class="w"> </span><span class="s2">"s/&lt;CLAVE_DMS&gt;/</span><span class="nv">$CLAVE_DMS</span><span class="s2">/"</span><span class="w"> </span><span class="m">00</span>-fuente-usuario-dms.sql<span class="w"> </span><span class="p">|</span><span class="w"> </span>my
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">-- =====================================================================</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1">-- 00-fuente-usuario-dms.sql</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1">-- Se ejecuta en RDS for MySQL como admin. Sustituya &lt;CLAVE_DMS&gt;.</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1">-- =====================================================================</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="s1">'dms_user'</span><span class="o">@</span><span class="s1">'10.50.%'</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="s1">'&lt;CLAVE_DMS&gt;'</span><span class="w"> </span><span class="n">REQUIRE</span><span class="w"> </span><span class="n">SSL</span><span class="p">;</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">ud5</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">'dms_user'</span><span class="o">@</span><span class="s1">'10.50.%'</span><span class="p">;</span><span class="w">                 </span><span class="c1">-- carga completa</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="k">GRANT</span><span class="w"> </span><span class="n">REPLICATION</span><span class="w"> </span><span class="n">CLIENT</span><span class="p">,</span><span class="w"> </span><span class="n">REPLICATION</span><span class="w"> </span><span class="n">SLAVE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">'dms_user'</span><span class="o">@</span><span class="s1">'10.50.%'</span><span class="p">;</span><span class="w">   </span><span class="c1">--         CDC</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="c1">-- Conserva los registros binarios durante 24 horas para la replicación.</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="k">CALL</span><span class="w"> </span><span class="n">mysql</span><span class="p">.</span><span class="n">rds_set_configuration</span><span class="p">(</span><span class="s1">'binlog retention hours'</span><span class="p">,</span><span class="w"> </span><span class="mi">24</span><span class="p">);</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="k">CALL</span><span class="w"> </span><span class="n">mysql</span><span class="p">.</span><span class="n">rds_show_configuration</span><span class="p">;</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Recuerda que <code>my</code> es un comando que creamos en el paso 11 que equivale a:</p>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>mysql<span class="w"> </span>-h<span class="w"> </span><span class="nv">$MYSQL_HOST</span><span class="w"> </span>-u<span class="w"> </span>admin<span class="w"> </span>-p<span class="w"> </span>--ssl-ca<span class="o">=</span><span class="nv">$CA</span><span class="w"> </span>--ssl-verify-server-cert<span class="w"> </span>--default-character-set<span class="o">=</span>utf8mb4
+</span></code></pre></div>
+Hemos creado un comando similar para postgres que se llama <code>pg</code></p>
+</div>
+<p>La cuenta <code>dms_user</code> solo se admite desde la VPC y exige TLS. Sus privilegios son los mínimos necesarios:</p>
+<table>
+<thead>
+<tr>
+<th>Privilegio</th>
+<th>Justificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SELECT</code> sobre <code>ud5.*</code></td>
+<td>Lectura de la carga completa</td>
+</tr>
+<tr>
+<td><code>REPLICATION CLIENT</code> y <code>REPLICATION SLAVE</code></td>
+<td>Lectura del registro binario para CDC</td>
+</tr>
+</tbody>
+</table>
+<p>Cada ejecución de <code>my</code> y <code>pg</code> solicita la contraseña correspondiente.</p>
+<h3 id="paso-13-preparar-el-destino">Paso 13. Preparar el destino<a class="headerlink" href="#paso-13-preparar-el-destino" title="Permanent link">&para;</a></h3>
+<p>Vamos a preparar el destino postgres y a crear las tablas en el esquema destino.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Comandos bash</label><label for="__tabbed_2_2">01-destino-preparacion.sql</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>pg<span class="w"> </span>-v<span class="w"> </span><span class="nv">clave_dms</span><span class="o">=</span><span class="s2">"</span><span class="nv">$CLAVE_DMS</span><span class="s2">"</span><span class="w"> </span>-f<span class="w"> </span><span class="m">01</span>-destino-preparacion.sql
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>pg<span class="w"> </span>-f<span class="w"> </span><span class="m">02</span>-destino-esquema.sql
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>pg<span class="w"> </span>-c<span class="w"> </span><span class="s2">"SELECT ssl, version FROM pg_stat_ssl WHERE pid = pg_backend_pid();"</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">-- =====================================================================</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="c1">-- 01-destino-preparacion.sql</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1">-- Se ejecuta en Aurora PostgreSQL, base de datos ud5, como adminud5.</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1">-- Sustituya :'clave_dms' mediante psql -v (véase el enunciado).</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="c1">-- =====================================================================</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">ud5</span><span class="w"> </span><span class="k">AUTHORIZATION</span><span class="w"> </span><span class="n">adminud5</span><span class="p">;</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">ROLE</span><span class="w"> </span><span class="n">dms_target</span><span class="w"> </span><span class="n">LOGIN</span><span class="w"> </span><span class="n">PASSWORD</span><span class="w"> </span><span class="p">:</span><span class="s1">'clave_dms'</span><span class="p">;</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="c1">-- Permisos mínimos de DMS sobre el destino.</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="k">GRANT</span><span class="w"> </span><span class="k">CONNECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ud5</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">dms_target</span><span class="p">;</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="k">GRANT</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">ud5</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">dms_target</span><span class="p">;</span><span class="w">   </span><span class="c1">-- esquema de control awsdms_control</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="k">GRANT</span><span class="w"> </span><span class="k">USAGE</span><span class="p">,</span><span class="w"> </span><span class="k">CREATE</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">ud5</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">dms_target</span><span class="p">;</span>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="c1">-- Permite a adminud5 consultar el esquema awsdms_control, propiedad de dms_target.</span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="k">GRANT</span><span class="w"> </span><span class="n">dms_target</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">adminud5</span><span class="p">;</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<p>La sesión debe indicar <code>ssl = t</code>. El destino usa <code>BIGINT</code> para <code>INT UNSIGNED</code>, porque el rango de un <code>INTEGER</code> de PostgreSQL es insuficiente, y <code>SMALLINT</code> para <code>TINYINT(1)</code>, con objeto de conservar valores idénticos durante la validación.</p>
+<p>Ahora vamos a comprobar que el sistema rechaza las conexiones sin ssl:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">psql</span><span class="w"> </span><span class="ss">"host=$AURORA_HOST port=5432 dbname=ud5 user=adminud5 sslmode=disable"</span><span class="w"> </span><span class="o">-</span><span class="k">c</span><span class="w"> </span><span class="ss">"SELECT 1;"</span>
+</span></code></pre></div>
+<p>El resultado debería ser un error FATAL similar a este:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">FATAL</span><span class="p">:</span><span class="w">  </span><span class="k">no</span><span class="w"> </span><span class="n">pg_hba</span><span class="p">.</span><span class="n">conf</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">host</span><span class="w"> </span><span class="ss">"..."</span><span class="p">,</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="ss">"adminud5"</span><span class="p">,</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="ss">"ud5"</span><span class="p">,</span><span class="w"> </span><span class="k">no</span><span class="w"> </span><span class="n">encryption</span>
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>En esta práctica utilizamos el script <code>02-destino-esquema</code> para generar las tablas destino en el sistema Aurora Postgres. </p>
+<p>En un entorno real podríamos usar <code>DMS Schema Conversion</code> para convertir el esquema <code>MySQL</code> a un esquema <code>Aurora Postgres</code>. </p>
+<p>En esta práctica no usaremos esta herramienta porque necesitaríamos un perfil de instancia, proveedores de datos, un proyecto de migración y credenciales en Secrets Manager, además de sus permisos. Lo cual añade una dependencia de ciertos roles de los que no disponemos en un Learner Lab.</p>
+</div>
+<h3 id="paso-14-registrar-la-linea-base">Paso 14. Registrar la línea base<a class="headerlink" href="#paso-14-registrar-la-linea-base" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>my<span class="w"> </span>-N<span class="w"> </span>-B<span class="w"> </span>ud5<span class="w"> </span>&lt;<span class="w"> </span><span class="m">04</span>-integridad-mysql.sql<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">LC_ALL</span><span class="o">=</span>C<span class="w"> </span>sort<span class="w"> </span>&gt;<span class="w"> </span>evidencias/base-mysql.tsv
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>cat<span class="w"> </span>evidencias/base-mysql.tsv
+</span></code></pre></div>
+<p>El resultado debe mostrar las 9 tablas y los recuentos del apartado 4.</p>
+<h2 id="parte-iv-configuracion-de-dms">Parte IV. Configuración de DMS<a class="headerlink" href="#parte-iv-configuracion-de-dms" title="Permanent link">&para;</a></h2>
+<h3 id="paso-15-crear-los-recursos-de-replicacion">Paso 15. Crear los recursos de replicación<a class="headerlink" href="#paso-15-crear-los-recursos-de-replicacion" title="Permanent link">&para;</a></h3>
+<ol>
+<li>En <strong>DMS &gt; Subnet groups</strong>, cree <code>ud5-dms-subnets</code> en <code>ud5-vpc</code> con ambas subredes.</li>
+<li>En <strong>Provisioned instances</strong>, cree la instancia:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td><code>ud5-dms-ri</code></td>
+</tr>
+<tr>
+<td>Instance class</td>
+<td><code>dms.t3.medium</code></td>
+</tr>
+<tr>
+<td>Engine version</td>
+<td>La predeterminada, siempre 3.5.4 o superior</td>
+</tr>
+<tr>
+<td>High Availability</td>
+<td>Dev or test workload (Single-AZ)</td>
+</tr>
+<tr>
+<td>Allocated storage</td>
+<td>50 GiB</td>
+</tr>
+<tr>
+<td>Replication subnet group</td>
+<td><code>ud5-dms-subnets</code></td>
+</tr>
+<tr>
+<td>Public accessible</td>
+<td>Desactivado</td>
+</tr>
+<tr>
+<td>VPC security group</td>
+<td><code>ud5-dms-sg</code></td>
+</tr>
+<tr>
+<td>AWS KMS key</td>
+<td><code>aws/dms</code></td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>En <strong>Certificates &gt; Import certificate</strong>, importe <code>us-east-1-bundle.pem</code> con el identificador <code>rds-us-east-1</code>.</li>
+</ol>
+<h3 id="paso-16-crear-los-endpoints">Paso 16. Crear los endpoints<a class="headerlink" href="#paso-16-crear-los-endpoints" title="Permanent link">&para;</a></h3>
+<p>Cree dos endpoints en <strong>DMS &gt; Endpoints</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Origen</th>
+<th>Destino</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Endpoint type</td>
+<td>Source endpoint</td>
+<td>Target endpoint</td>
+</tr>
+<tr>
+<td>Endpoint identifier</td>
+<td><code>ud5-fuente-mysql</code></td>
+<td><code>ud5-destino-aurora</code></td>
+</tr>
+<tr>
+<td>Source/Target engine</td>
+<td>MySQL</td>
+<td>Amazon Aurora PostgreSQL</td>
+</tr>
+<tr>
+<td>Access to endpoint database</td>
+<td>Provide access information manually</td>
+<td>Provide access information manually</td>
+</tr>
+<tr>
+<td>Server name</td>
+<td>Endpoint de <code>ud5-mysql</code></td>
+<td>Writer endpoint de <code>ud5-aurora</code></td>
+</tr>
+<tr>
+<td>Port</td>
+<td>3306</td>
+<td>5432</td>
+</tr>
+<tr>
+<td>Secure Socket Layer (SSL) mode</td>
+<td><code>verify-full</code></td>
+<td><code>verify-full</code></td>
+</tr>
+<tr>
+<td>CA certificate</td>
+<td><code>rds-us-east-1</code></td>
+<td><code>rds-us-east-1</code></td>
+</tr>
+<tr>
+<td>User name</td>
+<td><code>dms_user</code></td>
+<td><code>dms_target</code></td>
+</tr>
+<tr>
+<td>Database name</td>
+<td>—</td>
+<td><code>ud5</code></td>
+</tr>
+</tbody>
+</table>
+<p>Antes de guardar cada endpoint, ejecute <strong>Test endpoint connection</strong> con <code>ud5-dms-ri</code>. Ambas pruebas deben finalizar como <strong>successful</strong>.</p>
+<h3 id="paso-17-probar-la-notificacion-de-errores">Paso 17. Probar la notificación de errores<a class="headerlink" href="#paso-17-probar-la-notificacion-de-errores" title="Permanent link">&para;</a></h3>
+<p>Se creará una tarea que falla deliberadamente al no encontrar ninguna tabla.</p>
+<ol>
+<li>En <strong>Database migration tasks &gt; Create task</strong>, configure <code>ud5-prueba-fallo</code> con la instancia y los endpoints anteriores, <strong>Migrate existing data</strong> y <strong>Do nothing</strong>.</li>
+<li>En <strong>Table mappings</strong>, abra el editor JSON y pegue:</li>
+</ol>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="p">{</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="nt">"rules"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">      </span><span class="nt">"rule-type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"selection"</span><span class="p">,</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">      </span><span class="nt">"rule-id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">      </span><span class="nt">"rule-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tabla-inexistente"</span><span class="p">,</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">      </span><span class="nt">"object-locator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"schema-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ud5"</span><span class="p">,</span><span class="w"> </span><span class="nt">"table-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tabla_inexistente"</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">      </span><span class="nt">"rule-action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"include"</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="p">}</span>
+</span></code></pre></div>
+<ol>
+<li>Inicie la tarea y espere a que su estado sea <strong>Failed</strong>.</li>
+<li>Compruebe la llegada del correo de SNS, conserve la captura y elimine la tarea.</li>
+</ol>
+<h2 id="parte-v-migracion">Parte V. Migración<a class="headerlink" href="#parte-v-migracion" title="Permanent link">&para;</a></h2>
+<h3 id="paso-18-crear-la-tarea-principal">Paso 18. Crear la tarea principal<a class="headerlink" href="#paso-18-crear-la-tarea-principal" title="Permanent link">&para;</a></h3>
+<p>Cree la tarea <code>ud5-migracion</code> con estos valores:</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Migration type</td>
+<td>Migrate existing data and replicate ongoing changes</td>
+</tr>
+<tr>
+<td>Target table preparation mode</td>
+<td>Do nothing</td>
+</tr>
+<tr>
+<td>Stop task after full load completes</td>
+<td>Don't stop</td>
+</tr>
+<tr>
+<td>LOB column settings</td>
+<td>Limited LOB mode, 32 KB</td>
+</tr>
+<tr>
+<td>Data validation</td>
+<td>Turn on</td>
+</tr>
+<tr>
+<td>Task logs / CloudWatch logs</td>
+<td>Turn on</td>
+</tr>
+<tr>
+<td>Premigration assessment</td>
+<td>Desactivado</td>
+</tr>
+<tr>
+<td>Start migration task</td>
+<td>Automatically on create</td>
+</tr>
+</tbody>
+</table>
+<p>En <strong>Table mappings</strong>, utilice el editor JSON:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="p">{</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="nt">"rules"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">      </span><span class="nt">"rule-type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"selection"</span><span class="p">,</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">      </span><span class="nt">"rule-id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">      </span><span class="nt">"rule-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"incluir-esquema-ud5"</span><span class="p">,</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">      </span><span class="nt">"object-locator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"schema-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ud5"</span><span class="p">,</span><span class="w"> </span><span class="nt">"table-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"%"</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">      </span><span class="nt">"rule-action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"include"</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">      </span><span class="nt">"rule-type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"transformation"</span><span class="p">,</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="w">      </span><span class="nt">"rule-id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="w">      </span><span class="nt">"rule-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"columnas-en-minusculas"</span><span class="p">,</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="w">      </span><span class="nt">"rule-target"</span><span class="p">:</span><span class="w"> </span><span class="s2">"column"</span><span class="p">,</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="w">      </span><span class="nt">"object-locator"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"schema-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ud5"</span><span class="p">,</span><span class="w"> </span><span class="nt">"table-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"%"</span><span class="p">,</span><span class="w"> </span><span class="nt">"column-name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"%"</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="w">      </span><span class="nt">"rule-action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"convert-lowercase"</span>
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-15-19"><a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>En la configuración de la tarea, cambie al <strong>JSON editor</strong> y compruebe que <code>ValidationSettings</code> contiene estos valores:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nt">"EnableValidation"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="nt">"HandleCollationDiff"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</span></code></pre></div>
+<blockquote>
+<p><code>HandleCollationDiff</code> es necesario porque tres tablas tienen claves primarias <code>VARCHAR</code>. MySQL y PostgreSQL pueden ordenarlas de manera distinta, lo que causaría falsos positivos en la validación.</p>
+</blockquote>
+<h3 id="paso-19-supervisar-la-carga">Paso 19. Supervisar la carga<a class="headerlink" href="#paso-19-supervisar-la-carga" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Abra la tarea y consulte <strong>Table statistics</strong>. Espere a que cada tabla indique <strong>Table completed</strong> y <strong>Validated</strong>.</li>
+<li>Compruebe que la columna <strong>Full load rows</strong> coincide con el apartado 4 y que la tarea pasa a <strong>Load complete, replication ongoing</strong>.</li>
+<li>Verifique que las conexiones de DMS usan TLS:</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>pg<span class="w"> </span>-c<span class="w"> </span><span class="s2">"SELECT a.usename, s.ssl, s.version, s.cipher</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="s2">       FROM pg_stat_ssl s JOIN pg_stat_activity a USING (pid)</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="s2">       WHERE a.usename = 'dms_target';"</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>my<span class="w"> </span>-e<span class="w"> </span><span class="s2">"SELECT t.processlist_user, s.variable_value AS tls</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="s2">       FROM performance_schema.status_by_thread s</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="s2">       JOIN performance_schema.threads t USING (thread_id)</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="s2">       WHERE s.variable_name = 'Ssl_version'</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="s2">         AND t.processlist_user = 'dms_user';"</span>
+</span></code></pre></div>
+<h3 id="paso-20-configurar-la-supervision-en-cloudwatch">Paso 20. Configurar la supervisión en CloudWatch<a class="headerlink" href="#paso-20-configurar-la-supervision-en-cloudwatch" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Abra <strong>CloudWatch &gt; Log groups &gt; <code>dms-tasks-ud5-dms-ri</code></strong> y examine la secuencia <code>dms-task-*</code>.</li>
+<li>En <strong>Metrics &gt; All metrics &gt; DMS</strong>, seleccione las métricas de la tarea <code>CDCLatencySource</code>, <code>CDCLatencyTarget</code>, <code>CDCIncomingChanges</code> y <code>FullLoadThroughputRowsTarget</code>.</li>
+<li>Cree el panel <code>ud5-migracion</code> con esas métricas. Debido al reducido volumen, la carga puede aparecer como un único punto.</li>
+<li>Cree la alarma <code>ud5-latencia-cdc</code> sobre <code>CDCLatencyTarget</code>, con la condición <strong>mayor que 60 segundos</strong> durante un periodo de un minuto, y notificación a <code>ud5-dms-alertas</code>.</li>
+</ol>
+<h3 id="paso-21-probar-la-replicacion">Paso 21. Probar la replicación<a class="headerlink" href="#paso-21-probar-la-replicacion" title="Permanent link">&para;</a></h3>
+<p>Con la tarea en curso, ejecute la transacción de prueba:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>my<span class="w"> </span>&lt;<span class="w"> </span><span class="m">06</span>-prueba-cdc.sql
+</span></code></pre></div>
+<p>La transacción inserta una fila en <code>log</code> y otra en <code>producto</code>, actualiza una fila de <code>producto</code> y otra de <code>trabajadores</code>, y elimina una fila de <code>log</code>. Compruebe el resultado:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>pg<span class="w"> </span>-c<span class="w"> </span><span class="s2">"SELECT id_producto, codigo, nombre, descripcion, coste</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="s2">       FROM ud5.producto WHERE id_producto IN (1, 1024) ORDER BY 1;"</span>
+</span></code></pre></div>
+<p>En <strong>Table statistics</strong> deben figurar los cambios: <code>log</code> (1 inserción y 1 eliminación), <code>producto</code> (1 inserción y 1 actualización) y <code>trabajadores</code> (1 actualización).</p>
+<h3 id="paso-22-realizar-la-conmutacion">Paso 22. Realizar la conmutación<a class="headerlink" href="#paso-22-realizar-la-conmutacion" title="Permanent link">&para;</a></h3>
+<p>En un sistema real, la aplicación permanecería detenida desde el inicio de este paso.</p>
+<ol>
+<li>Confirme que no se producen escrituras en el origen.</li>
+<li>Compruebe que <code>CDCLatencyTarget</code> es próxima a cero, que <code>CDCIncomingChanges</code> vale cero y que todas las tablas continúan en <strong>Validated</strong>.</li>
+<li>Detenga la tarea con <strong>Actions &gt; Stop</strong>.</li>
+<li>Consulte los posibles fallos de validación, cuyo resultado debe ser cero:</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>pg<span class="w"> </span>-c<span class="w"> </span><span class="s2">"SELECT count(*) FROM awsdms_control.awsdms_validation_failures_v1;"</span>
+</span></code></pre></div>
+<ol>
+<li>Cree los objetos pendientes:</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>pg<span class="w"> </span>-f<span class="w"> </span><span class="m">03</span>-destino-postcarga.sql
+</span></code></pre></div>
+<h2 id="parte-vi-verificacion-y-cierre">Parte VI. Verificación y cierre<a class="headerlink" href="#parte-vi-verificacion-y-cierre" title="Permanent link">&para;</a></h2>
+<h3 id="paso-23-verificar-la-integridad">Paso 23. Verificar la integridad<a class="headerlink" href="#paso-23-verificar-la-integridad" title="Permanent link">&para;</a></h3>
+<p>La validación de DMS es una comprobación del propio servicio. Se añade una verificación independiente mediante consultas equivalentes en ambos motores, que calculan el MD5 de cada fila y suman sus primeros 32 bits; así, el resultado no depende del orden ni de la intercalación.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>my<span class="w"> </span>-N<span class="w"> </span>-B<span class="w"> </span>ud5<span class="w"> </span>&lt;<span class="w"> </span><span class="m">04</span>-integridad-mysql.sql<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">LC_ALL</span><span class="o">=</span>C<span class="w"> </span>sort<span class="w"> </span>&gt;<span class="w"> </span>evidencias/final-mysql.tsv
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>pg<span class="w"> </span>-A<span class="w"> </span>-t<span class="w"> </span>-F<span class="w"> </span><span class="s1">$'\t'</span><span class="w"> </span>-f<span class="w"> </span><span class="m">05</span>-integridad-postgres.sql<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s1">'^SET$'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">LC_ALL</span><span class="o">=</span>C<span class="w"> </span>sort<span class="w"> </span>&gt;<span class="w"> </span>evidencias/final-aurora.tsv
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>cat<span class="w"> </span>evidencias/final-aurora.tsv
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>diff<span class="w"> </span>evidencias/final-mysql.tsv<span class="w"> </span>evidencias/final-aurora.tsv<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"INTEGRIDAD VERIFICADA"</span>
+</span></code></pre></div>
+<p>El comando debe mostrar <code>INTEGRIDAD VERIFICADA</code>, con 2.143 filas en total (<code>producto</code> pasa a 1.024). Compruebe además que las restricciones están activas y que la secuencia continúa correctamente:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>pg<span class="w"> </span>-c<span class="w"> </span><span class="s2">"SELECT conrelid::regclass, conname FROM pg_constraint</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="s2">       WHERE connamespace = 'ud5'::regnamespace AND contype = 'f' ORDER BY 1, 2;"</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>pg<span class="w"> </span>-c<span class="w"> </span><span class="s2">"INSERT INTO ud5.log (operacion, tabla, detalle)</span>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="s2">       VALUES ('test', 'log', 'Prueba de secuencia') RETURNING id_log;"</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>pg<span class="w"> </span>-c<span class="w"> </span><span class="s2">"UPDATE ud5.producto SET proveedor = 'NOEXISTE' WHERE id_producto = 2;"</span>
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>pg<span class="w"> </span>-c<span class="w"> </span><span class="s2">"DELETE FROM ud5.log WHERE operacion = 'test';"</span>
+</span></code></pre></div>
+<p>Deben aparecer 6 claves ajenas, <code>id_log</code> debe valer 5 y el <code>UPDATE</code> debe fallar por violación de clave ajena.</p>
+<h3 id="paso-24-reunir-las-evidencias-de-auditoria">Paso 24. Reunir las evidencias de auditoría<a class="headerlink" href="#paso-24-reunir-las-evidencias-de-auditoria" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Copie las evidencias al bucket por el endpoint de S3:</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>aws<span class="w"> </span>s3<span class="w"> </span>cp<span class="w"> </span>evidencias/<span class="w"> </span>s3://<span class="nv">$BUCKET</span>/evidencias/<span class="w"> </span>--recursive
+</span></code></pre></div>
+<ol>
+<li>En <strong>CloudTrail &gt; Event history</strong>, filtre por <strong>Event source = <code>dms.amazonaws.com</code></strong> y localice <code>CreateReplicationTask</code>, <code>StartReplicationTask</code> y <code>StopReplicationTask</code>.</li>
+<li>Pasados unos minutos, abra un archivo reciente del bucket de CloudTrail y localice un evento de datos <code>PutObject</code> o <code>GetObject</code> sobre <code>ud5-migracion-&lt;id-cuenta&gt;</code>.</li>
+</ol>
+<h3 id="paso-25-retirar-los-accesos-de-migracion">Paso 25. Retirar los accesos de migración<a class="headerlink" href="#paso-25-retirar-los-accesos-de-migracion" title="Permanent link">&para;</a></h3>
+<p>Terminada la migración, los usuarios de DMS dejan de ser necesarios:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>my<span class="w"> </span>-e<span class="w"> </span><span class="s2">"DROP USER 'dms_user'@'10.50.%';"</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>pg<span class="w"> </span>-c<span class="w"> </span><span class="s2">"REVOKE ALL ON ALL TABLES IN SCHEMA ud5 FROM dms_target;"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">   </span>-c<span class="w"> </span><span class="s2">"REVOKE ALL ON SCHEMA ud5 FROM dms_target;"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">   </span>-c<span class="w"> </span><span class="s2">"ALTER ROLE dms_target NOLOGIN;"</span>
+</span></code></pre></div>
+<h2 id="7-lista-de-comprobacion">7. Lista de comprobación<a class="headerlink" href="#7-lista-de-comprobacion" title="Permanent link">&para;</a></h2>
+<p>Marque cada control únicamente cuando disponga de la evidencia indicada.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Evidencia exigida</th>
+<th style="text-align: center;">Paso</th>
+<th style="text-align: center;">Comprobado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Los datos viajan cifrados (TLS, SSH o IPsec).</td>
+<td>Endpoints en <code>verify-full</code> y consultas de sesiones TLS de DMS</td>
+<td style="text-align: center;">16, 19</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>El destino cifra los datos en reposo (SSE-S3 o SSE-KMS).</td>
+<td>Aurora con <strong>Encryption: Enabled</strong> y bucket con SSE-KMS</td>
+<td style="text-align: center;">5, 10</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>El <em>bucket</em> deniega las peticiones sin TLS y bloquea el acceso público.</td>
+<td>Política, bloqueo de acceso público y <code>AccessDenied</code> por HTTP</td>
+<td style="text-align: center;">5, 6, 11</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>Los roles y usuarios tienen solo los permisos necesarios.</td>
+<td>Privilegios de <code>dms_user</code> y <code>dms_target</code>, roles de DMS y análisis de <code>LabRole</code></td>
+<td style="text-align: center;">1, 12, 13, 25</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>El tráfico no atraviesa Internet cuando el caso lo exige (VPN, Direct Connect, <em>endpoints</em>).</td>
+<td>Mapa de recursos, tablas de rutas, endpoints y <code>curl</code> fallido</td>
+<td style="text-align: center;">2, 4, 11</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>Las métricas y registros de cada transferencia se envían a CloudWatch.</td>
+<td>Grupo de registros, panel y alarma</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>Existe una notificación ante errores (EventBridge y SNS).</td>
+<td>Regla, suscripción confirmada y correo de la tarea fallida</td>
+<td style="text-align: center;">7, 17</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>CloudTrail registra la actividad sobre los recursos implicados.</td>
+<td>Registro activo, eventos de DMS y evento de datos de S3</td>
+<td style="text-align: center;">6, 24</td>
+<td style="text-align: center;">☐</td>
+</tr>
+<tr>
+<td>La integridad final se ha verificado con recuentos y sumas de comprobación.</td>
+<td>Tablas en <strong>Validated</strong>, cero fallos y <code>diff</code> sin diferencias</td>
+<td style="text-align: center;">19, 22, 23</td>
+<td style="text-align: center;">☐</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-resolucion-de-problemas">8. Resolución de problemas<a class="headerlink" href="#8-resolucion-de-problemas" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Síntoma</th>
+<th>Causa probable</th>
+<th>Actuación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No se conecta Session Manager</td>
+<td>Endpoints no disponibles o sin DNS privado</td>
+<td>Revise el paso 4, <code>ud5-endpoints-sg</code> y <code>LabInstanceProfile</code>.</td>
+</tr>
+<tr>
+<td><code>dnf</code> agota el tiempo de espera</td>
+<td>Ruta de S3 ausente</td>
+<td>Compruebe que el endpoint S3 está asociado a la tabla de rutas de la subred.</td>
+</tr>
+<tr>
+<td>Falla la prueba de conexión por tiempo de espera</td>
+<td>Grupo de seguridad</td>
+<td>Compruebe las entradas desde <code>ud5-dms-sg</code>.</td>
+</tr>
+<tr>
+<td>Error de certificado</td>
+<td>Certificado o nombre de servidor incorrecto</td>
+<td>Use <code>rds-us-east-1</code> y el endpoint exacto de la consola.</td>
+</tr>
+<tr>
+<td>Error de autenticación de MySQL</td>
+<td>Complemento de autenticación</td>
+<td>Ejecute <code>ALTER USER 'dms_user'@'10.50.%' IDENTIFIED WITH mysql_native_password BY '&lt;clave&gt;';</code> y repita la prueba.</td>
+</tr>
+<tr>
+<td>Tabla en <strong>Table error</strong></td>
+<td>Tabla no creada o columna distinta</td>
+<td>Revise el registro de la tarea y la regla de minúsculas.</td>
+</tr>
+<tr>
+<td>Falla CDC por el registro binario</td>
+<td>Parámetros no aplicados o copias desactivadas</td>
+<td>Revise el paso 8, reinicie <code>ud5-mysql</code> y compruebe la retención.</td>
+</tr>
+<tr>
+<td>No llega el correo</td>
+<td>Suscripción sin confirmar o política del tema</td>
+<td>Revise el paso 7 y las invocaciones fallidas de la regla.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="9-limpieza-de-recursos">9. Limpieza de recursos<a class="headerlink" href="#9-limpieza-de-recursos" title="Permanent link">&para;</a></h2>
+<p>Elimine los recursos en este orden para evitar dependencias y consumo de crédito:</p>
+<ol>
+<li>Tarea <code>ud5-migracion</code>, endpoints de DMS, <code>ud5-dms-ri</code>, <code>ud5-dms-subnets</code> y el certificado importado.</li>
+<li>Instancia y clúster <code>ud5-aurora</code>, e instancia <code>ud5-mysql</code>, sin instantánea final.</li>
+<li>Grupo de subredes <code>ud5-db-subnets</code> y grupo de parámetros <code>ud5-mysql84-params</code>.</li>
+<li>Instancia <code>ud5-admin</code>.</li>
+<li>Endpoints de interfaz y de S3.</li>
+<li>Registro <code>ud5-trail</code>, alarma, panel, regla de EventBridge y tema de SNS.</li>
+<li>Buckets, tras vaciarlos incluyendo sus versiones.</li>
+<li>Grupos de seguridad y VPC.</li>
+</ol>
+<h2 id="10-entrega">10. Entrega<a class="headerlink" href="#10-entrega" title="Permanent link">&para;</a></h2>
+<p>Entregue una memoria en PDF con:</p>
+<ol>
+<li>La lista de comprobación completada y las capturas exigidas, sin contraseñas ni valores secretos.</li>
+<li>Los archivos <code>final-mysql.tsv</code> y <code>final-aurora.tsv</code>.</li>
+<li>La respuesta razonada a estas cuestiones:</li>
+<li>¿Por qué se crean las claves ajenas después de detener la tarea y no antes de la carga?</li>
+<li>La intercalación <code>utf8mb4_0900_ai_ci</code> no distingue mayúsculas ni acentos. ¿Qué consecuencias tiene para <code>producto_unique</code> y <code>usuario_sistema.email</code> en PostgreSQL y cómo las resolvería?</li>
+<li>¿Por qué <code>LabRole</code> no cumple el mínimo privilegio? Redacte los permisos que debería tener un rol exclusivo para la instancia <code>ud5-admin</code>.</li>
+<li>¿Qué limitación tiene una suma basada en 32 bits de MD5 y qué alternativa propondría para un entorno auditado?</li>
+<li>¿Qué cambiaría en la arquitectura si el origen estuviera en un centro de datos local?</li>
+</ol>
+<h2 id="referencias">Referencias<a class="headerlink" href="#referencias" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.MySQL.html">Uso de MySQL como origen de AWS DMS</a></li>
+<li><a href="https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.PostgreSQL.html">Uso de PostgreSQL como destino de AWS DMS</a></li>
+<li><a href="https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Validating.html">Validación de datos en AWS DMS</a></li>
+<li><a href="https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Security.SSL.html">Uso de SSL con AWS DMS</a></li>
+<li><a href="https://docs.aws.amazon.com/dms/latest/userguide/CHAP_EventBridge.html">Eventos de DMS en Amazon EventBridge</a></li>
+<li><a href="https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Monitoring.html">Supervisión de tareas de AWS DMS</a></li>
+<li><a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html">SSL/TLS en Amazon Aurora</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.expand", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
